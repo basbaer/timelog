@@ -47,25 +47,31 @@
                   </ul>
                 </div>
               </div>
-              <div class="mb-2">
-                <label for="start" class="form-label">Startzeit</label>
-                <input type="time" id="start" class="form-control">
+              <div class="row d-block d-sm-flex mb-2">
+
+                <div class="col-sm-auto col-6">
+                  <label for="start" class="form-label">Von</label>
+                  <input type="time" id="start" class="form-control">
+                </div>
+
+                <div class="col-sm-auto col-6">
+                  <label for="end" class="form-label">Bis</label>
+                  <input type="time" id="end" class="form-control">
+                </div>
+
+                <div class="d-sm-none w-100"></div>
+
+                <div class="col-sm-3 col-6">
+                  <label for="pause" class="form-label">Pause (min)</label>
+                  <input type="number" id="pause" class="form-control" min="0" value="0">
+                </div>
+                <div class="col-3">
+                  <label for="summe" class="form-label">Summe</label>
+                  <input type="text" id="summe" class="form-control" readonly>
+                </div>
+
               </div>
 
-              <div class="mb-2">
-                <label for="end" class="form-label">Endzeit</label>
-                <input type="time" id="end" class="form-control">
-              </div>
-
-              <div class="mb-2">
-                <label for="pause" class="form-label">Pause (in Minuten)</label>
-                <input type="number" id="pause" class="form-control" min="0" value="0">
-              </div>
-
-              <div class="mb-2">
-                <label for="summe" class="form-label">Summe</label>
-                <input type="text" id="summe" class="form-control" readonly>
-              </div>
 
               <div class="mb-3">
                 <label for="exampleFormControlTextarea1" class="form-label">Erklärung</label>
@@ -86,7 +92,7 @@
           </button>
         </h2>
         <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
-          
+
         </div>
       </div>
       <div class="accordion-item">
