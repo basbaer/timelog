@@ -32,49 +32,52 @@
         </h2>
         <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
           <div class="accordion-body">
-            <label class="form-label">Uhrzeit</label>
+            <div class="mb-2 container">
+              <div class="mb-2">
+                <label for="worktype-dropdown" class="form-label"> <strong>Arbeitsart</strong></label>
+                <div class="dropdown" id="worktype-dropdown">
+                  <button class="btn btn-secondary dropdown-toggle w-50" type="button" data-bs-toggle="dropdown"
+                    aria-expanded="false">
+                    Motorsäge
+                  </button>
+                  <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="#">Holzhütte ausgeraubt</a></li>
+                    <li><a class="dropdown-item" href="#">Förster bespaßt</a></li>
+                    <li><a class="dropdown-item" href="#">Essen geholt</a></li>
+                  </ul>
+                </div>
+              </div>
 
-            <div class="mb-2">
-              <label for="start" class="form-label">Startzeit</label>
-              <input type="time" id="start" class="form-control">
-            </div>
 
-            <div class="mb-2">
-              <label for="end" class="form-label">Endzeit</label>
-              <input type="time" id="end" class="form-control">
-            </div>
 
-            <div class="mb-2">
-              <label for="pause" class="form-label">Pause (in Minuten)</label>
-              <input type="number" id="pause" class="form-control" min="0" value="0">
-            </div>
+              <div class="mb-2">
+                <label for="start" class="form-label">Startzeit</label>
+                <input type="time" id="start" class="form-control">
+              </div>
 
-            <div class="mb-2">
-              <label for="summe" class="form-label">Summe</label>
-              <input type="text" id="summe" class="form-control" readonly>
-            </div>
+              <div class="mb-2">
+                <label for="end" class="form-label">Endzeit</label>
+                <input type="time" id="end" class="form-control">
+              </div>
 
-            <div class="mb-2">
-              <label for="worktype-dropdown" class="form-label">Arbeitsart</label>
-              <div class="dropdown" id="worktype-dropdown">
-                <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
-                  aria-expanded="false">
-                  Motorsäge
-                </button>
-                <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="#">Holzhütte ausgeraubt</a></li>
-                  <li><a class="dropdown-item" href="#">Förster bespaßt</a></li>
-                  <li><a class="dropdown-item" href="#">Essen geholt</a></li>
-                </ul>
+              <div class="mb-2">
+                <label for="pause" class="form-label">Pause (in Minuten)</label>
+                <input type="number" id="pause" class="form-control" min="0" value="0">
+              </div>
+
+              <div class="mb-2">
+                <label for="summe" class="form-label">Summe</label>
+                <input type="text" id="summe" class="form-control" readonly>
+              </div>
+
+
+
+              <div class="mb-3">
+                <label for="exampleFormControlTextarea1" class="form-label">Erklärung</label>
+                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
               </div>
             </div>
-
-            <div class="mb-3">
-              <label for="exampleFormControlTextarea1" class="form-label">Erklärung</label>
-              <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
-            </div>
           </div>
-
         </div>
       </div>
       <div class="accordion-item">
