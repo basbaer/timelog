@@ -30,7 +30,7 @@
             Baustelle #1
           </button>
         </h2>
-        <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
+        <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
           <div class="accordion-body">
             <div class="pt-2 container border border-dark rounded">
               <div class="mb-2">
@@ -41,9 +41,10 @@
                     Motorsäge
                   </button>
                   <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="#">Holzhütte ausgeraubt</a></li>
-                    <li><a class="dropdown-item" href="#">Förster bespaßt</a></li>
-                    <li><a class="dropdown-item" href="#">Essen geholt</a></li>
+                    <li><a class="dropdown-item" href="#">Freischneider</a></li>
+                    <li><a class="dropdown-item" href="#">Seilmaschine</a></li>
+                    <li><a class="dropdown-item" href="#">Messkluppe</a></li>
+                    <li><a class="dropdown-item" href="#">Reparatur</a></li>
                   </ul>
                 </div>
               </div>
@@ -91,7 +92,120 @@
             Baustelle #2
           </button>
         </h2>
-        <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+        <div id="collapseTwo" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
+          <div class="accordion-body px-2">
+
+            <div class="mb-2">
+              <h3>Arbeitszeit</h3>
+
+              <div class="row mb-3">
+                <div class="col-6">
+                  <label for="start" class="form-label">Von</label>
+                  <input type="time" id="start" class="form-control">
+                </div>
+
+                <div class="col-6">
+                  <label for="end" class="form-label">Bis</label>
+                  <input type="time" id="end" class="form-control">
+                </div>
+              </div>
+
+            </div>
+
+            <div class="mb-2">
+              <h3>Betriebsstunden</h3>
+
+              <div class="row mb-3">
+                <div class="col-5 pe-2 me-0">
+                  <label for="start" class="form-label">Von</label>
+                  <input type="number" id="start" class="form-control">
+                </div>
+
+                <div class="col-5 ps-1">
+                  <label for="end" class="form-label">Bis</label>
+                  <input type="number" id="end" class="form-control">
+                </div>
+
+                <div class="col-2 ps-0">
+                  <label for="end" class="form-label">Diff.</label>
+                  <input type="text" id="end" class="form-control" readonly>
+                </div>
+              </div>
+
+            </div>
+
+            <div class="mb-2">
+              <h3 class="mt-2">Andere Arbeiten</h3>
+
+              <div class="mb-2">
+                <label for="worktype-dropdown" class="form-label">Arbeitsart</label>
+                <div class="dropdown" id="worktype-dropdown">
+                  <button class="btn btn-primary dropdown-toggle w-50" type="button" data-bs-toggle="dropdown"
+                    aria-expanded="false">
+                    Motorsäge
+                  </button>
+                  <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="#">Freischneider</a></li>
+                    <li><a class="dropdown-item" href="#">Seilmaschine</a></li>
+                    <li><a class="dropdown-item" href="#">Messkluppe</a></li>
+                    <li><a class="dropdown-item" href="#">Reparatur</a></li>
+                    <li><a class="dropdown-item" href="#">Sonstiges</a></li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="row mb-3">
+                <div class="col-4">
+                  <label for="summe" class="form-label">Stunden</label>
+                  <input type="number" id="summe" class="form-control">
+                </div>
+                <div class="col-8 d-flex align-items-center">
+
+
+                </div>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <div class="d-flex justify-content-between">
+                <label for="exampleFormControlTextarea1" class="form-label">Erklärung</label>
+                <div class="form-check ">
+
+
+                  <input class="form-check-input" type="checkbox" value="" id="checkDefault">
+                  <label class="form-check-label" for="checkDefault">
+                    Abrechenbar
+                  </label>
+                </div>
+              </div>
+              <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+            </div>
+
+            <div class="d-flex justify-content-center mb-3">
+              <button class="btn btn-primary">Weitere Arbeitsart hinzuzufügen</button>
+            </div>
+
+            <div class="mb-2">
+              <h3 class="mt-2">Festmeter</h3>
+              <div class="row">
+                <div class="col-4">
+                  <label for="stueckzahl" class="form-label">Stückzahl</label>
+                  <input type="number" id="stueckzahl" class="form-control">
+                </div>
+                <div class="col-4">
+                  <label for="fm_gesamt" class="form-label">Gesamt fm</label>
+                  <input type="number" id="fm_gesamt" class="form-control">
+                </div>
+                <div class="col-4">
+                  <label for="day_fm" class="form-label">fm/Tag</label>
+                  <input type="text" id="day_fm" class="form-control" read-only>
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+
 
         </div>
       </div>
@@ -120,7 +234,7 @@
     integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
     crossorigin="anonymous"></script>
   <script>
-    function calculate() {
+    function calculateWorkingHours() {
       const start = document.getElementById("start").value;
       const end = document.getElementById("end").value;
       const pause = parseInt(document.getElementById("pause").value || 0, 10);
@@ -149,7 +263,7 @@
     }
 
     ["start", "end", "pause"].forEach(id =>
-      document.getElementById(id).addEventListener("input", calculate)
+      document.getElementById(id).addEventListener("input", calculateWorkingHours)
     );
   </script>
 </body>
