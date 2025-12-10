@@ -51,9 +51,8 @@
                                 <thead>
                                     <tr>
                                         <th scope="col">Datum</th>
-                                        <th scope="col">Stunden</th>
                                         <th scope="col">Mitarbeiter</th>
-                                        <th scope="col">Bemerkung</th>
+                                        <th scope="col">Stunden</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -61,7 +60,6 @@
                                         <td scope="row">06.12.25</td>
                                         <td>3h</td>
                                         <td>Birgit Bär</td>
-                                        <td>Christbaum abgesägt</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -87,9 +85,8 @@
                                     <thead>
                                         <tr>
                                             <th scope="col">Datum</th>
-                                            <th scope="col">Stunden</th>
                                             <th scope="col">Mitarbeiter</th>
-                                            <th scope="col">Bemerkung</th>
+                                            <th scope="col">Stunden</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -97,7 +94,6 @@
                                             <td scope="row">06.12.25</td>
                                             <td>3h</td>
                                             <td>Birgit Bär</td>
-                                            <td>Christbaum abgesägt</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -129,7 +125,6 @@
                                         <th scope="col">Arbeiter</th>
                                         <th scope="col">Stk.</th>
                                         <th scope="col">fm</th>
-
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -203,8 +198,8 @@
                                     <tr>
                                         <th scope="col"> </th>
                                         <th scope="col">Datum</th>
-                                        <th scope="col">Stunden</th>
                                         <th scope="col">Mitarbeiter</th>
+                                        <th scope="col">Stunden</th>
                                         <th scope="col">Bemerkung</th>
                                     </tr>
                                 </thead>
@@ -212,15 +207,15 @@
                                     <tr>
                                         <td scope="row"><input class="mt-0" type="checkbox" id="isValid_1"></td>
                                         <td>06.12.25</td>
-                                        <td>3</td>
                                         <td>Birgit Bär</td>
+                                        <td>3</td>
                                         <td>Christbaum abgesägt</td>
                                     </tr>
                                     <tr>
                                         <td scope="row"><input class="mt-0" type="checkbox" id="isValid2"></td>
                                         <td>06.12.25</td>
-                                        <td>4</td>
                                         <td>Birgit Bär</td>
+                                        <td>4</td>
                                         <td>Christbaum abgesägt</td>
                                     </tr>
                                 </tbody>
@@ -247,8 +242,8 @@
                                 // get the row <tr>
                                 const row = cb.closest("tr");
 
-                                // get the third cell (index 2) → Stunden
-                                const hoursCell = row.querySelectorAll("td")[2];
+                                // get the fourth cell (index 3) → Stunden
+                                const hoursCell = row.querySelectorAll("td")[3];
                                 const hours = parseFloat(hoursCell.textContent.trim());
 
                                 if (!isNaN(hours)) {
