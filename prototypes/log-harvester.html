@@ -81,6 +81,53 @@
               </div>
               <hr class="mx-3">
            <!-- </div>-->
+              <div class="mb-2">
+                <label for="worktype-dropdown" class="form-label"> <strong>Arbeitsart</strong></label>
+                <div class="dropdown" id="worktype-dropdown">
+                  <button class="btn btn-primary dropdown-toggle w-50" type="button" data-bs-toggle="dropdown"
+                    aria-expanded="false">
+                    Motorsäge (Sonderarbeit)
+                  </button>
+                  <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="#">Freischneider</a></li>
+                    <li><a class="dropdown-item" href="#">Seilmaschine</a></li>
+                    <li><a class="dropdown-item" href="#">Messkluppe</a></li>
+                    <li><a class="dropdown-item" href="#">Reparatur</a></li>
+                    <li><a class="dropdown-item" href="#">Sonstiges</a></li>
+                  </ul>
+                </div>
+              </div>
+              <div class="row d-flex mb-2">
+
+                <div class="col-sm-auto col-6 mb-2">
+                  <label for="start" class="form-label">Von</label>
+                  <input type="time" id="start" class="form-control">
+                </div>
+
+                <div class="col-sm-auto col-6 mb-2">
+                  <label for="end" class="form-label">Bis</label>
+                  <input type="time" id="end" class="form-control">
+                </div>
+
+                <div class="d-sm-none w-100"></div>
+
+                <div class="col-sm-3 col-6">
+                  <label for="pause" class="form-label">Pause (min)</label>
+                  <input type="number" id="pause" class="form-control" min="0" value="0">
+                </div>
+                <div class="col-3">
+                  <label for="summe" class="form-label">Summe</label>
+                  <input type="text" id="summe" class="form-control" readonly>
+                </div>
+
+              </div>
+
+
+              <div class="mb-3">
+                <label for="exampleFormControlTextarea1" class="form-label">Erklärung</label>
+                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+              </div>
+              <hr class="mx-3">
             <div class="mt-2 mx-3">
               <button class="btn btn-primary">Klicke, um weiter Arbeitsart hinzuzufügen</button>
             </div>
