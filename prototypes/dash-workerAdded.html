@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="de">
 
@@ -27,30 +28,34 @@
         </div>
     </nav>
 
-    <form action="dash-workerAdded.html">
-        <div class="container mt-3">
-            <div class="mb-3">
-                <label for="workerName" class="form-label">Name des Arbeiters</label>
-                <input type="text" class="form-control" id="workerName" placeholder="Geben Sie den Namen ein">
-            </div>
-            <div class="mb-3">
-                <label for="dropDown" class="form-label">Arbeitsrolle</label>
-            <div class="dropdown" id="dropDown">
-                <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown"
-                    aria-expanded="false">
-                    Forstwirt
-                </button>
-                <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="#">Harvester</a></li>
-                    <li><a class="dropdown-item" href="#">Rückezug</a></li>
-                </ul>
-            </div>
-        </div>
+    <div class="container mt-3 rounded-3 bg-success-subtle d-flex justify-content-center p-3">
+        <h4 class="text-success">Der Arbeiter wurde erfolgreich hinzugefügt!</h4>
 
-        <div class="container mt-3 d-flex justify-content-end ">
-            <button type="submit" class="btn btn-primary">Arbeiter hinzufügen</button>
-        </div>
-    </form>
+    </div>
+    <div class="container mt-3 mx-auto d-flex justify-content-center">
+        <div class="card" style="width: 18rem;">
+            <div class="card-body">
+                <h5 class="card-title">Robin Bär</h5>
+                <h6 class="card-subtitle mb-2 text-body-secondary">Forstwirt</h6>
+                <p class="card-text">Dem Arbeiter Folgendes mitteilen:</p>
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <td>Benutzername:</td>
+                            <td>robin.baer</td>
+                        </tr>
+                        <tr>
+                            <td>Passwort:</td>
+                            <td>wald2024!</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>  
+    </div>
+    <div class="container mt-3 d-flex justify-content-center">
+        <a href="dash-worker.html" type="button" class="btn btn-primary">Zurück zur Arbeiterübersicht</a>
+    </div>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
