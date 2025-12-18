@@ -3,7 +3,7 @@ version: "3.9"
 services:
   app:
     build: ./docker/php
-    container_name: php82_app
+    container_name: timelog
     ports:
       - "8080:80"
     volumes:
@@ -15,7 +15,7 @@ services:
 
   db:
     image: mariadb:10.6
-    container_name: mariadb
+    container_name: timelogDb
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: app
