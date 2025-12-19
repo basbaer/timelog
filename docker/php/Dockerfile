@@ -34,31 +34,33 @@ RUN service apache2 restart
 
 RUN touch /usr/local/etc/php/conf.d/xdebug.ini
 
-RUN echo "zend_extension=xdebug" >> /usr/local/etc/php/php.ini
-
-RUN sed -i 's/;extension=mysqli/extension=mysqli/' /usr/local/etc/php/php.ini && \
-    sed -i 's/;extension=pdo_mysql/extension=pdo_mysql/' /usr/local/etc/php/php.ini
+# Do not force-enable extensions in php.ini; docker-php-ext-install handles this via conf.d
 
 # Configure Xdebug
-RUN echo "zend_extension = /usr/local/lib/php/extensions/no-debug-non-zts-20220829/xdebug.so" >> /usr/local/etc/php/conf.d/xdebug.ini && \
-    echo "xdebug.remote_enable=1" >> /usr/local/etc/php/conf.d/xdebug.ini && \
-    echo "xdebug.profiler_output_dir=/tmp/xdebug/" >> /usr/local/etc/php/conf.d/xdebug.ini && \
-    echo "xdebug.profiler_enable=On" >> /usr/local/etc/php/conf.d/xdebug.ini && \
-    echo "xdebug.remote_host=host.docker.internal" >> /usr/local/etc/php/conf.d/xdebug.ini && \
-    echo "xdebug.remote_port=9003" >> /usr/local/etc/php/conf.d/xdebug.ini && \
-    echo "xdebug.remote_handler=dbgp" >> /usr/local/etc/php/conf.d/xdebug.ini && \
-    echo "xdebug.remote_connect_back=0" >> /usr/local/etc/php/conf.d/xdebug.ini && \
-    echo "xdebug.mode=debug" >> /usr/local/etc/php/conf.d/xdebug.ini && \
+RUN echo "xdebug.mode=debug" >> /usr/local/etc/php/conf.d/xdebug.ini && \
     echo "xdebug.start_with_request=yes" >> /usr/local/etc/php/conf.d/xdebug.ini && \
-    echo "xdebug.client_host=localhost" >> /usr/local/etc/php/conf.d/xdebug.ini && \
+    echo "xdebug.client_host=host.docker.internal" >> /usr/local/etc/php/conf.d/xdebug.ini && \
     echo "xdebug.client_port=9003" >> /usr/local/etc/php/conf.d/xdebug.ini && \
     echo "xdebug.idekey=VSCODE" >> /usr/local/etc/php/conf.d/xdebug.ini && \
     echo "xdebug.log=/tmp/xdebug.log" >> /usr/local/etc/php/conf.d/xdebug.ini
 
 RUN apt-get update && apt-get install -y \
-    libzip-dev \
+    git \
     unzip \
-    && docker-php-ext-install pdo pdo_mysql zip
+    libzip-dev \
+    libicu-dev \
+    libonig-dev \
+    && docker-php-ext-install \
+        pdo \
+        pdo_mysql \
+        zip \
+        mbstring \
+        bcmath \
+        exif \
+        intl
+
+# Install Composer (from official Composer image)
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
 
