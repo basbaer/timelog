@@ -21,7 +21,8 @@ body {
 <div class="container d-flex justify-content-center align-items-center" style="height: 100vh; padding-bottom: 150px;">
     <div class="card p-4 m" style="min-width: 300px; max-width: 400px; width: 100%;">
         <h3 class="card-title text-center mb-4">Anmelden</h3>
-        <form>
+        <form action="/timelog" method="POST">
+            @csrf
             <div class="mb-3">
                 <label for="username" class="form-label">Benutzername</label>
                 <input type="text" class="form-control" id="username" placeholder="Geben Sie Ihren Benutzernamen ein">
