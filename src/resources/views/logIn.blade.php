@@ -25,11 +25,11 @@ body {
             @csrf
             <div class="mb-3">
                 <label for="username" class="form-label">Benutzername</label>
-                <input type="text" class="form-control" id="username" placeholder="Geben Sie Ihren Benutzernamen ein">
+                <input name="username" type="text" class="form-control" id="username" placeholder="Geben Sie Ihren Benutzernamen ein">
             </div>
             <div class="mb-3">
                 <label for="password" class="form-label">Passwort</label>
-                <input type="password" class="form-control" id="password" placeholder="Geben Sie Ihr Passwort ein">
+                <input name="password" type="password" class="form-control" id="password" placeholder="Geben Sie Ihr Passwort ein">
             </div>
             <div class="d-grid">
                 <button type="submit" class="btn btn-primary">Anmelden</button>

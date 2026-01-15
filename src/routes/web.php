@@ -7,8 +7,40 @@ Route::get('/', function () {
     return view('logIn');
 });
 
-Route::post('/dashboard', function () {
-    return view('dashboard');
+# ==== Admin Routes ==========
+# ---- Projects --------------
+Route::get('/projects', function () {
+    return view('admin/projects-overview');
 });
 
-Route::post('/timelog', [UserController::class, 'showTimelog']);
+Route::get('/projects/add', function () {
+    return view('admin/projects-add');
+});
+
+Route::get('/projects/{id}', function ($id) {
+    return view('admin/projects-detail', ['projectId' => $id]);
+});
+
+
+# ---- Workers --------------
+Route::get('/workers', function () {
+    return view('admin/workers-overview');
+});
+
+Route::get('/workers/add', function () {
+    return view('admin/workers-add');
+});
+
+Route::get('/workers/add/success', function () {
+    return view('admin/workers-add-success');
+});
+
+Route::get('/workers/{id}', function ($id) {
+    return view('admin/workers-detail', ['workerId' => $id]);
+});
+
+Route::get('/workers/{id}/cards', function ($id) {
+    return view('admin/workers-card', ['workerId' => $id]);
+});
+
+Route::post('/timelog', [UserController::class, 'generateUsername']);
