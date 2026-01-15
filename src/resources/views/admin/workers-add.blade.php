@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-    <title>Dashboard</title>
+    <title>Mitarbeiter</title>
 </head>
 
 <body>
@@ -27,11 +27,16 @@
         </div>
     </nav>
 
-    <form action="dash-workerAdded.html">
+    <form action="/workers/add/request" method="POST">
+        @csrf
         <div class="container mt-3">
             <div class="mb-3">
-                <label for="workerName" class="form-label">Name des Arbeiters</label>
-                <input type="text" class="form-control" id="workerName" placeholder="Geben Sie den Namen ein">
+                <label for="first_name" class="form-label">Vorname des Arbeiters</label>
+                <input name="first_name" type="text" class="form-control" id="first_name" placeholder="Geben Sie den Vornamen ein">
+            </div>
+            <div class="mb-3">
+                <label for="last_name" class="form-label">Nachname des Arbeiters</label>
+                <input name="last_name" type="text" class="form-control" id="last_name" placeholder="Geben Sie den Nachnamen ein">
             </div>
             <div class="mb-3">
                 <label for="dropDown" class="form-label">Arbeitsrolle</label>

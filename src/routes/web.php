@@ -27,6 +27,8 @@ Route::get('/workers', function () {
     return view('admin/workers-overview');
 });
 
+Route::post('/workers/add/request', [UserController::class, 'generateUsername']);
+
 Route::get('/workers/add', function () {
     return view('admin/workers-add');
 });
