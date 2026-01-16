@@ -27,7 +27,7 @@ Route::get('/workers', function () {
     return view('supervisor/workers-overview');
 });
 
-Route::post('/workers/add/request', [UserController::class, 'generateUsername']);
+Route::post('/workers/add/request', [UserController::class, 'register']);
 
 Route::get('/workers/add', function () {
     return view('supervisor/workers-add');

@@ -11,18 +11,19 @@ class UserController extends Controller
         return view('timelog');
     }
 
-    public function generateUsername(Request $request)
-    {
-        $firstName = $request->input('first_name');
-
-        $username = strtolower(substr($firstName, 0, 3) . substr($lastName, 0, 3));
+    /**
+     * Generate username based on the first three letters of his name
+     */
+    public function generateUsername(string $first_name)
+    {;
+        $username = strtolower(substr($first_name, 0, 3));
 
         #check if usersname already exists
 
         return $username;
     }
 
-    public function generatePassword(Request $request)
+    public function generatePassword()
     {
         $password = bin2hex(random_bytes(4)); // generates an 8 character hexadecimal password
         return $password;
@@ -30,13 +31,20 @@ class UserController extends Controller
 
     public function register(Request $request)
     {
-        $username = $this->generateUsername($request);
+        # Generate username and password
+        $username = $this->generateUsername($request['first_name']);
         $request->merge(['username' => $username]);
-        $credentials = $request->only('username', 'password');
+            
+        $password = $this->generatePassword();
+        $request->merge(['password' => $password]);
 
-        $credentials['password'] = password_hash($credentials['password'], PASSWORD_ARGON2ID);
-        User::create($credentials);
-        return view('logIn');
+        # Hash password before storing
+        $request['password'] = password_hash($request['password'], PASSWORD_BCRYPT);
+    
+        $request->merge(['role_id' => 1]);
+
+        #User::create($request->all());
+        return $request->all();
     }
 
     public function login(Request $request)
