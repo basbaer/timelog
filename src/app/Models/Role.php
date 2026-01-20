@@ -6,10 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Role extends Model
 {
-     /**
-     * The primary key associated with the table.
-     *
-     * @var string
+    /**
+     * Get the users for the role.
      */
-    protected $primaryKey = 'role_id';
+    public function users(): HasMany
+    {
+        return $this->hasMany(User::class);
+    }
 }
