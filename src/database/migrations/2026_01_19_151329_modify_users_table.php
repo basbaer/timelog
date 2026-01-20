@@ -13,15 +13,14 @@ return new class extends Migration
     {
         // Rename columns
         Schema::table('users', function (Blueprint $table) {
-            $table->renameColumn('id', 'user_id');
             $table->renameColumn('name', 'username');
         });
 
         
         Schema::table('users', function (Blueprint $table) {
             // Modify existing columns
-            $table->dropColumn('user_id');
-            $table->smallIncrements('user_id')->first();
+            $table->dropColumn('id');
+            $table->smallIncrements('id')->first();
             $table->string('username', 30)->unique()->change();
             $table->string('password')->after('username')->change();
             // Make email nullable
@@ -42,11 +41,10 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             // reverse modifications columns
-            $table->dropColumn('user_id');
-            $table->bigIncrements('id')->primary()->before('username')->change();
+            $table->dropColumn('id');
+            $table->bigIncrements('id')->first();
             $table->string('username')->change();
             // Make email nullable
-            $table->string('email')->unique()->change();
             $table->string('password')->after('email_verified_at')->change();
 
             // Add the columns your application actually uses
@@ -58,7 +56,6 @@ return new class extends Migration
         
         // Rename columns
         Schema::table('users', function (Blueprint $table) {
-            $table->renameColumn('user_id', 'id');
             $table->renameColumn('username', 'name');
         });
     }

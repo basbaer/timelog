@@ -13,7 +13,7 @@ return new class extends Migration
     {
         //Add foreing key constraint to users table role_id column
         Schema::table('users', function (Blueprint $table) {
-            $table->foreign('role_id')->references('role_id')->on('roles');
+            $table->foreign('role_id')->references('id')->on('roles');
         });
     }
 
