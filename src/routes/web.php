@@ -10,39 +10,39 @@ Route::get('/', function () {
 # ==== Supervisor Routes ==========
 # ---- Projects --------------
 Route::get('/projects', function () {
-    return view('supervisor/projects-overview');
+    return view('admin/projects-overview');
 });
 
 Route::get('/projects/add', function () {
-    return view('supervisor/projects-add');
+    return view('admin/projects-add');
 });
 
 Route::get('/projects/{id}', function ($id) {
-    return view('supervisor/projects-detail', ['projectId' => $id]);
+    return view('admin/projects-detail', ['projectId' => $id]);
 });
 
 
 # ---- Workers --------------
 Route::get('/workers', function () {
-    return view('supervisor/workers-overview');
+    return view('admin/workers-overview');
 });
 
 Route::post('/workers/add/request', [UserController::class, 'register']);
 
 Route::get('/workers/add', function () {
-    return view('supervisor/workers-add');
+    return view('admin/workers-add');
 });
 
 Route::get('/workers/add/success', function () {
-    return view('supervisor/workers-add-success');
+    return view('admin/workers-add-success');
 });
 
 Route::get('/workers/{id}', function ($id) {
-    return view('supervisor/workers-detail', ['workerId' => $id]);
+    return view('admin/workers-detail', ['workerId' => $id]);
 });
 
 Route::get('/workers/{id}/cards', function ($id) {
-    return view('supervisor/workers-card', ['workerId' => $id]);
+    return view('admin/workers-card', ['workerId' => $id]);
 });
 
 Route::post('/timelog', [UserController::class, 'generateUsername']);
