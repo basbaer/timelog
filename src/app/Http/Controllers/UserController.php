@@ -19,6 +19,19 @@ class UserController extends Controller
         $username = strtolower(substr($first_name, 0, 3));
 
         #check if usersname already exists
+        $existingUsernames = User::where('username', $username)->first();
+        # create unique username if already exists
+        $i = 0;
+        while ($existingUsernames) {
+            $username = $username . $i;
+            $existingUsernames = User::where('username', $username)->first();
+            $i++;
+        }
+
+
+    
+
+        echo $existingUsernames;
 
         return $username;
     }
@@ -39,13 +52,13 @@ class UserController extends Controller
         # Hash password before storing
         $password = password_hash($password, PASSWORD_BCRYPT);
 
-        User::create([
-            'username' => $username,
-            'password' => $password,
-            'first_name' => $request['first_name'],
-            'last_name' => $request['last_name'],
-            'role_id' => 1,
-        ]);
+        // User::create([
+        //     'username' => $username,
+        //     'password' => $password,
+        //     'first_name' => $request['first_name'],
+        //     'last_name' => $request['last_name'],
+        //     'role_id' => 1,
+        // ]);
         return $request->all();
     }
 
