@@ -7,7 +7,7 @@ Route::get('/', function () {
     return view('logIn');
 });
 
-# ==== Supervisor Routes ==========
+# ==== Admin Routes ==========
 # ---- Projects --------------
 Route::get('/projects', function () {
     return view('admin/projects-overview');

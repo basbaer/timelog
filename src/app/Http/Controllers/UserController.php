@@ -33,17 +33,19 @@ class UserController extends Controller
     {
         # Generate username and password
         $username = $this->generateUsername($request['first_name']);
-        $request->merge(['username' => $username]);
             
         $password = $this->generatePassword();
-        $request->merge(['password' => $password]);
 
         # Hash password before storing
-        $request['password'] = password_hash($request['password'], PASSWORD_BCRYPT);
-    
-        $request->merge(['role_id' => 1]);
+        $password = password_hash($password, PASSWORD_BCRYPT);
 
-        #User::create($request->all());
+        User::create([
+            'username' => $username,
+            'password' => $password,
+            'first_name' => $request['first_name'],
+            'last_name' => $request['last_name'],
+            'role_id' => 1,
+        ]);
         return $request->all();
     }
 
