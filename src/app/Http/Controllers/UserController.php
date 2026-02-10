@@ -27,12 +27,7 @@ class UserController extends Controller
             $existingUsernames = User::where('username', $username)->first();
             $i++;
         }
-
-
-    
-
-        echo $existingUsernames;
-
+        
         return $username;
     }
 
@@ -42,7 +37,7 @@ class UserController extends Controller
         return $password;
     }
 
-    public function register(Request $request)
+    public function create(Request $request)
     {
         # Generate username and password
         $username = $this->generateUsername($request['first_name']);
@@ -50,16 +45,22 @@ class UserController extends Controller
         $password = $this->generatePassword();
 
         # Hash password before storing
-        $password = password_hash($password, PASSWORD_BCRYPT);
+        $password_hashed = password_hash($password, PASSWORD_BCRYPT);
 
-        // User::create([
-        //     'username' => $username,
-        //     'password' => $password,
-        //     'first_name' => $request['first_name'],
-        //     'last_name' => $request['last_name'],
-        //     'role_id' => 1,
-        // ]);
-        return $request->all();
+        $user = User::create([
+            'username' => $username,
+            'password' => $password_hashed,
+            'first_name' => $request['first_name'],
+            'last_name' => $request['last_name'],
+            'role_id' => $request['role_id']
+        ]);
+
+        $result = [
+            'user' => $user,
+            'password' => $password
+        ];
+
+        return $result;
     }
 
     public function login(Request $request)
