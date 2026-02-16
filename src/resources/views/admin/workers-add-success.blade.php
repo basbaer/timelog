@@ -35,18 +35,18 @@
     <div class="container mt-3 mx-auto d-flex justify-content-center">
         <div class="card" style="width: 18rem;">
             <div class="card-body">
-                <h5 class="card-title">Robin Bär</h5>
-                <h6 class="card-subtitle mb-2 text-body-secondary">Forstwirt</h6>
+                <h5 class="card-title">{{ session()->get('result')['user']['first_name'] . " " . session()->get('result')['user']['last_name'] }}</h5>
+                <h6 class="card-subtitle mb-2 text-body-secondary"> {{ session()->get('result')['role'] }}</h6>
                 <p class="card-text">Dem Arbeiter Folgendes mitteilen:</p>
                 <table class="table">
                     <tbody>
                         <tr>
                             <td>Benutzername:</td>
-                            <td>robin.baer</td>
+                            <td> {{ session()->get('result')['user']['username'] }}</td>
                         </tr>
                         <tr>
                             <td>Passwort:</td>
-                            <td>wald2024!</td>
+                            <td>{{session()->get('result')['password'] }}</td>
                         </tr>
                     </tbody>
                 </table>

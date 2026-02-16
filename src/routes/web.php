@@ -29,7 +29,7 @@ Route::get('/workers', function () {
     return view('admin/workers-overview');
 });
 
-Route::post('/workers/add/request', [UserController::class, 'create']);
+Route::post('/workers/add/request', [AddWorkerController::class, 'createUser']);
 
 Route::get('/workers/add', [AddWorkerController::class, 'show']);
 

@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -25,7 +26,14 @@ class UserController extends Controller
         while ($existingUsernames) {
             $username = $username . $i;
             $existingUsernames = User::where('username', $username)->first();
-            $i++;
+            # remove last character again
+            if ($existingUsernames){
+                $username = substr($username, 0, -1);
+                $i++;
+            }else{
+                break;
+            }
+            
         }
         
         return $username;
@@ -45,7 +53,7 @@ class UserController extends Controller
         $password = $this->generatePassword();
 
         # Hash password before storing
-        $password_hashed = password_hash($password, PASSWORD_BCRYPT);
+        $password_hashed = Hash::make($password);
 
         $user = User::create([
             'username' => $username,
