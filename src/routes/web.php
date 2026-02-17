@@ -6,7 +6,7 @@ use App\Http\Controllers\AddWorkerController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\WorkersOverviewController;
 
-Route::get('/', LoginController::class);
+Route::get('/', [LoginController::class, 'show']);
 
 // ==== Admin Routes ==========
 // ---- Projects --------------
@@ -43,4 +43,4 @@ Route::get('/workers/{id}/cards', function ($id) {
     return view('admin/workers-card', ['workerId' => $id]);
 });
 
-Route::post('/timelog', [UserController::class, 'generateUsername']);
+Route::post('/login', [LoginController::class, 'login']);

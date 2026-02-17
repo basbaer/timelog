@@ -4,10 +4,15 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
-    public function __invoke()
+    /**
+     * Show the login page or redirect to the projects overview if there is already a user in the database
+     */
+    public function show()
     {
         // check if there is a user in the db
         if (false) {
@@ -17,7 +22,32 @@ class LoginController extends Controller
         } else {
             return view('logIn');
         }
+    }
 
-        
+    public function login(Request $request)
+    {
+        // Validate the input
+        $credentials = $request->validate([
+            'username' => 'required|string',
+            'password' => 'required',
+        ]);
+ 
+        // Attempt to log in
+        if (Auth::attempt($credentials, $request->boolean('remember'))) {
+            // Regenerate session for security
+            $request->session()->regenerate();
+ 
+            // Redirect dependig on the role of the user
+            if (Auth::user()->role_id === 1) {
+                return redirect()->intended('/projects')->with('success', 'Welcome back!');
+            } else {
+                return redirect()->intended('/timelog')->with('success', 'Welcome back!');
+            }
+        }
+ 
+        // If login fails, redirect back with error
+        return back()
+            ->withErrors(['username' => 'The provided credentials do not match our records.'])
+            ->onlyInput('username');
     }
 }

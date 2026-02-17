@@ -21,7 +21,7 @@ body {
 <div class="container d-flex justify-content-center align-items-center" style="height: 100vh; padding-bottom: 150px;">
     <div class="card p-4 m" style="min-width: 300px; max-width: 400px; width: 100%;">
         <h3 class="card-title text-center mb-4">Anmelden</h3>
-        <form action="/timelog" method="POST">
+        <form action="/login" method="POST">
             @csrf
             <div class="mb-3">
                 <label for="username" class="form-label">Benutzername</label>
@@ -30,6 +30,14 @@ body {
             <div class="mb-3">
                 <label for="password" class="form-label">Passwort</label>
                 <input name="password" type="password" class="form-control" id="password" placeholder="Geben Sie Ihr Passwort ein">
+            </div>
+            <div class="form-control mb-3 border-0 ps-1">
+                <label class="label cursor-pointer justify-start">
+                    <input type="checkbox"
+                            name="remember"
+                            class="checkbox">
+                    <span class="label-text">Eingeloggt bleiben</span>
+                </label>
             </div>
             <div class="d-grid">
                 <button type="submit" class="btn btn-primary">Anmelden</button>
