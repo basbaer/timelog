@@ -3,11 +3,10 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AddWorkerController;
+use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\WorkersOverviewController;
 
-Route::get('/', function () {
-    return view('logIn');
-});
+Route::get('/', LoginController::class);
 
 // ==== Admin Routes ==========
 // ---- Projects --------------

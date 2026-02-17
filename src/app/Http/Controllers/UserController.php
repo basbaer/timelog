@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -65,13 +66,19 @@ class UserController extends Controller
      */
     public function create(Request $request)
     {
-        # Generate username and password
+        // Generate username and password
         $username = $this->generateUsername($request['first_name']);
             
         $password = $this->generatePassword();
 
-        # Hash password before storing
+        // Hash password before storing
         $password_hashed = Hash::make($password);
+
+        // when not role is set, an admin user is created
+        if (!isset($request['role_id'])) {
+            $request['role_id'] = 1; // set role_id to 1 (admin)
+        };
+
 
         $user = User::create([
             'username' => $username,
@@ -80,6 +87,14 @@ class UserController extends Controller
             'last_name' => $request['last_name'],
             'role_id' => $request['role_id']
         ]);
+
+
+        //check if it is first admin
+        if (User::where('role_id', 1)->count() === 1 ){
+            //log in the created admin user
+            Auth::login($user);
+        }
+
 
         $result = [
             'user' => $user,

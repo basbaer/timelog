@@ -32,6 +32,7 @@ class AddWorkerController extends Controller
     public function createUser(Request $request)
     {
         $result = (new UserController)->create($request);
+        
         // get role name of created user
         $role = (new RoleController)->getRoleById($result['user']['role_id'])->value('name');
         $result['role'] = $role;
