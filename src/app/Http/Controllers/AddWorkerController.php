@@ -26,8 +26,8 @@ class AddWorkerController extends Controller
     * ]
     *
     * @param Request $request
+    * @return Illuminate\Http\RedirectResponse
     *
-
     */
     public function createUser(Request $request)
     {
