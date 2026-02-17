@@ -3,27 +3,28 @@
 namespace App\Http\Controllers;
 
 use App\Models\Role;
-use Illuminate\Support\Facades\DB;
-
 
 class RoleController extends Controller
 {
     /**
      *  Get all Roles except 'Admin'.
      * 
-     * @return array 
+     * @return Illuminate\Database\Eloquent\Collection
      */
-   public function workerRoles()
+   public function getWorkerRoles()
    {
        return Role::where('name', '!=', 'Admin')->get();
    }
 
     /**
      * Returns role of given id
+     * 
+     * @param int $id
+     * 
+     * @return Illuminate\Database\Eloquent\Collection
      */
     public function getRoleById($id)
     {
-        $role = Role::where('id', $id)->get()->value('name');
-        return $role;
+        return Role::where('id', $id)->first();
     }
 }

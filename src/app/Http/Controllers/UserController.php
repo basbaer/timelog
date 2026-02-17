@@ -13,20 +13,25 @@ class UserController extends Controller
     }
 
     /**
-     * Generate username based on the first three letters of his name
+     * Generate unique username based on the first three letters of his name
+     * 
+     * Numbers are added to the end of the username if it already exists, until a unique username is found
+     * 
+     * @param string $first_name
+     * @return string
      */
     public function generateUsername(string $first_name)
     {;
         $username = strtolower(substr($first_name, 0, 3));
 
-        #check if usersname already exists
+        // check if usersname already exists
         $existingUsernames = User::where('username', $username)->first();
-        # create unique username if already exists
+        // create unique username if already exists
         $i = 0;
         while ($existingUsernames) {
             $username = $username . $i;
             $existingUsernames = User::where('username', $username)->first();
-            # remove last character again
+            // remove last character again
             if ($existingUsernames){
                 $username = substr($username, 0, -1);
                 $i++;
@@ -45,6 +50,19 @@ class UserController extends Controller
         return $password;
     }
 
+    /**
+     * Create user and return generated password
+     *  
+     * The $result array is of the form:
+     * [
+     *   'user' => User::class,
+     *   'password' => string
+     * ]
+     *
+     * @param Request $request
+     *
+     * @return array
+     */
     public function create(Request $request)
     {
         # Generate username and password
@@ -71,12 +89,4 @@ class UserController extends Controller
         return $result;
     }
 
-    public function login(Request $request)
-    {
-        $credentials = $request->only('username', 'password');
-
-        $credentials['password'] = password_hash($credentials['password'], PASSWORD_ARGON2ID);
-        User::create($credentials);
-        return view('logIn');
-    }
 }

@@ -6,20 +6,34 @@ use Illuminate\Http\Request;
 use Illuminate\View\View;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
-use App\Models\Role;
 
 class AddWorkerController extends Controller
 {
     public function show(): View
     {
-        $roles = (new RoleController)->workerRoles();
+        $roles = (new RoleController)->getWorkerRoles();
         return view('admin/workers-add', ['roles' => $roles]);
     }
 
+    /**
+    * Create user and redirect to success page with generated password
+    * 
+    * The $result array is of the form:
+    * [
+    *   'user' => User::class,
+    *   'password' => string,
+    *   'role' => string
+    * ]
+    *
+    * @param Request $request
+    *
+
+    */
     public function createUser(Request $request)
     {
         $result = (new UserController)->create($request);
-        $role = (new RoleController)->getRoleById($result['user']['role_id']);
+        // get role name of created user
+        $role = (new RoleController)->getRoleById($result['user']['role_id'])->value('name');
         $result['role'] = $role;
 
         // show success page with generated password
