@@ -1,16 +1,16 @@
 <?php
 
-use App\Http\Controllers\RoleController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AddWorkerController;
+use App\Http\Controllers\WorkersOverviewController;
 
 Route::get('/', function () {
     return view('logIn');
 });
 
-# ==== Admin Routes ==========
-# ---- Projects --------------
+// ==== Admin Routes ==========
+// ---- Projects --------------
 Route::get('/projects', function () {
     return view('admin/projects-overview');
 });
@@ -24,11 +24,10 @@ Route::get('/projects/{id}', function ($id) {
 });
 
 
-# ---- Workers --------------
-Route::get('/workers', function () {
-    return view('admin/workers-overview');
-});
+// ---- Workers --------------
+Route::get('/workers', [WorkersOverviewController::class, 'show']);
 
+// Create new worker
 Route::post('/workers/add/request', [AddWorkerController::class, 'createUser']);
 
 Route::get('/workers/add', [AddWorkerController::class, 'show']);

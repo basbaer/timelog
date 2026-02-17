@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-    <title>Dashboard</title>
+    <title>Mitarbeiterübersicht</title>
 </head>
 
 <body>
@@ -29,6 +29,7 @@
 
     <div class="container mt-3">
         <div class="list-group">
+           
             <a href="dash-workingHours.html" class="list-group-item list-group-item-action">Birgit Bär</a>
             <a href="#" class="list-group-item list-group-item-action">Bastin Bär</a>
             <a href="#" class="list-group-item list-group-item-action">Gustl Schweitzer</a>

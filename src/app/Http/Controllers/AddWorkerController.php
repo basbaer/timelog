@@ -20,7 +20,7 @@ class AddWorkerController extends Controller
     * 
     * The $result array is of the form:
     * [
-    *   'user' => User::class,
+    *   'user' => User,
     *   'password' => string,
     *   'role' => string
     * ]
