@@ -9,7 +9,6 @@ class LoginController extends Controller
 {
     public function __invoke()
     {
-        return view('admin/admin-register');
         // check if there is a user in the db
         if (false) {
             // return redirect('/projects');
