@@ -43,4 +43,16 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Role::class);
     }
+
+    public function scopeAdmin($query)
+    {
+        return $query->whereHas('role', function ($q) {
+        $q->where('slug', 'admin');
+    });
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->role?->slug === Role::ADMIN;
+    }
 }

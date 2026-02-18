@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -14,10 +14,19 @@ class RoleSeeder extends Seeder
     public function run(): void
     {
         //
+        $slugs = ['admin', 'harvester', 'rueckezug', 'forstwirt'];
         $roles = ['Admin', 'Harvester', 'Rückezug', 'Forstwirt'];
 
-        foreach ($roles as $role) {
-            DB::table('roles')->upsert(['name' => $role], 'name');
+        foreach ($roles as $index => $role) {
+            DB::table('roles')->upsert(
+                [
+                    'id' => $index,
+                    'slug' => $slugs[$index],
+                    'name' => $role,
+                ],
+                ['slug'], // Unique constraint for upsert
+                ['name']  // Fields to update if the record already exists
+            );
         }
 
     }

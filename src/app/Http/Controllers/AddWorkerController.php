@@ -4,14 +4,14 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use App\Http\Controllers\RoleController;
+use App\Models\Role;
 use App\Http\Controllers\UserController;
 
 class AddWorkerController extends Controller
 {
     public function show(): View
     {
-        $roles = (new RoleController)->getWorkerRoles();
+        $roles = Role::worker()->get();
         return view('admin/workers-add', ['roles' => $roles]);
     }
 
@@ -34,7 +34,8 @@ class AddWorkerController extends Controller
         $result = (new UserController)->create($request);
         
         // get role name of created user
-        $role = (new RoleController)->getRoleById($result['user']['role_id'])->value('name');
+        $user = $result['user'];
+        $role = $user->role()->first()->name;
         $result['role'] = $role;
 
         // show success page with generated password

@@ -12,8 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('roles', function (Blueprint $table) {
-            $table->tinyIncrements('id')->primary();
-            $table->string('name')->unique();
+            $table->unsignedTinyInteger('id')->primary();
+            $table->string('slug')->unique();
+            $table->string('name');
         });
     }
 

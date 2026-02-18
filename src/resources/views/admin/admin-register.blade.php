@@ -23,6 +23,7 @@
                 <input name="last_name" type="text" class="form-control" id="last_name"
                     placeholder="Geben Sie den Nachnamen ein">
             </div>
+            <input type="hidden" name="role_id" id="role_id" value=" {{ $adminId }}">
 
         </div>
         <div class="container mt-3 d-flex justify-content-end ">

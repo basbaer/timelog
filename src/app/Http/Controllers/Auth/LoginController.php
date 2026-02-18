@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -18,7 +19,7 @@ class LoginController extends Controller
         if (false) {
             // return redirect('/projects');
         } elseif (User::count() === 0) {
-            return view('admin-register');
+            return view('admin/admin-register')->with('adminId', Role::admin()->id);
         } else {
             return view('logIn');
         }
@@ -37,8 +38,11 @@ class LoginController extends Controller
             // Regenerate session for security
             $request->session()->regenerate();
  
+            /** @var User $user */
+            $user = Auth::user();
+ 
             // Redirect dependig on the role of the user
-            if (Auth::user()->role_id === 1) {
+            if ($user->isAdmin()) {
                 return redirect()->intended('/projects')->with('success', 'Welcome back!');
             } else {
                 return redirect()->intended('/timelog')->with('success', 'Welcome back!');
