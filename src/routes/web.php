@@ -4,10 +4,17 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AddWorkerController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\WorkersOverviewController;
+use App\Http\Controllers\Auth\ActivationController;
 
+//==== Log in / Activation Routes ================================================
 Route::get('/', [LoginController::class, 'show']);
 
-// ==== Admin Routes ==========
+Route::post('/login', [LoginController::class, 'login']);
+
+// Activation route for users with an activation code
+Route::get('/activate', [ActivationController::class, 'show']);
+
+// ==== Admin Routes =============================================================
 // ---- Projects --------------
 Route::get('/projects', function () {
     return view('admin/projects-overview');
@@ -37,6 +44,9 @@ Route::get('/workers/add/success', function () {
     return view('admin/auth/workers-add-success');
 });
 
+//====================================================================================
+
+
 
 // ==== Later ====
 Route::get('/workers/{id}', function ($id) {
@@ -47,4 +57,3 @@ Route::get('/workers/{id}/cards', function ($id) {
     return view('admin/workers-card', ['workerId' => $id]);
 });
 
-Route::post('/login', [LoginController::class, 'login']);
