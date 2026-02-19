@@ -3,8 +3,6 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -45,10 +43,18 @@ class UserController extends Controller
         return $username;
     }
 
-    public function generatePassword()
+    public function generateActivationCode()
     {
-        $password = bin2hex(random_bytes(4)); // generates an 8 character hexadecimal password
-        return $password;
+        //generate random code of 19 characters
+        //structure: xxxx-xxxx-xxxx-xxxx
+        $code = '';
+        for ($i = 0; $i < 4; $i++) {
+            $code .= bin2hex(random_bytes(2));
+            if ($i < 3) {
+                $code .= '-';
+            }
+        }
+        return $code;
     }
 
     /**
@@ -62,39 +68,25 @@ class UserController extends Controller
      *
      * @param Request $request
      *
-     * @return array
+     * @return User
      */
     public function create(Request $request)
     {
         // Generate username and password
         $username = $this->generateUsername($request['first_name']);
             
-        $password = $this->generatePassword();
-
-        // Hash password before storing
-        $password_hashed = Hash::make($password);
+        $activation_code = $this->generateActivationCode();
 
         $user = User::create([
             'username' => $username,
-            'password' => $password_hashed,
+            'password' => null,
             'first_name' => $request['first_name'],
             'last_name' => $request['last_name'],
-            'role_id' => $request['role_id']
+            'role_id' => $request['role_id'],
+            'activation_code' => $activation_code
         ]);
 
-
-        //check if it is first admin
-        if (User::admin()->count() === 1) {
-            //log in the created admin user
-            Auth::login($user);
-        }
-
-        $result = [
-            'user' => $user,
-            'password' => $password
-        ];
-
-        return $result;
+        return $user;
     }
 
 }

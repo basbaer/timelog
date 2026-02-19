@@ -32,12 +32,12 @@ class AddWorkerController extends Controller
     */
     public function createUser(Request $request)
     {
-        $result = (new UserController)->create($request);
+        $user = (new UserController)->create($request);
         
         // get role name of created user
-        $user = $result['user'];
         $role = $user->role()->first()->name;
         $result['role'] = $role;
+        $result['user'] = $user;
 
         // show success page with generated password
         return redirect('/workers/add/success')->with('result', $result); 

@@ -11,23 +11,6 @@
 </head>
 
 <body>
-    <nav class="navbar navbar-expand bg-body-tertiary">
-        <div class="container-fluid">
-
-            <div class="collapse navbar-collapse justify-content-center" id="navbarNavDropdown">
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link " href="#">Projekte</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#">Mitarbeiter</a>
-                    </li>
-
-                </ul>
-            </div>
-        </div>
-    </nav>
-
     <div class="container mt-3 rounded-3 bg-success-subtle d-flex justify-content-center p-3">
         <h4 class="text-success">Der Arbeiter wurde erfolgreich hinzugefügt!</h4>
 
@@ -45,8 +28,8 @@
                             <td> {{ session()->get('result')['user']['username'] }}</td>
                         </tr>
                         <tr>
-                            <td>Passwort:</td>
-                            <td>{{session()->get('result')['password'] }}</td>
+                            <td>Aktivierungscode:</td>
+                            <td>{{session()->get('result')['user']['activation_code'] }}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -54,7 +37,17 @@
         </div>  
     </div>
     <div class="container mt-3 d-flex justify-content-center">
-        <a href="dash-worker.html" type="button" class="btn btn-primary">Zurück zur Arbeiterübersicht</a>
+        @auth
+         <!-- if admin is logge in, return to Worker Overview -->
+            <a href="/workers" type="button" class="btn btn-primary">Bestätigen</a>
+            
+        @else
+            <!-- if admin is not logge in, return to Login Page -->
+            <a href="/login" type="button" class="btn btn-primary">Bestätigen</a>
+        @endauth
+            
+        @endif
+        
     </div>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
