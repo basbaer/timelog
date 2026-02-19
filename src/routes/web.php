@@ -31,9 +31,11 @@ Route::post('/workers/add/request', [AddWorkerController::class, 'createUser']);
 Route::get('/workers/add', [AddWorkerController::class, 'show']);
 
 Route::get('/workers/add/success', function () {
-    return view('admin/workers-add-success');
+    return view('admin/auth/workers-add-success');
 });
 
+
+// ==== Later ====
 Route::get('/workers/{id}', function ($id) {
     return view('admin/workers-detail', ['workerId' => $id]);
 });

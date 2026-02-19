@@ -18,8 +18,10 @@ class LoginController extends Controller
         // check if there is a user in the db
         if (false) {
             // return redirect('/projects');
+            
+        // if there is no existing user, a admin is created
         } elseif (User::count() === 0) {
-            return view('admin/admin-register')->with('adminId', Role::admin()->id);
+            return view('admin/auth/admin-register')->with('adminId', Role::admin()->id);
         } else {
             return view('logIn');
         }
