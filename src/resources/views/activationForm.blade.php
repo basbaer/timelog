@@ -47,7 +47,6 @@
             </div>
             <div class="mb-3">
                 <label for="confirm_password" class="form-label">Passwort bestätigen</label>
-
                 <div class="input-group">
                     <input name="confirm_password" type="password" class="form-control" id="confirm_password"
                         placeholder="Bestätigen Sie Ihr Passwort">
