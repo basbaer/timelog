@@ -13,7 +13,7 @@ class AddWorkerController extends Controller
     public function show(): View
     {
         $roles = Role::worker()->get();
-        return view('admin/workers-add', ['roles' => $roles]);
+        return view('admin/auth/workers-add', ['roles' => $roles]);
     }
 
     /**
