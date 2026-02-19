@@ -26,10 +26,13 @@ Route::get('/projects/{id}', function ($id) {
 Route::get('/workers', [WorkersOverviewController::class, 'show']);
 
 // Create new worker
-Route::post('/workers/add/request', [AddWorkerController::class, 'createUser']);
-
+// Show form to create new worker
 Route::get('/workers/add', [AddWorkerController::class, 'show']);
 
+// Handle form submission to create new worker
+Route::post('/workers/add/request', [AddWorkerController::class, 'createUser']);
+
+// Show success page after creating new worker
 Route::get('/workers/add/success', function () {
     return view('admin/auth/workers-add-success');
 });
