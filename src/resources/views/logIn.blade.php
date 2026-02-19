@@ -39,8 +39,13 @@ body {
                     <span class="label-text">Eingeloggt bleiben</span>
                 </label>
             </div>
+          
             <div class="d-grid">
                 <button type="submit" class="btn btn-primary">Anmelden</button>
+            </div>
+
+              <div class="mt-3 text-center">
+                <a href="/activate" class="text-decoration-none">Mit Aktivierungscode anmelden</a>
             </div>
         </form>
     </div>
