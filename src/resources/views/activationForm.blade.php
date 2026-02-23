@@ -8,7 +8,6 @@
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
     <title>Gustl Schweitzer</title>
-    <link rel="icon" href="../media/icons/wood.svg" type="image/svg+xml">
 </head>
 <style>
     body {
@@ -22,6 +21,15 @@
 <div class="container d-flex justify-content-center align-items-center" style="height: 100vh; padding-bottom: 150px;">
     <div class="card p-4 m" style="min-width: 300px; max-width: 400px; width: 100%;">
         <h3 class="card-title text-center mb-4">Anmelden</h3>
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
         <form action="/login" method="POST">
             @csrf
             <div class="mb-3">
@@ -35,9 +43,9 @@
                     placeholder="Geben Sie Ihren Aktivierungscode ein">
             </div>
             <div class="mb-3">
-                <label for="new_password" class="form-label">Passwort erstellen</label>
+                <label for="password" class="form-label">Passwort erstellen</label>
                 <div class="input-group">
-                    <input name="new_password" type="password" class="form-control" id="new_password"
+                    <input name="password" type="password" class="form-control" id="password"
                         placeholder="Geben Sie Ihr Passwort ein">
                     <span class="input-group-text" id="togglePassword" role="button"
                         aria-label="Passwort anzeigen/verbergen">
@@ -46,9 +54,9 @@
                 </div>
             </div>
             <div class="mb-3">
-                <label for="confirm_password" class="form-label">Passwort bestätigen</label>
+                <label for="password_confirmation" class="form-label">Passwort bestätigen</label>
                 <div class="input-group">
-                    <input name="confirm_password" type="password" class="form-control" id="confirm_password"
+                    <input name="password_confirmation" type="password" class="form-control" id="password_confirmation"
                         placeholder="Bestätigen Sie Ihr Passwort">
                     <span class="input-group-text" id="toggleConfirmPassword" role="button"
                         aria-label="Passwort anzeigen/verbergen">
@@ -74,7 +82,7 @@
 
         <script>
             const togglePassword = document.querySelector('#togglePassword');
-            const password = document.querySelector('#new_password');
+            const password = document.querySelector('#password');
             const icon = togglePassword.querySelector('i');
 
             togglePassword.addEventListener('click', () => {
@@ -85,7 +93,7 @@
             });
 
             const toggleConfirmPassword = document.querySelector('#toggleConfirmPassword');
-            const confirmPassword = document.querySelector('#confirm_password');
+            const confirmPassword = document.querySelector('#password_confirmation');
             const confirmIcon = toggleConfirmPassword.querySelector('i');
 
             toggleConfirmPassword.addEventListener('click', () => {

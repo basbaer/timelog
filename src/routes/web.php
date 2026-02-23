@@ -14,6 +14,9 @@ Route::post('/login', [LoginController::class, 'login']);
 // Activation route for users with an activation code
 Route::get('/activate', [ActivationController::class, 'show']);
 
+// Handle activation form submission
+Route::post('/activate', [ActivationController::class, 'activate']);
+
 // ==== Admin Routes =============================================================
 // ---- Projects --------------
 Route::get('/projects', function () {
