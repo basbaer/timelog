@@ -55,6 +55,7 @@
                 <a href="/activate" class="text-decoration-none">Mit Aktivierungscode anmelden</a>
             </div>
         </form>
+        @include('partials/language_switcher');
     </div>
 </div>
 

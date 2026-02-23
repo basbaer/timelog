@@ -195,6 +195,11 @@ return [
     |
     */
 
-    'attributes' => [],
+    'attributes' => [
+        'username' => 'nume de utilizator',
+        'activation_code' => 'cod de activare',
+        'password' => 'parolă',
+        'password_confirmation' => 'confirmare parolă',
+    ],
 
 ];

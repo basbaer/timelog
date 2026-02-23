@@ -30,7 +30,7 @@
                 </ul>
             </div>
         @endif
-        <form action="/login" method="POST">
+        <form action="/activate" method="POST">
             @csrf
             <div class="mb-3">
                 <label for="username" class="form-label">Benutzername</label>

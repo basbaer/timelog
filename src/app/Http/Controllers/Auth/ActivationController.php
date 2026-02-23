@@ -20,6 +20,7 @@ class ActivationController extends Controller
     public function activate(Request $request): RedirectResponse
     {
         $request->validate([
+            'username' => 'required|string',
             'activation_code' => 'required|string',
             'password' => 'required|string|min:6|confirmed',
         ]);

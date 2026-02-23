@@ -5,6 +5,23 @@ use App\Http\Controllers\Auth\AddWorkerController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\WorkersOverviewController;
 use App\Http\Controllers\Auth\ActivationController;
+use Illuminate\Support\Facades\App;
+use Symfony\Component\HttpFoundation\Session\Session;
+
+Route::get('/play', function () {
+    return session()->all();
+});
+//==== Locale Settings ================================================
+Route::get('/language/{locale?}', function ($locale) {
+    // check if the locale is valid and set it in the session
+    // Note: Middleware will always set the locale based on the session
+    if ($locale && in_array($locale, ['en', 'de', 'ro'])) {
+        App::setLocale($locale);
+        session(['locale' => $locale]);
+    }
+
+    return App::getLocale();
+});
 
 //==== Log in / Activation Routes ================================================
 Route::get('/', [LoginController::class, 'show']);

@@ -195,6 +195,10 @@ return [
     |
     */
 
-    'attributes' => [],
+    'attributes' => [
+        'username' => 'Benutzername', 
+        'activation_code' => 'Aktivierungscode',
+        'password' => 'Passwort',
+        'password_confirmation' => 'Passwortbestätigung'],
 
 ];
