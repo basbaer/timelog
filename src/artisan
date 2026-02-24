@@ -6,6 +6,9 @@ use Symfony\Component\Console\Input\ArgvInput;
 
 define('LARAVEL_START', microtime(true));
 
+// Set umask to allow full permissions for files created by artisan
+umask(0000);
+
 // Register the Composer autoloader...
 require __DIR__.'/vendor/autoload.php';
 
