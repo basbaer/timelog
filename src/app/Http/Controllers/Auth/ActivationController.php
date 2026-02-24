@@ -9,7 +9,6 @@ use Illuminate\Http\Request;
 use Illuminate\View\View;
 use \Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Auth;
 
 class ActivationController extends Controller
 {
@@ -43,9 +42,6 @@ class ActivationController extends Controller
             $user->password = Hash::make($request->input('password'));
 
             $user->save();
-
-            //log the user in
-            Auth::login($user);
 
             return redirect('/')->with('success', __('error.account_activated'));
 
