@@ -8,6 +8,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <title>Dashboard</title>
+    <link rel="icon" href="../media/icons/wood.svg" type="image/svg+xml">
 </head>
 
 <body>
@@ -45,8 +46,6 @@
             <!-- if admin is not logge in, return to Login Page -->
             <a href="/login" type="button" class="btn btn-primary">Bestätigen</a>
         @endauth
-            
-        @endif
         
     </div>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>

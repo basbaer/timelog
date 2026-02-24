@@ -7,6 +7,7 @@ use App\Http\Controllers\WorkersOverviewController;
 use App\Http\Controllers\Auth\ActivationController;
 use Illuminate\Support\Facades\App;
 use App\Http\Middleware\Admin;
+use App\Http\Controllers\LogoutController;
 
 Route::get('/play', function () {
     return session()->all();
@@ -33,6 +34,13 @@ Route::get('/activate', [ActivationController::class, 'show']);
 
 // Handle activation form submission
 Route::post('/activate', [ActivationController::class, 'activate']);
+
+//================================================================================
+
+//==== Logout Route =============================================================
+Route::get('/logout', LogoutController::class)->middleware('auth');
+
+
 
 // ==== Admin Routes =============================================================
 Route::middleware(Admin::class)->prefix('admin')->group(function () {

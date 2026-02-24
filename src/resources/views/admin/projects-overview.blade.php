@@ -22,9 +22,13 @@
                     <li class="nav-item">
                         <a class="nav-link" href="#">Mitarbeiter</a>
                     </li>
-
                 </ul>
+                   
             </div>
+            <!-- Logout Button -->
+                <div class="d-flex justify-content-end">
+                    <a href="/logout" class="btn btn-outline-danger">Logout</a>
+                </div> 
         </div>
     </nav>
     <div class="container my-4">

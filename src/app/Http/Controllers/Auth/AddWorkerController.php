@@ -40,6 +40,6 @@ class AddWorkerController extends Controller
         $result['user'] = $user;
 
         // show success page with generated password
-        return redirect('/workers/add/success')->with('result', $result); 
+        return redirect('admin/workers/add/success')->with('result', $result); 
     }
 }
