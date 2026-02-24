@@ -26,9 +26,9 @@
                    
             </div>
             <!-- Logout Button -->
-                <div class="d-flex justify-content-end">
-                    <a href="/logout" class="btn btn-outline-danger">Logout</a>
-                </div> 
+            <div class="d-flex justify-content-end">
+                <a href="/logout" class="btn btn-outline-danger">Logout</a>
+            </div> 
         </div>
     </nav>
     <div class="container my-4">
