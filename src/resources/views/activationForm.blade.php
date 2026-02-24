@@ -20,7 +20,7 @@
 </style>
 <div class="container d-flex justify-content-center align-items-center" style="height: 100vh; padding-bottom: 150px;">
     <div class="card p-4 m" style="min-width: 300px; max-width: 400px; width: 100%;">
-        <h3 class="card-title text-center mb-4">Anmelden</h3>
+        <h3 class="card-title text-center mb-4">{{ __('labels.login') }}</h3>
         @if ($errors->any())
             <div class="alert alert-danger">
                 <ul>
@@ -33,20 +33,20 @@
         <form action="/activate" method="POST">
             @csrf
             <div class="mb-3">
-                <label for="username" class="form-label">Benutzername</label>
+                <label for="username" class="form-label">{{ __('labels.username') }}</label>
                 <input name="username" type="text" class="form-control" id="username"
-                    placeholder="Geben Sie Ihren Benutzernamen ein">
+                    placeholder="{{ __('labels.hint_username') }}">
             </div>
             <div class="mb-3">
-                <label for="activation_code" class="form-label">Aktivierungscode</label>
+                <label for="activation_code" class="form-label">{{ __('labels.activation_code') }}</label>
                 <input name="activation_code" type="text" class="form-control" id="activation_code"
-                    placeholder="Geben Sie Ihren Aktivierungscode ein">
+                    placeholder="{{ __('labels.hint_activation_code') }}">
             </div>
             <div class="mb-3">
-                <label for="password" class="form-label">Passwort erstellen</label>
+                <label for="password" class="form-label">{{ __('labels.password') }}</label>
                 <div class="input-group">
                     <input name="password" type="password" class="form-control" id="password"
-                        placeholder="Geben Sie Ihr Passwort ein">
+                        placeholder="{{ __('labels.hint_password') }}">
                     <span class="input-group-text" id="togglePassword" role="button"
                         aria-label="Passwort anzeigen/verbergen">
                         <i class="bi bi-eye-slash"></i>
@@ -54,10 +54,10 @@
                 </div>
             </div>
             <div class="mb-3">
-                <label for="password_confirmation" class="form-label">Passwort bestätigen</label>
+                <label for="password_confirmation" class="form-label">{{ __('labels.hint_password_confirmation') }}</label>
                 <div class="input-group">
                     <input name="password_confirmation" type="password" class="form-control" id="password_confirmation"
-                        placeholder="Bestätigen Sie Ihr Passwort">
+                        placeholder="{{ __('labels.hint_password_confirmation') }}">
                     <span class="input-group-text" id="toggleConfirmPassword" role="button"
                         aria-label="Passwort anzeigen/verbergen">
                         <i class="bi bi-eye-slash"></i>
@@ -67,16 +67,16 @@
             <div class="form-control mb-3 border-0 ps-1">
                 <label class="label cursor-pointer justify-start">
                     <input type="checkbox" name="remember" class="checkbox">
-                    <span class="label-text">Eingeloggt bleiben</span>
+                    <span class="label-text">{{ __('labels.remember_me') }}</span>
                 </label>
             </div>
 
             <div class="d-grid">
-                <button type="submit" class="btn btn-primary">Anmelden</button>
+                <button type="submit" class="btn btn-primary">{{ __('labels.login') }}</button>
             </div>
 
             <div class="mt-3 text-center">
-                <a href="/" class="text-decoration-none">Mit Passwort anmelden</a>
+                <a href="/" class="text-decoration-none">{{ __('labels.link_login_password') }}</a>
             </div>
         </form>
 
