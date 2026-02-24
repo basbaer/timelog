@@ -8,6 +8,7 @@
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
     <title>Gustl Schweitzer</title>
+    <link rel="icon" href="../media/icons/wood.svg" type="image/svg+xml">
 </head>
 <style>
     body {
@@ -20,7 +21,8 @@
 </style>
 <div class="container d-flex justify-content-center align-items-center" style="height: 100vh; padding-bottom: 150px;">
     <div class="card p-4 m" style="min-width: 300px; max-width: 400px; width: 100%;">
-        <h3 class="card-title text-center mb-4">{{ __('labels.login') }}</h3>
+        <h3 class="card-title text-center mb-2">{{ __('labels.login') }}</h3>
+               @include('partials/language_switcher')
         @if ($errors->any())
             <div class="alert alert-danger">
                 <ul>
@@ -32,7 +34,7 @@
         @endif
         <form action="/activate" method="POST">
             @csrf
-            <div class="mb-3">
+            <div class="my-3">
                 <label for="username" class="form-label">{{ __('labels.username') }}</label>
                 <input name="username" type="text" class="form-control" id="username"
                     placeholder="{{ __('labels.hint_username') }}">

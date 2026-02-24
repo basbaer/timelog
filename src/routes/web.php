@@ -15,12 +15,12 @@ Route::get('/play', function () {
 Route::get('/language/{locale?}', function ($locale) {
     // check if the locale is valid and set it in the session
     // Note: Middleware will always set the locale based on the session
-    if ($locale && in_array($locale, ['en', 'de', 'ro'])) {
+    if ($locale && in_array($locale, config('app.available_locales'))) {
         App::setLocale($locale);
         session(['locale' => $locale]);
     }
 
-    return App::getLocale();
+    return redirect()->back();
 });
 
 //==== Log in / Activation Routes ================================================

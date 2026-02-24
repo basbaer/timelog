@@ -23,10 +23,20 @@
 </style>
 <div class="container d-flex justify-content-center align-items-center" style="height: 100vh; padding-bottom: 150px;">
     <div class="card p-4 m" style="min-width: 300px; max-width: 400px; width: 100%;">
-        <h3 class="card-title text-center mb-4">{{ __('labels.login') }}</h3>
+        <h3 class="card-title text-center mb-2">{{ __('labels.login') }}</h3>    
+        @include('partials/language_switcher')
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
         <form action="/login" method="POST">
             @csrf
-            <div class="mb-3">
+            <div class="my-3">
                 <label for="username" class="form-label">{{ __('labels.username') }}</label>
                 <input name="username" type="text" class="form-control" id="username"
                     placeholder="{{ __('labels.hint_username') }}">
@@ -55,7 +65,7 @@
                 <a href="/activate" class="text-decoration-none">{{ __('labels.link_activation_code') }}</a>
             </div>
         </form>
-        @include('partials/language_switcher');
+        
     </div>
 </div>
 
