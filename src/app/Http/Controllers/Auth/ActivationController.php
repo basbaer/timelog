@@ -3,9 +3,13 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use \Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 
 class ActivationController extends Controller
 {
@@ -27,15 +31,28 @@ class ActivationController extends Controller
 
         $activationCode = $request->input('activation_code');
 
-        // Here you would typically check the activation code against your database
-        // For demonstration, let's assume any non-empty code is valid
-        if ($activationCode === 'VALID_CODE') {
+        // check the activation code against your database
+        try {
+            $user = User::where('username', $request->input('username'))
+                ->where('activation_code', $activationCode)
+                ->firstOrFail();
             // Mark the user as activated in the database
-            // For example: User::where('activation_code', $activationCode)->update(['activated' => true]);
+            $user->activation_code = null; // Clear the activation code
 
-            return redirect('/')->with('success', 'Your account has been activated successfully!');
-        } else {
-            return back()->withErrors(['activation_code' => 'Invalid activation code. Please try again.']);
+            // Set the user's password
+            $user->password = Hash::make($request->input('password'));
+
+            $user->save();
+
+            //log the user in
+            Auth::login($user);
+
+            return redirect('/')->with('success', __('error.account_activated'));
+
+        } catch (ModelNotFoundException $e) {
+            // User with the given username and activation code not found
+            return back()->withErrors(['invalid_activation_code' => __('error.invalid_activation_code')]);
         }
+        
     }
 }

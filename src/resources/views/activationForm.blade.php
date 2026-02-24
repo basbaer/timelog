@@ -34,7 +34,7 @@
         @endif
         <form action="/activate" method="POST">
             @csrf
-            <div class="my-3">
+            <div class="mb-3">
                 <label for="username" class="form-label">{{ __('labels.username') }}</label>
                 <input name="username" type="text" class="form-control" id="username"
                     placeholder="{{ __('labels.hint_username') }}">
