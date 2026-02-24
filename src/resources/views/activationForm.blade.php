@@ -66,12 +66,6 @@
                     </span>
                 </div>
             </div>
-            <div class="form-control mb-3 border-0 ps-1">
-                <label class="label cursor-pointer justify-start">
-                    <input type="checkbox" name="remember" class="checkbox">
-                    <span class="label-text">{{ __('labels.remember_me') }}</span>
-                </label>
-            </div>
 
             <div class="d-grid">
                 <button type="submit" class="btn btn-primary">{{ __('labels.login') }}</button>
