@@ -45,15 +45,13 @@ class LoginController extends Controller
  
             // Redirect dependig on the role of the user
             if ($user->isAdmin()) {
-                return redirect()->intended('/admin/projects');
-            } else {
                 return redirect()->intended($this->getRedirectUrl());
             }
         }
  
         // If login fails, redirect back with error
         return back()
-            ->withErrors(['username' => 'The provided credentials do not match our records.'])
+            ->withErrors(['invalid_credentials' => 'The provided credentials do not match our records.'])
             ->onlyInput('username');
     }
 

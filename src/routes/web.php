@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\WorkersOverviewController;
 use App\Http\Controllers\Auth\ActivationController;
 use Illuminate\Support\Facades\App;
+use App\Http\Middleware\Admin;
 
 Route::get('/play', function () {
     return session()->all();
@@ -34,36 +35,39 @@ Route::get('/activate', [ActivationController::class, 'show']);
 Route::post('/activate', [ActivationController::class, 'activate']);
 
 // ==== Admin Routes =============================================================
+Route::middleware(Admin::class)->prefix('admin')->group(function () {
+    // ---- Projects --------------
+    Route::get('/projects', function () {
+        return view('admin/projects-overview');
+    });
+
+    Route::get('/projects/add', function () {
+        return view('admin/projects-add');
+    });
+
+    Route::get('/projects/{id}', function ($id) {
+        return view('admin/projects-detail', ['projectId' => $id]);
+    });
 
 
-// ---- Projects --------------
-Route::get('/projects', function () {
-    return view('admin/projects-overview');
+    // ---- Workers --------------
+    Route::get('/workers', [WorkersOverviewController::class, 'show']);
+
+    // Create new worker
+    // Show form to create new worker
+    Route::get('/workers/add', [AddWorkerController::class, 'show']);
+
+    // Handle form submission to create new worker
+    Route::post('/workers/add/request', [AddWorkerController::class, 'createUser']);
+
+    // Show success page after creating new worker
+    Route::get('/workers/add/success', function () {
+        return view('admin/auth/workers-add-success');
+    });
+
 });
 
-Route::get('/projects/add', function () {
-    return view('admin/projects-add');
-});
 
-Route::get('/projects/{id}', function ($id) {
-    return view('admin/projects-detail', ['projectId' => $id]);
-});
-
-
-// ---- Workers --------------
-Route::get('/workers', [WorkersOverviewController::class, 'show']);
-
-// Create new worker
-// Show form to create new worker
-Route::get('/workers/add', [AddWorkerController::class, 'show']);
-
-// Handle form submission to create new worker
-Route::post('/workers/add/request', [AddWorkerController::class, 'createUser']);
-
-// Show success page after creating new worker
-Route::get('/workers/add/success', function () {
-    return view('admin/auth/workers-add-success');
-});
 
 //====================================================================================
 
