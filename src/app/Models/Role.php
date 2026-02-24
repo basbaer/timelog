@@ -8,6 +8,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Role extends Model
 {
     public const ADMIN = 'admin';
+    public const HARVESTER = 'harvester';
+    public const RUECKEZUG = 'rueckezug';
+    public const FORSTWIRT = 'forstwirt';
     /**
      * Get the users for the role.
      */

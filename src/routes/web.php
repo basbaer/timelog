@@ -6,7 +6,6 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\WorkersOverviewController;
 use App\Http\Controllers\Auth\ActivationController;
 use Illuminate\Support\Facades\App;
-use Symfony\Component\HttpFoundation\Session\Session;
 
 Route::get('/play', function () {
     return session()->all();
@@ -35,6 +34,8 @@ Route::get('/activate', [ActivationController::class, 'show']);
 Route::post('/activate', [ActivationController::class, 'activate']);
 
 // ==== Admin Routes =============================================================
+
+
 // ---- Projects --------------
 Route::get('/projects', function () {
     return view('admin/projects-overview');
@@ -66,6 +67,9 @@ Route::get('/workers/add/success', function () {
 
 //====================================================================================
 
+Route::get('/log-forstwirt', function () {
+    return "Forstwirt";
+});
 
 
 // ==== Later ====

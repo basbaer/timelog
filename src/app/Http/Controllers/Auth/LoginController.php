@@ -16,8 +16,8 @@ class LoginController extends Controller
     public function show()
     {
         // check if there is a user in the db
-        if (false) {
-            // return redirect('/projects');
+        if (Auth::check()) {
+            return redirect()->intended($this->getRedirectUrl());
             
         // if there is no existing user, a admin is created
         } elseif (User::count() === 0) {
@@ -45,9 +45,9 @@ class LoginController extends Controller
  
             // Redirect dependig on the role of the user
             if ($user->isAdmin()) {
-                return redirect()->intended('/projects')->with('success', 'Welcome back!');
+                return redirect()->intended('/admin/projects');
             } else {
-                return redirect()->intended('/timelog')->with('success', 'Welcome back!');
+                return redirect()->intended($this->getRedirectUrl());
             }
         }
  
@@ -55,5 +55,25 @@ class LoginController extends Controller
         return back()
             ->withErrors(['username' => 'The provided credentials do not match our records.'])
             ->onlyInput('username');
+    }
+
+    public function getRedirectUrl()
+    {
+        /** @var User $user */
+        $user = Auth::user();
+        if ($user->isAdmin()) {
+            return '/admin/projects';
+        } else {
+            //check role
+            if ($user->isForstwirt()) {
+                return '/log-forstwirt';
+            } elseif ($user->isRueckezug()) {
+                return '/log-rueckezug';
+            } elseif ($user->isHarvester()) {
+                return '/log-harvester';
+            } else {
+                return '/';
+            }
+        }
     }
 }

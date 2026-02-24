@@ -55,4 +55,19 @@ class User extends Authenticatable
     {
         return $this->role?->slug === Role::ADMIN;
     }
+
+    public function isRueckezug(): bool
+    {
+        return $this->role?->slug === Role::RUECKEZUG;
+    }
+
+    public function isForstwirt(): bool
+    {
+        return $this->role?->slug === Role::FORSTWIRT;
+    }
+
+    public function isHarvester(): bool
+    {
+        return $this->role?->slug === Role::HARVESTER;
+    }
 }
