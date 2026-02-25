@@ -73,6 +73,10 @@ Route::middleware(Admin::class)->prefix('admin')->group(function () {
         return view('admin/auth/workers-add-success');
     });
 
+    Route::get('/workers/{id}', function ($id) {
+        return view('admin/workers-detail', ['workerId' => $id]);
+    })->name('worker.show');
+
 });
 
 

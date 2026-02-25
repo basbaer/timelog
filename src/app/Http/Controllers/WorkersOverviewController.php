@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
+
 class WorkersOverviewController extends Controller
 {
     public function show()
     {
-        return view('admin/workers-overview');
+        $workers = User::worker()->get();
+        return view('admin/workers-overview', ['workers' => $workers]);
     }
 
     public function getWorkers()

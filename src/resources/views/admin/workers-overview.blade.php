@@ -30,10 +30,10 @@
 
     <div class="container mt-3">
         <div class="list-group">
-           
-            <a href="dash-workingHours.html" class="list-group-item list-group-item-action">Birgit Bär</a>
-            <a href="#" class="list-group-item list-group-item-action">Bastin Bär</a>
-            <a href="#" class="list-group-item list-group-item-action">Gustl Schweitzer</a>
+           @foreach ($workers as $worker)
+               <a href="{{ route('worker.show', $worker->id) }}" class="list-group-item list-group-item-action">{{ $worker->first_name . " " . $worker->last_name }}</a>
+           @endforeach
+            
         </div>
     </div>
 
