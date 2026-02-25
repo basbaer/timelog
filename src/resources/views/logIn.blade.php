@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
 
     <title>Gustl Schweitzer</title>
-    <link rel="icon" href="../media/icons/wood.svg" type="image/svg+xml">
+    <link rel="icon" href="{{ asset('media/icons/wood.svg') }}" type="image/svg+xml">
 </head>
 <style>
     body {
