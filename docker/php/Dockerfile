@@ -50,6 +50,9 @@ RUN apt-get update && apt-get install -y \
     libzip-dev \
     libicu-dev \
     libonig-dev \
+    ca-certificates \
+    curl \
+    gnupg \
     && docker-php-ext-install \
         pdo \
         pdo_mysql \
@@ -58,6 +61,16 @@ RUN apt-get update && apt-get install -y \
         bcmath \
         exif \
         intl
+
+# Install Node.js 20 + npm
+RUN mkdir -p /etc/apt/keyrings && \
+    curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key \
+      | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg && \
+    echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_20.x nodistro main" \
+      > /etc/apt/sources.list.d/nodesource.list && \
+    apt-get update && \
+    apt-get install -y nodejs && \
+    node -v && npm -v
 
 # Install Composer (from official Composer image)
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
