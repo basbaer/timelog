@@ -11,16 +11,17 @@
 
     <title>Gustl Schweitzer</title>
     <link rel="icon" href="{{ asset('media/icons/wood.svg') }}" type="image/svg+xml">
+    <style>
+        body {
+            background-image: url('../media/pictures/forrest.jpg');
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-size: cover;
+            background-position: center;
+        }
+    </style>
 </head>
-<style>
-    body {
-        background-image: url('../media/pictures/forrest.jpg');
-        background-repeat: no-repeat;
-        background-attachment: fixed;
-        background-size: cover;
-        background-position: center;
-    }
-</style>
+<body>
 <div class="container d-flex justify-content-center align-items-center" style="height: 100vh; padding-bottom: 150px;">
     <div class="card p-4 m" style="min-width: 300px; max-width: 400px; width: 100%;">
         <h3 class="card-title text-center mb-2">{{ __('labels.login') }}</h3>    
