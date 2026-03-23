@@ -1,24 +1,20 @@
 <!doctype html>
 <html lang="de">
 
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-    <title>Gustl Schweitzer</title>
-    <link rel="icon" href="{{ asset('media/icons/wood.svg') }}" type="image/svg+xml">
-</head>
-<style>
-    body {
-        background-image: url('../media/pictures/forrest.jpg');
-        background-repeat: no-repeat;
-        background-attachment: fixed;
-        background-size: cover;
-        background-position: center;
-    }
-</style>
+@push('head')
+    <style>
+        body {
+            background-image: url('{{ asset('media/pictures/forrest.jpg') }}');
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-size: cover;
+            background-position: center;
+        }
+    </style>
+@endpush
+
+@include('partials.head', ['title' => 'Gustl Schweitzer', 'withBootstrapIcons' => true])
+
 <div class="container d-flex justify-content-center align-items-center" style="height: 100vh; padding-bottom: 150px;">
     <div class="card p-4 m" style="min-width: 300px; max-width: 400px; width: 100%;">
         <h3 class="card-title text-center mb-2">{{ __('labels.login') }}</h3>
