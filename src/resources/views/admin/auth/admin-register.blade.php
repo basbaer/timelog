@@ -11,7 +11,7 @@
 </head>
 
 <body>
-    <form action="/workers/add/request" method="POST">
+    <form action="createAdmin/request" method="POST">
         @csrf
         <div class="container mt-3">
             <div class="mb-3">

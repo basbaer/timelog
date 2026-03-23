@@ -25,6 +25,13 @@ Route::get('/language/{locale?}', function ($locale) {
 });
 
 //==== Log in / Activation Routes ================================================
+Route::post('/createAdmin/request', [AddWorkerController::class, 'createAdmin']);
+
+// Show success page after creating new admin
+Route::get('/createAdmin/success', function () {
+    return view('admin/auth/workers-add-success');
+});
+
 Route::get('/', [LoginController::class, 'show']);
 
 Route::post('/login', [LoginController::class, 'login']);

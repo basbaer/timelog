@@ -39,6 +39,11 @@ class AddWorkerController extends Controller
         $result['role'] = $role;
         $result['user'] = $user;
 
+        // check if admin is created (website setup)
+        if ($user->role()->first()->slug === 'admin') {
+            return redirect('createAdmin/success')->with('result', $result);
+        }
+
         // show success page with generated password
         return redirect('admin/workers/add/success')->with('result', $result); 
     }
