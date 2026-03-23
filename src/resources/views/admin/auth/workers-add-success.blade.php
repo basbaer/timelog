@@ -17,7 +17,7 @@
 
     </div>
     <div class="container mt-3 mx-auto d-flex justify-content-center">
-        <div class="card" style="width: 18rem;">
+        <div class="card d-flex"">
             <div class="card-body">
                 <h5 class="card-title">{{ session()->get('result')['user']['first_name'] . " " . session()->get('result')['user']['last_name'] }}</h5>
                 <h6 class="card-subtitle mb-2 text-body-secondary"> {{ session()->get('result')['role'] }}</h6>
@@ -43,8 +43,8 @@
             <a href="/workers" type="button" class="btn btn-primary">Bestätigen</a>
             
         @else
-            <!-- if admin is not logge in, return to Login Page -->
-            <a href="/login" type="button" class="btn btn-primary">Bestätigen</a>
+            <!-- if admin is not logged in, return to Login Page -->
+            <a href="/" type="button" class="btn btn-primary">Bestätigen</a>
         @endauth
         
     </div>
