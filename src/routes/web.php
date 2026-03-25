@@ -77,11 +77,11 @@ Route::middleware(Admin::class)->prefix('admin')->group(function () {
 
 
     // ---- Workers --------------
-    Route::get('/workers', [WorkersOverviewController::class, 'show']);
+    Route::get('/workers', [WorkersOverviewController::class, 'show'])->name('admin.workers.overview');
 
     // Create new worker
     // Show form to create new worker
-    Route::get('/workers/add', [AddWorkerController::class, 'show']);
+    Route::get('/workers/add', [AddWorkerController::class, 'show'])->name('admin.workers.add');
 
     // Handle form submission to create new worker
     Route::post('/workers/add/request', [AddWorkerController::class, 'createUser']);
