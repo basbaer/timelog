@@ -8,6 +8,7 @@ use App\Http\Controllers\Auth\ActivationController;
 use Illuminate\Support\Facades\App;
 use App\Http\Middleware\Admin;
 use App\Http\Controllers\LogoutController;
+use App\Http\Controllers\WorkerDetailController;
 
 Route::get('/play', function () {
     return session()->all();
@@ -91,9 +92,8 @@ Route::middleware(Admin::class)->prefix('admin')->group(function () {
         return view('admin/auth/workers-add-success');
     });
 
-    Route::get('/workers/{id}', function ($id) {
-        return view('admin/workers-detail', ['workerId' => $id]);
-    })->name('worker.show');
+    // Show worker details
+    Route::get('/workers/{id}', [WorkerDetailController::class, 'show'])->name('admin.worker.show');
 
 });
 

@@ -9,7 +9,7 @@
     <div class="container mt-3">
         <div class="list-group">
            @foreach ($workers as $worker)
-               <a href="{{ route('worker.show', $worker->id) }}" class="list-group-item list-group-item-action">{{ $worker->first_name . " " . $worker->last_name }}</a>
+               <a href="{{ route('admin.worker.show', $worker->id) }}" class="list-group-item list-group-item-action">{{ $worker->first_name . " " . $worker->last_name }}</a>
            @endforeach
             
         </div>

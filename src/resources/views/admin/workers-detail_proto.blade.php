@@ -5,11 +5,11 @@
 
 <body>
     @include('partials.admin_navbar', ['active' => 'workers'])
-
+    
     <div class="mt-3">
         <div class="row">
             <div class="col justify-content-start d-flex">
-                <h2 class="h2 m-3">{{ $name }}</h2>
+                <h2 class="h2 m-3">Birgit Bär</h2>
             </div>
             <div class="col justify-content-end d-flex">
                 <a href="dash-workerCard.html" type="button" class="btn btn-secondary m-3">Bearbeiten</a>

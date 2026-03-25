@@ -11,9 +11,4 @@ class WorkersOverviewController extends Controller
         $workers = User::worker()->get();
         return view('admin/workers-overview', ['workers' => $workers]);
     }
-
-    public function getWorkers()
-    {
-        
-    }
 }
