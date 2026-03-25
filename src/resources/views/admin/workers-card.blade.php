@@ -26,26 +26,30 @@
                             <td>{{ $email }}</td>
                         </tr>
                         @if ($activation_code)
-                         <tr>
-                            <td>Aktivierungscode:</td>
-                            <td>{{ $activation_code }}</td>
-                        </tr>
+                            <tr>
+                                <td>Aktivierungscode:</td>
+                                <td>{{ $activation_code }}</td>
+                            </tr>
                         @endif
                     </tbody>
                 </table>
-                <div class="d-flex justify-content-center">
-                    <button type="button" class="btn btn-danger">Arbeiter löschen</button>
-                </div>
+                <form action="{{ route('admin.worker.delete', ['id' => $id]) }}" method="POST">
+                    @csrf
+                    <div class="d-flex justify-content-center">
+                        <button type="submit" class="btn btn-danger">Arbeiter löschen</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
     <div class="container mt-3 d-flex justify-content-center">
-        <a href="{{ route('admin.worker.show', ['id' => $id]) }}" type="button" class="btn btn-primary">Zurück zur Stundenübersicht</a>
+        <a href="{{ route('admin.worker.show', ['id' => $id]) }}" type="button" class="btn btn-primary">Zurück zur
+            Stundenübersicht</a>
     </div>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
-        crossorigin="anonymous"></script>
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous">
+    </script>
 
 </body>
 

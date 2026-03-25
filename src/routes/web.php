@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\AddWorkerController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\WorkersOverviewController;
 use App\Http\Controllers\Auth\ActivationController;
+use App\Http\Controllers\Auth\DeleteWorkerController;
 use Illuminate\Support\Facades\App;
 use App\Http\Middleware\Admin;
 use App\Http\Controllers\LogoutController;
@@ -98,7 +99,10 @@ Route::middleware(Admin::class)->prefix('admin')->group(function () {
 
     // Show worker card
     Route::get('/workers/{id}/card', [WorkerCardController::class, 'show'])->name('admin.worker.card');
-});
+
+    // Deletet Worker
+    Route::post('/workers/{id}/delete', [DeleteWorkerController::class, 'deleteWorker'])->name('admin.worker.delete');
+    });
 
 
 //====================================================================================
