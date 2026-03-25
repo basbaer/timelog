@@ -4,22 +4,8 @@
 @include('partials.head', ['title' => 'Dashboard'])
 
 <body>
-    <nav class="navbar navbar-expand bg-body-tertiary">
-        <div class="container-fluid">
-
-            <div class="collapse navbar-collapse justify-content-center" id="navbarNavDropdown">
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link " href="#">Projekte</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#">Mitarbeiter</a>
-                    </li>
-
-                </ul>
-            </div>
-        </div>
-    </nav>
+    @include('partials.admin_navbar', ['active' => 'workers'])
+    
     <div class="mt-3">
         <div class="row">
             <div class="col justify-content-start d-flex">

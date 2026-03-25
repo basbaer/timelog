@@ -12,7 +12,11 @@ use App\Http\Controllers\LogoutController;
 Route::get('/play', function () {
     return session()->all();
 });
+
+
+
 //==== Locale Settings ================================================
+
 Route::get('/language/{locale?}', function ($locale) {
     // check if the locale is valid and set it in the session
     // Note: Middleware will always set the locale based on the session
@@ -24,7 +28,10 @@ Route::get('/language/{locale?}', function ($locale) {
     return redirect()->back();
 });
 
+
+
 //==== Log in / Activation Routes ================================================
+
 Route::post('/createAdmin/request', [AddWorkerController::class, 'createUser']);
 
 // Show success page after creating new admin
@@ -44,13 +51,17 @@ Route::post('/activate', [ActivationController::class, 'activate']);
 
 //================================================================================
 
+
+
 //==== Logout Route =============================================================
 Route::get('/logout', LogoutController::class)->middleware('auth');
 
 
 
 // ==== Admin Routes =============================================================
+
 Route::middleware(Admin::class)->prefix('admin')->group(function () {
+
     // ---- Projects --------------
     Route::get('/projects', function () {
         return view('admin/projects-overview');
@@ -85,7 +96,6 @@ Route::middleware(Admin::class)->prefix('admin')->group(function () {
     })->name('worker.show');
 
 });
-
 
 
 //====================================================================================
