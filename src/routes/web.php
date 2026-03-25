@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\App;
 use App\Http\Middleware\Admin;
 use App\Http\Controllers\LogoutController;
 use App\Http\Controllers\WorkerDetailController;
+use App\Http\Controllers\WorkerCardController;
 
 Route::get('/play', function () {
     return session()->all();
@@ -95,6 +96,8 @@ Route::middleware(Admin::class)->prefix('admin')->group(function () {
     // Show worker details
     Route::get('/workers/{id}', [WorkerDetailController::class, 'show'])->name('admin.worker.show');
 
+    // Show worker card
+    Route::get('/workers/{id}/card', [WorkerCardController::class, 'show'])->name('admin.worker.card');
 });
 
 

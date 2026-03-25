@@ -12,7 +12,7 @@
                 <h2 class="h2 m-3">{{ $name }}</h2>
             </div>
             <div class="col justify-content-end d-flex">
-                <a href="dash-workerCard.html" type="button" class="btn btn-secondary m-3">Bearbeiten</a>
+                <a href="{{ route('admin.worker.card', ['id' => $id]) }}" type="button" class="btn btn-secondary m-3">Kontaktinformationen</a>
             </div>
         </div>
     </div>
