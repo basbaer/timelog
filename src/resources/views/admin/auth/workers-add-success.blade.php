@@ -9,7 +9,7 @@
 
     </div>
     <div class="container mt-3 mx-auto d-flex justify-content-center">
-        <div class="card d-flex"">
+        <div class="card d-flex">
             <div class="card-body">
                 <h5 class="card-title">
                     {{ session()->get('result')['user']['first_name'] . ' ' . session()->get('result')['user']['last_name'] }}
@@ -33,11 +33,11 @@
     </div>
     <div class="container mt-3 d-flex justify-content-center">
         @auth
-            <!-- if admin is logge in, return to Worker Overview -->
-            <a href="/workers" type="button" class="btn btn-primary">Bestätigen</a>
+            <!-- if admin is logged in, return to Worker Overview -->
+            <a href="{{ route('admin.workers.overview') }}" type="button" class="btn btn-primary">Bestätigen</a>
         @else
             <!-- if admin is not logged in, return to Login Page -->
-            <a href="/" type="button" class="btn btn-primary">Bestätigen</a>
+            <a href="{{ route('login') }}" type="button" class="btn btn-primary">Bestätigen</a>
         @endauth
 
     </div>

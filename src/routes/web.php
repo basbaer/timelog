@@ -39,7 +39,7 @@ Route::get('/createAdmin/success', function () {
     return view('admin/auth/workers-add-success');
 });
 
-Route::get('/', [LoginController::class, 'show']);
+Route::get('/', [LoginController::class, 'show'])->name('login');
 
 Route::post('/login', [LoginController::class, 'login']);
 
