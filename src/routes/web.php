@@ -12,6 +12,7 @@ use App\Http\Controllers\LogoutController;
 use App\Http\Controllers\WorkerDetailController;
 use App\Http\Controllers\WorkerCardController;
 use App\Http\Controllers\Projects\AddProjectController;
+use App\Http\Controllers\Projects\OverviewProjectController;
 
 Route::get('/play', function () {
     return session()->all();
@@ -67,17 +68,13 @@ Route::get('/logout', LogoutController::class)->middleware('auth');
 Route::middleware(Admin::class)->prefix('admin')->group(function () {
 
     // ---- Projects --------------
-    Route::get('/projects', function () {
-        return view('admin/projects-overview');
-    })->name('admin.projects.overview');
+    Route::get('/projects', [OverviewProjectController::class, 'show'])->name('admin.projects.overview');
 
-    Route::get('/projects/add', function () {
-        return view('admin/projects-add');
-    })->name('admin.projects.add');
+    Route::get('/projects/add', [AddProjectController::class, 'show'])->name('admin.projects.add');
 
     Route::get('/projects/{id}', function ($id) {
         return view('admin/projects-detail', ['projectId' => $id]);
-    });
+    })->name('admin.projects.detail');
 
     Route::post('/projects/add/request', [AddProjectController::class, 'store'])->name('admin.projects.store');
 

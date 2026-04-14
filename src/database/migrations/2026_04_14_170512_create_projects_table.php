@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('location');
             $table->date('date');
             $table->string('client');
+            $table->date('end_date')->nullable();
         });
     }
 

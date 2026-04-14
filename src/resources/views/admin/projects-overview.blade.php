@@ -18,12 +18,11 @@
     <div class="container my-4">
         <h2>Übersicht Projekte</h2>
         <div class="list-group">
-            <a href="dash-bau.html" class="list-group-item list-group-item-action">
-                Ottendorf | 01/26 | Stängel
-            </a>
-            <a href="#" class="list-group-item list-group-item-action">Lauenstein | 11/25 | Förster xy</a>
-            <a href="#" class="list-group-item list-group-item-action">Wallenfels | 09/25 | Förster ab</a>
-            <a href="#" class="list-group-item list-group-item-action">Steinbach an der Heide | 09/25 | Methfessel</a>
+            @foreach ($projects as $project)
+                <a href="{{ route('admin.projects.detail', $project->id) }}" class="list-group-item list-group-item-action">
+                    {{ $project->location }} | {{ $project->date->format('m/Y') }} | {{ $project->client }}
+                </a>
+            @endforeach
         </div>
     </div>
     <div class="container my-4">

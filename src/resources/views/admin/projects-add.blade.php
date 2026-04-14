@@ -14,14 +14,14 @@
                 <label for="location" class="form-label">Ort</label>
                 <input type="text" class="form-control @error('location') is-invalid @enderror" id="location" name="location" value="{{ old('location') }}" placeholder="Geben Sie den Ort ein">
                 @error('location')
-                    <div class="invalid-feedback">{{ $message }}</div>
+                    <div class="invalid-feedback">Ort ist erforderlich</div>
                 @enderror
             </div>
             <div class="mb-3">
                 <label for="date" class="form-label">Startdatum</label>
                 <input type="date" class="form-control @error('date') is-invalid @enderror" id="date" name="date" value="{{ old('date') }}" placeholder="Geben Sie das Datum ein">
                 @error('date')
-                    <div class="invalid-feedback">{{ $message }}</div>
+                    <div class="invalid-feedback">Datum ist erforderlich</div>
                 @enderror
             </div>
             <div class="mb-3">
@@ -29,25 +29,29 @@
                 <input type="text" class="form-control @error('client') is-invalid @enderror" id="client" name="client" value="{{ old('client') }}"
                     placeholder="Geben Sie den Auftraggeber ein">
                 @error('client')
-                    <div class="invalid-feedback">{{ $message }}</div>
+                    <div class="invalid-feedback">Auftraggeber ist erforderlich</div>
                 @enderror
             </div>
             <div class="mb-3">
                 <label for="workerSelection" class="form-label">Mitarbeiter auswählen</label>
                 <ul class="list-group" id="workerSelection">
-                    <li class="list-group-item">
-                        <input class="form-check-input me-1" type="checkbox" value="" id="firstCheckbox">
-                        <label class="form-check-label" for="firstCheckbox">Harvester</label>
-                    </li>
-                    <li class="list-group-item">
-                        <input class="form-check-input me-1" type="checkbox" value="" id="secondCheckbox">
-                        <label class="form-check-label" for="secondCheckbox">Rückezug</label>
-                    </li>
-                    <li class="list-group-item">
-                        <input class="form-check-input me-1" type="checkbox" value="" id="thirdCheckbox">
-                        <label class="form-check-label" for="thirdCheckbox">Forstwirt</label>
-                    </li>
+                    @foreach ($roles as $role)
+                        <li class="list-group-item">
+                            <input
+                                class="form-check-input me-1"
+                                type="checkbox"
+                                name="roles[]"
+                                value="{{ $role->id }}"
+                                id="roleCheckbox{{ $role->id }}"
+                                @checked(in_array($role->id, old('roles', [])))
+                            >
+                            <label class="form-check-label" for="roleCheckbox{{ $role->id }}">{{ $role->name }}</label>
+                        </li>
+                    @endforeach
                 </ul>
+                @error('roles')
+                    <div class="text-danger mt-2"> Mindestens eine Arbeitergruppe muss ausgewählt werden </div>
+                @enderror
             </div>
             <div class="mb-3 d-flex justify-content-end">
                 <button type="submit" class="btn btn-primary">Projekt erstellen</button>
