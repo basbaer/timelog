@@ -5,6 +5,15 @@
 
 <body>
     @include('partials.admin_navbar', ['active' => 'projects'])
+
+    @if (session('success'))
+        <div class="container mt-3">
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ session('success') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </div>
+    @endif
     
     <div class="container my-4">
         <h2>Übersicht Projekte</h2>
@@ -27,7 +36,7 @@
                 <a href="#" class="btn btn-primary">Abgeschlossene Projekte</a>
             </div>
             <div class="col d-flex justify-content-end">
-                <a href="dash-bau-new.html" class="btn btn-success">Neues Projekt anlegen</a>
+                <a href="{{ route('admin.projects.add') }}" class="btn btn-success">Neues Projekt anlegen</a>
             </div>
         </div>
     </div>

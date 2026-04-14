@@ -8,19 +8,29 @@
     
     <div class="container my-4">
         <h2>Neues Projekt anlegen</h2>
-        <form>
+        <form action="{{ route('admin.projects.store') }}" method="POST">
+            @csrf
             <div class="mb-3">
                 <label for="location" class="form-label">Ort</label>
-                <input type="text" class="form-control" id="location" placeholder="Geben Sie den Ort ein">
+                <input type="text" class="form-control @error('location') is-invalid @enderror" id="location" name="location" value="{{ old('location') }}" placeholder="Geben Sie den Ort ein">
+                @error('location')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
             </div>
             <div class="mb-3">
-                <label for="startDate" class="form-label">Startdatum</label>
-                <input type="date" class="form-control" id="startDate">
+                <label for="date" class="form-label">Startdatum</label>
+                <input type="date" class="form-control @error('date') is-invalid @enderror" id="date" name="date" value="{{ old('date') }}" placeholder="Geben Sie das Datum ein">
+                @error('date')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
             </div>
             <div class="mb-3">
-                <label for="forster" class="form-label">Förster/Waldbesitzer</label>
-                <input type="text" class="form-control" id="forster"
-                    placeholder="Geben Sie den Förster oder Waldbesitzer ein">
+                <label for="client" class="form-label">Förster/Waldbesitzer</label>
+                <input type="text" class="form-control @error('client') is-invalid @enderror" id="client" name="client" value="{{ old('client') }}"
+                    placeholder="Geben Sie den Auftraggeber ein">
+                @error('client')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
             </div>
             <div class="mb-3">
                 <label for="workerSelection" class="form-label">Mitarbeiter auswählen</label>

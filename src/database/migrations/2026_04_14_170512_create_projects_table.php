@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->string('location');
-            $table->string('date');
+            $table->date('date');
             $table->string('client');
         });
     }
