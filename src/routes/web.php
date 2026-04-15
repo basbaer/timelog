@@ -9,10 +9,12 @@ use App\Http\Controllers\Auth\DeleteWorkerController;
 use Illuminate\Support\Facades\App;
 use App\Http\Middleware\Admin;
 use App\Http\Controllers\LogoutController;
+use App\Http\Controllers\Logs\ForstwirtFormController;
 use App\Http\Controllers\WorkerDetailController;
 use App\Http\Controllers\WorkerCardController;
 use App\Http\Controllers\Projects\AddProjectController;
 use App\Http\Controllers\Projects\OverviewProjectController;
+use App\Http\Middleware\Forstwirt;
 
 Route::get('/play', function () {
     return session()->all();
@@ -107,9 +109,10 @@ Route::middleware(Admin::class)->prefix('admin')->group(function () {
 
 //====================================================================================
 
-Route::get('/log-forstwirt', function () {
-    return "Forstwirt";
-});
+// ==== Forstwirt Route ====
+Route::get('/log-forstwirt', [ForstwirtFormController::class, 'show'])
+->name('log.forstwirt')
+->middleware([Forstwirt::class]);
 
 
 // ==== Later ====
