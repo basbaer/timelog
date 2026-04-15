@@ -114,6 +114,10 @@ Route::get('/log-forstwirt', [ForstwirtFormController::class, 'show'])
 ->name('log.forstwirt')
 ->middleware([Forstwirt::class]);
 
+Route::post('/log-forstwirt', [ForstwirtFormController::class, 'store'])
+->name('log.forstwirt.store')
+->middleware([Forstwirt::class]);
+
 
 // ==== Later ====
 Route::get('/workers/{id}', function ($id) {

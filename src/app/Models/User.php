@@ -98,4 +98,13 @@ class User extends Authenticatable
     {
         return $this->role?->slug === Role::HARVESTER;
     }
+
+    public function openProjects(): Builder
+    {
+        return Project::query()
+            ->openProjects()
+            ->whereHas('roles', function (Builder $query) {
+                $query->whereKey($this->role_id);
+            });
+    }
 }

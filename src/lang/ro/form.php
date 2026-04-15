@@ -1,0 +1,37 @@
+<?php
+
+return [
+
+    /*
+    |--------------------------------------------------------------------------
+    | Form Language Lines
+    |--------------------------------------------------------------------------
+    |
+    | The following language lines are used during logging of working hours for various
+    | messages that we need to display to the user. You are free to modify
+    | these language lines according to your application's requirements.
+    |
+    */
+
+    'date' => 'Data',
+    'working_time' => 'Programul de lucru',
+    'from' => 'De',
+    'to' => 'La',
+    'pause' => 'Pauză (Proces-verbal)',
+    'sum' => 'Total',
+    'hours' => 'Program',
+    'working_type' => 'Tip de activitate',
+    'motorsage' => 'Motorsäge',
+    'freischneider' => 'Freischneider',
+    'seilmaschine' => 'Seilmaschine',
+    'messkluppe' => 'Messkluppe',
+    'reparatur' => 'Reparatur',
+    'other' => 'Sonstiges',
+    'comment' => 'Comentariu',
+    'add_work_type' => 'Click pentru a adăuga mai multe tipuri de lucrări',
+    'submit' => 'Salvează intrarea',
+    'error_working_hours' => 'Orele specificate nu corespund cu timpul total.',
+    'total_hours' => 'Timp total',
+    'sum_hours' => 'Sumă ore',
+
+];
