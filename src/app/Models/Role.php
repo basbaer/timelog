@@ -28,6 +28,11 @@ class Role extends Model
         return $this->belongsToMany(Project::class);
     }
 
+    public function log(): HasMany
+    {
+        return $this->hasMany(ForstwirtLog::class, 'working_type_id');
+    }
+
     public function scopeWorker($query)
     {
         return $query->where('slug', '!=', 'admin');

@@ -3,13 +3,16 @@
 namespace App\Http\Controllers\Logs;
 
 use App\Http\Controllers\Controller;
+use App\Models\ForstwirtWorkingType;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use App\Models\ForstwirtLog;
+use App\Models\ForstwirtLogEntry;
 
-class ForstwirtFormController extends Controller
+class ForstwirtLogController extends Controller
 {
     public function show()
     {
@@ -27,14 +30,57 @@ class ForstwirtFormController extends Controller
 
     public function store(Request $request)
     {
-        $workTypeKeys = [
-            'motorsage',
-            'freischneider',
-            'seilmaschine',
-            'messkluppe',
-            'reparatur',
-            'other',
-        ];
+        // If the validation fails, the user will be redirected back to the form with error messages and old input data.
+        // The rest of the method will not be executed if validation fails, so we can safely assume that any code after the validation will only run if the input data is valid.
+        $mappedLogs = $this->validateForm($request);
+
+        foreach ($mappedLogs as $logData) {
+            $log = new ForstwirtLog();
+            $log->user_id = Auth::id();
+            $log->project_id = $logData['project_id'];
+            $log->date = $logData['date'];
+            $log->start = $logData['start'];
+            $log->end = $logData['end'];
+            $log->pause = $logData['pause'] ?? 0;
+            $log->sum = $logData['sum'] ?? null;
+            $log->save();
+
+            foreach ($logData['entries'] as $entry) {
+                $logEntry = new ForstwirtLogEntry();
+                $logEntry->forstwirt_log_id = $log->id;
+                $workingType = ForstwirtWorkingType::where('slug', $entry['type'])->first();
+                if ($workingType) {
+                    $logEntry->working_type_id = $workingType->id;
+                }
+                $logEntry->hours = $entry['hours'];
+                $logEntry->comment = $entry['comment'] ?? null;
+                $logEntry->save();
+            }
+        }
+
+        return response()->json(['message' => 'Forstwirt log successfully saved.']);
+
+    }
+
+    public function validateForm(Request $request)
+    {
+        $workLogs = collect((array) $request->input('work_logs', []))
+            ->filter(function (array $workLog) {
+                $start = trim((string) ($workLog['start'] ?? ''));
+                $end = trim((string) ($workLog['end'] ?? ''));
+
+                $hasHours = collect($workLog['entries'] ?? [])
+                    ->pluck('hours')
+                    ->contains(fn ($hours) => trim((string) ($hours ?? '')) !== '');
+
+                return !($start === '' && $end === '' && ! $hasHours);
+            })
+            ->values()
+            ->all();
+
+        $request->merge(['work_logs' => $workLogs]);
+
+        $workTypeKeys = ForstwirtWorkingType::all()->pluck('slug')->toArray();
 
         $validator = Validator::make($request->all(), [
             'log_date' => ['required', 'date'],
@@ -109,6 +155,6 @@ class ForstwirtFormController extends Controller
 
         logger()->info('Forstwirt log submission validated', $mappedLogs);
 
-        return back()->with('status', 'Log submission validated successfully.');
+        return $mappedLogs;
     }
 }
