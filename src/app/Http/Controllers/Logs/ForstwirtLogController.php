@@ -24,7 +24,14 @@ class ForstwirtLogController extends Controller
         // Get all open projects for the user's role
         $projects = $user->openProjects()->get();
 
-        // TODO: Check if today is alreay logged
+        // Check if today is alreay logged
+        $today = now()->toDateString();
+        $existingLog = ForstwirtLog::where('user_id', Auth::id())
+            ->where('date', $today)
+            ->first();
+        if ($existingLog) {
+            return redirect()->route('log.forstwirt.success', ['log_id' => $existingLog->id]);
+        }
         
         return view('log-forms/log-forstwirt', compact(['projects', 'isAdmin', 'name']));
     }
@@ -175,6 +182,12 @@ class ForstwirtLogController extends Controller
         $user = User::findOrFail(Auth::id());
         $name = $user->first_name . ' ' . $user->last_name;
         $logId = $log_id;
+
+        //Check if the log belongs to the authenticated user
+        $log = ForstwirtLog::findOrFail($log_id);
+        if ($log->user_id !== Auth::id()) {
+            return redirect()->route('log.forstwirt')->with('error', 'Unauthorized access to log entry.');
+        }
 
         return view('log-forms/log-success', compact('name', 'logId'));
     }
