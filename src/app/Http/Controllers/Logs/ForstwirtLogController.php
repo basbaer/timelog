@@ -59,7 +59,7 @@ class ForstwirtLogController extends Controller
             }
         }
 
-        return redirect()->route('log.forstwirt.success');
+        return redirect()->route('log.forstwirt.success', ['log_id' => $log->id]);
 
     }
 
@@ -170,10 +170,28 @@ class ForstwirtLogController extends Controller
         return $mappedLogs;
     }
 
-    public function success()
+    public function success(int $log_id)
     {
         $user = User::findOrFail(Auth::id());
         $name = $user->first_name . ' ' . $user->last_name;
-        return view('log-forms/log-success', compact('name'));
+        $logId = $log_id;
+
+        return view('log-forms/log-success', compact('name', 'logId'));
+    }
+
+    public function deleteLog(int $log_id)
+    {
+        $log = ForstwirtLog::findOrFail($log_id);
+
+        // Check if the log belongs to the authenticated user
+        if ($log->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        // Delete the log and its entries
+        $log->entries()->delete();
+        $log->delete();
+
+        return redirect()->route('log.forstwirt')->with('success', 'Log entry deleted successfully.');
     }
 }

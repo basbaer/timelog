@@ -118,9 +118,13 @@ Route::post('/log-forstwirt', [ForstwirtLogController::class, 'store'])
     ->name('log.forstwirt.store')
     ->middleware([Forstwirt::class]);
 
-Route::get('/log-forstwirt/success', [ForstwirtLogController::class, 'success'])
+Route::get('/log-forstwirt/success/{log_id}', [ForstwirtLogController::class, 'success'])
     ->name('log.forstwirt.success')
     ->middleware([Forstwirt::class]);
+
+Route::delete('/log-forstwirt/entry/{log_id}/delete', [ForstwirtLogController::class, 'deleteLog'])
+    ->middleware([Forstwirt::class])
+    ->name('log.forstwirt.delete');
 
 // ==== Later ====
 Route::get('/workers/{id}', function ($id) {

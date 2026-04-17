@@ -35,6 +35,6 @@ return [
     'sum_hours' => 'Summe Stunden',
     'success_message' => 'Eintrag erfolgreich gespeichert.',
     'entry_already_exists' => 'Es wurde bereits ein Eintrag gespeichert.',
-    'edit_entry' => 'Eintrag bearbeiten',
+    'edit_entry' => 'Eintrag löschen und neu erstellen',
     
 ];

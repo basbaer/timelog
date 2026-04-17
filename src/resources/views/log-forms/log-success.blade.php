@@ -18,7 +18,12 @@
         </div>
     </div>
 
-    <div class="container mt-3 d-flex justify-content-center">
-        <button class="btn btn-primary"> {{ __('form.edit_entry') }}</button>
-    </div>
+    <form id="success-form" action="{{ route('log.forstwirt.delete', ['log_id' => $logId]) }}" method="POST" class="mt-3">
+        @csrf
+        @method('DELETE')
+        <div class="container d-flex justify-content-center">
+            <button class="btn btn-danger"> {{ __('form.edit_entry') }}</button>
+        </div>
+    </form>
+
 </body>
