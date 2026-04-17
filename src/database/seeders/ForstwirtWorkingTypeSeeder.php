@@ -19,7 +19,7 @@ class ForstwirtWorkingTypeSeeder extends Seeder
         foreach ($types as $index => $type) {
             DB::table('forstwirt_working_types')->upsert(
                 [
-                    'id' => $index,
+                    'id' => $index+1, // Ensure IDs start from 1
                     'slug' => $slugs[$index],
                     'name' => $type,
                 ],

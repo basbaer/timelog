@@ -32,5 +32,9 @@ return [
     'submit' => 'Eintrag speichern',
     'error_working_hours' => 'Die angegebenen Stunden stimmen nicht mit der Gesamtzeit überein.',
     'total_hours' => 'Gesamtzeit',
-    'sum_hours' => 'Summe Stunden'
+    'sum_hours' => 'Summe Stunden',
+    'success_message' => 'Eintrag erfolgreich gespeichert.',
+    'entry_already_exists' => 'Es wurde bereits ein Eintrag gespeichert.',
+    'edit_entry' => 'Eintrag bearbeiten',
+    
 ];

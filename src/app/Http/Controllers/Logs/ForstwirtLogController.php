@@ -14,6 +14,7 @@ use App\Models\ForstwirtLogEntry;
 
 class ForstwirtLogController extends Controller
 {
+   
     public function show()
     {
         // Get role of user
@@ -58,25 +59,36 @@ class ForstwirtLogController extends Controller
             }
         }
 
-        return response()->json(['message' => 'Forstwirt log successfully saved.']);
+        return redirect()->route('log.forstwirt.success');
 
     }
 
     public function validateForm(Request $request)
     {
-        $workLogs = collect((array) $request->input('work_logs', []))
+        // Filter out empty work logs (where start, end and hours are all empty)
+        $workLogs = collect((array) $request->input('work_logs', [])) //if work_logs is null, treat it as an empty array to avoid errors
+            ->map(function (array $workLog) {
+                $entries = collect($workLog['entries'] ?? [])
+                    ->filter(fn (array $entry) => trim((string) ($entry['hours'] ?? '')) !== '')
+                    ->values()
+                    ->all();
+
+                $workLog['entries'] = $entries;
+
+                return $workLog;
+            })
             ->filter(function (array $workLog) {
+                // trim removes whitespace, (string) ensures that trim will definetly work
+                // ?? '' ensures that if the value is null, it will be treated as an empty string for the trim function
                 $start = trim((string) ($workLog['start'] ?? ''));
                 $end = trim((string) ($workLog['end'] ?? ''));
 
-                $hasHours = collect($workLog['entries'] ?? [])
-                    ->pluck('hours')
-                    ->contains(fn ($hours) => trim((string) ($hours ?? '')) !== '');
+                $hasHours = collect($workLog['entries'] ?? [])->isNotEmpty();
 
                 return !($start === '' && $end === '' && ! $hasHours);
             })
-            ->values()
-            ->all();
+            ->values() // reindex the array after filtering
+            ->all(); // convert the collection back to a plain array
 
         $request->merge(['work_logs' => $workLogs]);
 
@@ -156,5 +168,12 @@ class ForstwirtLogController extends Controller
         logger()->info('Forstwirt log submission validated', $mappedLogs);
 
         return $mappedLogs;
+    }
+
+    public function success()
+    {
+        $user = User::findOrFail(Auth::id());
+        $name = $user->first_name . ' ' . $user->last_name;
+        return view('log-forms/log-success', compact('name'));
     }
 }

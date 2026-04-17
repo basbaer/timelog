@@ -33,5 +33,8 @@ return [
     'error_working_hours' => 'Orele specificate nu corespund cu timpul total.',
     'total_hours' => 'Timp total',
     'sum_hours' => 'Sumă ore',
+    'success_message' => 'Intrare a fost salvat cu succes.',
+    'entry_already_exists' => 'O înregistrare a fost deja salvată',
+    'edit_entry' => 'Editează înregistrarea',
 
 ];

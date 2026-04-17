@@ -104,20 +104,23 @@ Route::middleware(Admin::class)->prefix('admin')->group(function () {
 
     // Deletet Worker
     Route::post('/workers/{id}/delete', [DeleteWorkerController::class, 'deleteWorker'])->name('admin.worker.delete');
-    });
+});
 
 
 //====================================================================================
 
 // ==== Forstwirt Route ====
 Route::get('/log-forstwirt', [ForstwirtLogController::class, 'show'])
-->name('log.forstwirt')
-->middleware([Forstwirt::class]);
+    ->name('log.forstwirt')
+    ->middleware([Forstwirt::class]);
 
 Route::post('/log-forstwirt', [ForstwirtLogController::class, 'store'])
-->name('log.forstwirt.store')
-->middleware([Forstwirt::class]);
+    ->name('log.forstwirt.store')
+    ->middleware([Forstwirt::class]);
 
+Route::get('/log-forstwirt/success', [ForstwirtLogController::class, 'success'])
+    ->name('log.forstwirt.success')
+    ->middleware([Forstwirt::class]);
 
 // ==== Later ====
 Route::get('/workers/{id}', function ($id) {
@@ -127,4 +130,3 @@ Route::get('/workers/{id}', function ($id) {
 Route::get('/workers/{id}/cards', function ($id) {
     return view('admin/workers-card', ['workerId' => $id]);
 });
-
