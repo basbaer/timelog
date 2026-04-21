@@ -104,6 +104,8 @@ Route::middleware(Admin::class)->prefix('admin')->group(function () {
 
     // Deletet Worker
     Route::post('/workers/{id}/delete', [DeleteWorkerController::class, 'deleteWorker'])->name('admin.worker.delete');
+
+    Route::get('/workers/{id}/log/create', [ForstwirtLogController::class, 'show'])->name('admin.worker.log.create');
 });
 
 

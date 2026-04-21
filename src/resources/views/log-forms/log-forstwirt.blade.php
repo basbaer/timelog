@@ -20,6 +20,7 @@
     </div>
     <form id="forstwirt-log-form" class="container" method="POST" action="{{ route('log.forstwirt.store') }}">
         @csrf
+        <input type="hidden" name="id" value="{{ $id }}">
         @php
             $workTypes = [
                 'motorsage' => __('form.motorsage'),

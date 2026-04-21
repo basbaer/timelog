@@ -14,26 +14,37 @@ use App\Models\ForstwirtLogEntry;
 
 class ForstwirtLogController extends Controller
 {
-   
-    public function show()
+
+    public function show($id = null)
     {
+        $isAdmin = false;
         // Get role of user
-        $user = User::findOrFail(Auth::id());
-        $isAdmin = $user->isAdmin();
+        if ($id !== null) {
+            // If an id is provided, check if the user has permission to view logs of other users
+            if (!Auth::user()->isAdmin()) {
+                abort(403, 'Unauthorized action.');
+            }
+            $user = User::findOrFail($id);
+            $isAdmin = true;
+        } else {
+            // If no id is provided, show logs for the authenticated user
+            $user = User::findOrFail(Auth::id());
+            $id = Auth::id();
+        }
         $name = $user->first_name . ' ' . $user->last_name;
         // Get all open projects for the user's role
         $projects = $user->openProjects()->get();
 
         // Check if today is alreay logged
         $today = now()->toDateString();
-        $existingLog = ForstwirtLog::where('user_id', Auth::id())
+        $existingLog = ForstwirtLog::where('user_id', $id)
             ->where('date', $today)
             ->first();
-        if ($existingLog) {
+        if ($existingLog && !$isAdmin) {
             return redirect()->route('log.forstwirt.success', ['log_id' => $existingLog->id]);
         }
-        
-        return view('log-forms/log-forstwirt', compact(['projects', 'isAdmin', 'name']));
+
+        return view('log-forms/log-forstwirt', compact(['projects', 'isAdmin', 'name', 'id']));
     }
 
     public function store(Request $request)
@@ -44,7 +55,8 @@ class ForstwirtLogController extends Controller
 
         foreach ($mappedLogs as $logData) {
             $log = new ForstwirtLog();
-            $log->user_id = Auth::id();
+            // Get user_id from the form if the user is an admin, otherwise use the authenticated user's id
+            $log->user_id = $request->input('id');
             $log->project_id = $logData['project_id'];
             $log->date = $logData['date'];
             $log->start = $logData['start'];
@@ -67,7 +79,6 @@ class ForstwirtLogController extends Controller
         }
 
         return redirect()->route('log.forstwirt.success', ['log_id' => $log->id]);
-
     }
 
     public function validateForm(Request $request)
@@ -76,7 +87,7 @@ class ForstwirtLogController extends Controller
         $workLogs = collect((array) $request->input('work_logs', [])) //if work_logs is null, treat it as an empty array to avoid errors
             ->map(function (array $workLog) {
                 $entries = collect($workLog['entries'] ?? [])
-                    ->filter(fn (array $entry) => trim((string) ($entry['hours'] ?? '')) !== '')
+                    ->filter(fn(array $entry) => trim((string) ($entry['hours'] ?? '')) !== '')
                     ->values()
                     ->all();
 
@@ -145,7 +156,7 @@ class ForstwirtLogController extends Controller
                     'pause' => (int) ($workLog['pause'] ?? 0),
                     'sum' => $workLog['sum'] ?? null,
                     'entries' => collect($workLog['entries'])
-                        ->map(fn (array $entry) => [
+                        ->map(fn(array $entry) => [
                             'type' => $entry['type'],
                             'hours' => $entry['hours'],
                             'comment' => $entry['comment'] ?? null,
@@ -179,17 +190,20 @@ class ForstwirtLogController extends Controller
 
     public function success(int $log_id)
     {
-        $user = User::findOrFail(Auth::id());
-        $name = $user->first_name . ' ' . $user->last_name;
-        $logId = $log_id;
-
-        //Check if the log belongs to the authenticated user
+        $user_id = ForstwirtLog::findOrFail($log_id)->user_id;
+        $log_user = User::findOrFail($user_id);
+        $name = $log_user->first_name . ' ' . $log_user->last_name;
         $log = ForstwirtLog::findOrFail($log_id);
-        if ($log->user_id !== Auth::id()) {
+        if (Auth::user()->isAdmin()) {
+            // Admin is redirected to worker detail page
+            return redirect()->route('admin.worker.show', ['id' => $user_id])->with('success', 'Eintrag erfolgreich hinzugefügt.');
+        } else if ($log->user_id !== Auth::id()) {
+            //Check if the log belongs to the authenticated user
             return redirect()->route('log.forstwirt')->with('error', 'Unauthorized access to log entry.');
+        } else {
+            
+            return view('log-forms/log-success', compact('name', 'log_id'));
         }
-
-        return view('log-forms/log-success', compact('name', 'logId'));
     }
 
     public function deleteLog(int $log_id)

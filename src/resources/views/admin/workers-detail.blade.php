@@ -17,6 +17,16 @@
             </div>
         </div>
     </div>
+
+    @if (session('success'))
+        <div class="container mt-3">
+            <div class="alert alert-success" role="alert">
+                {{ session('success') }}
+            </div>
+        </div>
+        
+    @endif
+
     <div class=" m-3">
         <table class="table">
             <thead>
@@ -52,7 +62,7 @@
         </table>
     </div>
     <div class="container mt-3 d-flex justify-content-center">
-        <a href="log-forstwirt.html" role="button" class="btn btn-primary">Eintrag hinzufügen</a>
+        <a href="{{ route('admin.worker.log.create', ['id' => $id]) }}" role="button" class="btn btn-primary">Eintrag hinzufügen</a>
     </div>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
