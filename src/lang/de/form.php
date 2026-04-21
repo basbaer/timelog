@@ -19,7 +19,7 @@ return [
     'to' => 'Bis',
     'pause' => 'Pause (min)',
     'sum' => 'Summe',
-    'hours' => 'Stunden',
+    'hours' => 'Stunden : Minuten',
     'working_type' => 'Arbeitsart',
     'motorsage' => 'Motorsäge',
     'freischneider' => 'Freischneider',

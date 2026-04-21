@@ -111,7 +111,7 @@ class ForstwirtLogController extends Controller
             'work_logs.*.sum' => ['nullable', 'date_format:H:i'],
             'work_logs.*.entries' => ['required', 'array', 'min:1'],
             'work_logs.*.entries.*.type' => ['required', 'string', Rule::in($workTypeKeys)],
-            'work_logs.*.entries.*.hours' => ['required', 'numeric', 'min:0'],
+            'work_logs.*.entries.*.hours' => ['required', 'date_format:H:i'],
             'work_logs.*.entries.*.comment' => ['nullable', 'string', 'max:1000'],
         ]);
 
@@ -147,7 +147,7 @@ class ForstwirtLogController extends Controller
                     'entries' => collect($workLog['entries'])
                         ->map(fn (array $entry) => [
                             'type' => $entry['type'],
-                            'hours' => (float) $entry['hours'],
+                            'hours' => $entry['hours'],
                             'comment' => $entry['comment'] ?? null,
                         ])
                         ->values()

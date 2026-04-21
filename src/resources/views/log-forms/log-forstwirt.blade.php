@@ -76,14 +76,14 @@
                                     <label for="start-{{ $loop->index }}"
                                         class="form-label">{{ __('form.from') }}</label>
                                     <input type="time" id="start-{{ $loop->index }}" class="form-control"
-                                        name="work_logs[{{ $loop->index }}][start]" lang="de" step="60">
+                                        name="work_logs[{{ $loop->index }}][start]" lang="de" step="900">
                                 </div>
                                 <!-- Bis -->
                                 <div class="col-sm-auto col-6 mb-2">
                                     <label for="end-{{ $loop->index }}"
                                         class="form-label">{{ __('form.to') }}</label>
                                     <input type="time" id="end-{{ $loop->index }}" class="form-control"
-                                        name="work_logs[{{ $loop->index }}][end]" lang="de" step="60">
+                                        name="work_logs[{{ $loop->index }}][end]" lang="de" step="900">
                                 </div>
 
                                 <div class="d-sm-none w-100"></div>
@@ -92,7 +92,7 @@
                                     <label for="pause-{{ $loop->index }}"
                                         class="form-label">{{ __('form.pause') }}</label>
                                     <input type="number" id="pause-{{ $loop->index }}" class="form-control"
-                                        name="work_logs[{{ $loop->index }}][pause]" min="0" value="0">
+                                        name="work_logs[{{ $loop->index }}][pause]" min="0" value="0" step="15">
                                 </div>
                                 <div class="col-3">
                                     <label for="summe-{{ $loop->index }}"
@@ -154,6 +154,14 @@
             return (hours * 60) + minutes;
         }
 
+        function formatMinutesToHHMM(minutes) {
+            const safeMinutes = Math.max(0, Math.round(minutes));
+            const hours = Math.floor(safeMinutes / 60);
+            const remainingMinutes = safeMinutes % 60;
+
+            return `${String(hours).padStart(2, "0")}:${String(remainingMinutes).padStart(2, "0")}`;
+        }
+
         function getProjectLabel(projectIndex) {
             const headerButton = document.querySelector(`button[data-bs-target="#collapse${projectIndex}"]`);
             return headerButton ? headerButton.textContent.trim() : `Projekt ${projectIndex}`;
@@ -181,22 +189,22 @@
             )).filter(input => !input.disabled);
 
             const entryMinutes = hourInputs.reduce((total, input) => {
-                const value = parseFloat(input.value || "0");
-                if (Number.isNaN(value)) {
+                const value = parseHHMMToMinutes(input.value);
+                if (value === null) {
                     return total;
                 }
 
-                return total + Math.round(value * 60);
+                return total + value;
             }, 0);
 
             if (entryMinutes !== workingMinutes) {
                 const projectLabel = getProjectLabel(projectIndex);
-                const entryHours = (entryMinutes / 60).toFixed(2);
-                const workingHours = (workingMinutes / 60).toFixed(2);
+                const entryHours = formatMinutesToHHMM(entryMinutes);
+                const workingHours = formatMinutesToHHMM(workingMinutes);
 
                 return {
                     valid: false,
-                    message: `{{ __('form.error_working_hours') }} ${projectLabel}: {{ __('form.sum_hours') }} (${entryHours}h) vs. {{ __('form.total_hours') }} (${workingHours}h)`
+                    message: `{{ __('form.error_working_hours') }} ${projectLabel}: {{ __('form.sum_hours') }} (${entryHours}) vs. {{ __('form.total_hours') }} (${workingHours})`
                 };
             }
 
@@ -270,8 +278,7 @@
             const hours = Math.floor(diff / 60);
             const minutes = diff % 60;
 
-            sumInput.value =
-                `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
+            sumInput.value = formatMinutesToHHMM((hours * 60) + minutes);
         }
 
         function getVisibleWorkTypeSelects(projectIndex) {

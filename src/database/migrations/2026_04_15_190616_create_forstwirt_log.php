@@ -40,7 +40,7 @@ return new class extends Migration
             $table->foreign('forstwirt_log_id')->references('id')->on('forstwirt_logs')->onDelete('cascade');
             $table->unsignedBigInteger('working_type_id');
             $table->foreign('working_type_id')->references('id')->on('forstwirt_working_types')->onDelete('cascade');
-            $table->unsignedInteger('hours');
+            $table->time('hours');
             $table->string('comment')->nullable();
         });
     }

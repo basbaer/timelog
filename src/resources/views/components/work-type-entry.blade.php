@@ -24,8 +24,8 @@
         </div>
         <div class="col-6">
             <label for="{{ $entryBase }}-hours" class="form-label">{{ __('form.hours') }}</label>
-            <input type="number" id="{{ $entryBase }}-hours" class="form-control"
-                name="work_logs[{{ $projectIndex }}][entries][{{ $entryIndex }}][hours]" min="0" step="0.25">
+            <input type="time" id="{{ $entryBase }}-hours" class="form-control"
+                name="work_logs[{{ $projectIndex }}][entries][{{ $entryIndex }}][hours]" step="900">
         </div>
     </div>
 
