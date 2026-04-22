@@ -17,8 +17,12 @@ class WorkerDetailController extends Controller
             // Get worker details from the database using the $id
             $worker = User::findOrFail($id);
 
+            $first_of_current_month = Carbon::now()->startOfMonth()->toDateString();
+            $last_of_current_month = Carbon::now()->endOfMonth()->toDateString();
+
             $log_entries = ForstwirtLogEntry::join('forstwirt_logs', 'forstwirt_log_entries.forstwirt_log_id', '=', 'forstwirt_logs.id')
                 ->where('forstwirt_logs.user_id', $id)
+                ->whereBetween('forstwirt_logs.date', [$first_of_current_month, $last_of_current_month])
                 ->join('forstwirt_working_types', 'forstwirt_log_entries.working_type_id', '=', 'forstwirt_working_types.id')
                 ->join('projects', 'forstwirt_logs.project_id', '=', 'projects.id')
                 ->select(
@@ -46,6 +50,8 @@ class WorkerDetailController extends Controller
                 $entry->end = Carbon::parse($entry->end)->format('H:i');
                 $entry->pause = Carbon::parse($entry->pause)->format('H:i');
                 $entry->total = Carbon::parse($entry->total)->format('H:i');
+
+                // Show date if it's the first entry of the day, otherwise hide it
                 if ($last_date !== $entry->date) {
                     $entry->show_date = true;
                     $last_date = $entry->date;
