@@ -17,8 +17,19 @@ class WorkerDetailController extends Controller
             // Get worker details from the database using the $id
             $worker = User::findOrFail($id);
 
-            $first_of_current_month = Carbon::now()->startOfMonth()->toDateString();
-            $last_of_current_month = Carbon::now()->endOfMonth()->toDateString();
+            $requestedMonth = request()->query('month');
+            $currentMonth = Carbon::now()->startOfMonth();
+
+            if ($requestedMonth) {
+                try {
+                    $currentMonth = Carbon::createFromFormat('Y-m', $requestedMonth)->startOfMonth();
+                } catch (\Exception $e) {
+                    $currentMonth = Carbon::now()->startOfMonth();
+                }
+            }
+
+            $first_of_current_month = $currentMonth->copy()->startOfMonth()->toDateString();
+            $last_of_current_month = $currentMonth->copy()->endOfMonth()->toDateString();
 
             $log_entries = ForstwirtLogEntry::join('forstwirt_logs', 'forstwirt_log_entries.forstwirt_log_id', '=', 'forstwirt_logs.id')
                 ->where('forstwirt_logs.user_id', $id)
@@ -60,8 +71,19 @@ class WorkerDetailController extends Controller
                 }
                 $entry->date = Carbon::parse($entry->date)->format('d.m.y');
             }
+
+            $month = $currentMonth->translatedFormat('F Y');
+            $previousMonth = $currentMonth->copy()->subMonth()->format('Y-m');
+            $nextMonth = $currentMonth->copy()->addMonth()->format('Y-m');
             
-            return view('admin/workers-detail', ['name' => $worker->first_name . ' ' . $worker->last_name, 'id' => $worker->id, 'log_entries' => $log_entries]);
+            return view('admin/workers-detail', [
+                'name' => $worker->first_name . ' ' . $worker->last_name,
+                'id' => $worker->id,
+                'log_entries' => $log_entries,
+                'month' => $month,
+                'previousMonth' => $previousMonth,
+                'nextMonth' => $nextMonth,
+            ]);
             
         }catch (ModelNotFoundException $e) {
             // Handle the case where the worker is not found

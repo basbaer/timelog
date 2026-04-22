@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="de">
 
-@include('partials.head', ['title' => 'Dashboard'])
+@include('partials.head', ['title' => 'Dashboard', 'withBootstrapIcons' => true])
 
 <body>
     @include('partials.admin_navbar', ['active' => 'workers'])
@@ -20,12 +20,24 @@
 
     @if (session('success'))
         <div class="container mt-3">
+
             <div class="alert alert-success" role="alert">
                 {{ session('success') }}
             </div>
         </div>
-        
     @endif
+
+    <div class="container mt-3 d-flex justify-content-center align-items-center gap-4">
+        <a href="{{ route('admin.worker.show', ['id' => $id, 'month' => $previousMonth]) }}"
+            id="previousMonthBtn" aria-label="Vorheriger Monat">
+            <i class="bi bi-caret-left-fill" style="font-size: 1.5rem; color: grey;" aria-hidden="true"></i>
+        </a>
+        <h3 class="mb-0">{{ $month }}</h3>
+        <a href="{{ route('admin.worker.show', ['id' => $id, 'month' => $nextMonth]) }}" 
+            id="nextMonthBtn" aria-label="Nächster Monat">
+            <i class="bi bi-caret-right-fill" style="font-size: 1.5rem; color: grey;" aria-hidden="true"></i>
+        </a>
+    </div>
 
     <div class=" m-3">
         <table class="table">
@@ -56,9 +68,9 @@
                                 {{ $row->date }}
                             @endif
                         </td>
-                        <td>{{ $row->start}}</td>
+                        <td>{{ $row->start }}</td>
                         <td>{{ $row->end }}</td>
-                        <td>{{ $row->pause}}</td>
+                        <td>{{ $row->pause }}</td>
                         <td>{{ $row->total }}</td>
                         <td>{{ $row->project_client }} ({{ $row->project_location }})</td>
                         <td>{{ $row->working_type_name }}</td>
@@ -70,7 +82,8 @@
         </table>
     </div>
     <div class="container mt-3 d-flex justify-content-center">
-        <a href="{{ route('admin.worker.log.create', ['id' => $id]) }}" role="button" class="btn btn-primary">Eintrag hinzufügen</a>
+        <a href="{{ route('admin.worker.log.create', ['id' => $id]) }}" role="button" class="btn btn-primary">Eintrag
+            hinzufügen</a>
     </div>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
