@@ -33,8 +33,11 @@ class WorkerDetailController extends Controller
                     'forstwirt_working_types.name as working_type_name', 
                     'projects.client as project_client',
                     'projects.location as project_location')
+                ->orderBy('forstwirt_logs.date', 'asc')
+                ->orderBy('forstwirt_logs.start', 'asc')
                 ->get();
 
+            $last_date = null;
             foreach ($log_entries as $entry) {
                 $entry->weekday = Carbon::parse($entry->date)->format('l');
                 $entry->weekday = __('admin.' . $entry->weekday);
@@ -43,6 +46,12 @@ class WorkerDetailController extends Controller
                 $entry->end = Carbon::parse($entry->end)->format('H:i');
                 $entry->pause = Carbon::parse($entry->pause)->format('H:i');
                 $entry->total = Carbon::parse($entry->total)->format('H:i');
+                if ($last_date !== $entry->date) {
+                    $entry->show_date = true;
+                    $last_date = $entry->date;
+                } else {
+                    $entry->show_date = false;
+                }
                 $entry->date = Carbon::parse($entry->date)->format('d.m.y');
             }
             

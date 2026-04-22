@@ -46,8 +46,16 @@
             <tbody>
                 @foreach ($log_entries as $row)
                     <tr>
-                        <th scope="row">{{ $row->weekday }}</th>
-                        <td>{{ $row->date }}</td>
+                        <th scope="row">
+                            @if ($row->show_date)
+                                {{ $row->weekday }}
+                            @endif
+                        </th>
+                        <td>
+                            @if ($row->show_date)
+                                {{ $row->date }}
+                            @endif
+                        </td>
                         <td>{{ $row->start}}</td>
                         <td>{{ $row->end }}</td>
                         <td>{{ $row->pause}}</td>
