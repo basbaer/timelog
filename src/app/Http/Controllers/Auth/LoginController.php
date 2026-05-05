@@ -44,9 +44,9 @@ class LoginController extends Controller
             $user = Auth::user();
  
             // Redirect dependig on the role of the user
-            if ($user->isAdmin()) {
+//            if ($user->isAdmin()) {
                 return redirect()->intended($this->getRedirectUrl());
-            }
+ //           }
         }
  
         // If login fails, redirect back with error

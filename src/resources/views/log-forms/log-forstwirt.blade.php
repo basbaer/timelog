@@ -77,14 +77,14 @@
                                     <label for="start-{{ $loop->index }}"
                                         class="form-label">{{ __('form.from') }}</label>
                                     <input type="time" id="start-{{ $loop->index }}" class="form-control"
-                                        name="work_logs[{{ $loop->index }}][start]" lang="de" step="900">
+                                        name="work_logs[{{ $loop->index }}][start]" lang="de-DE" step="900">
                                 </div>
                                 <!-- Bis -->
                                 <div class="col-sm-auto col-6 mb-2">
                                     <label for="end-{{ $loop->index }}"
                                         class="form-label">{{ __('form.to') }}</label>
                                     <input type="time" id="end-{{ $loop->index }}" class="form-control"
-                                        name="work_logs[{{ $loop->index }}][end]" lang="de" step="900">
+                                        name="work_logs[{{ $loop->index }}][end]" lang="de-DE" step="900">
                                 </div>
 
                                 <div class="d-sm-none w-100"></div>

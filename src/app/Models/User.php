@@ -49,7 +49,14 @@ class User extends Authenticatable
 
     public function log(): HasMany
     {
-        return $this->hasMany(ForstwirtLog::class);
+        if ($this->isForstwirt()) {
+            return $this->hasMany(ForstwirtLog::class);
+        }
+        if ($this->isHarvester()) {
+            return $this->hasMany(HarvesterLog::class);
+        }
+
+        throw new \LogicException('Unsupported user role for log relation.');
     }
 
     public function scopeAdmin($query)

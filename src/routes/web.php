@@ -128,6 +128,13 @@ Route::delete('/log-forstwirt/entry/{log_id}/delete', [ForstwirtLogController::c
     ->middleware([Forstwirt::class])
     ->name('log.forstwirt.delete');
 
+//====================================================================================
+
+// ==== Harvester Route ====
+Route::get('/log-harvester', function (){
+    return view('log-forms/log-harvester');
+})->name('log.harvester');
+
 // ==== Later ====
 Route::get('/workers/{id}', function ($id) {
     return view('admin/workers-detail', ['workerId' => $id]);
