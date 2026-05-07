@@ -2,117 +2,47 @@
 
 namespace App\Http\Controllers\Logs;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Logs\BaseLogController;
 use App\Models\ForstwirtWorkingType;
-use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use App\Models\ForstwirtLog;
 use App\Models\ForstwirtLogEntry;
 
-class ForstwirtLogController extends Controller
+class ForstwirtLogController extends BaseLogController
 {
 
-    public function show($id = null)
+    // Implement abstract methods from BaseLogController
+    public function logModel(): string
     {
-        $isAdmin = false;
-        // Get role of user
-        if ($id !== null) {
-            // If an id is provided, check if the user has permission to view logs of other users
-            if (!Auth::user()->isAdmin()) {
-                abort(403, 'Unauthorized action.');
-            }
-            $user = User::findOrFail($id);
-            $isAdmin = true;
-        } else {
-            // If no id is provided, show logs for the authenticated user
-            $user = User::findOrFail(Auth::id());
-            $id = Auth::id();
-        }
-        $name = $user->first_name . ' ' . $user->last_name;
-        // Get all open projects for the user's role
-        $projects = $user->openProjects()->get();
-
-        // Check if today is alreay logged
-        $today = now()->toDateString();
-        $existingLog = ForstwirtLog::where('user_id', $id)
-            ->where('date', $today)
-            ->first();
-        if ($existingLog && !$isAdmin) {
-            return redirect()->route('log.forstwirt.success', ['log_id' => $existingLog->id]);
-        }
-
-        return view('log-forms/log-forstwirt', compact(['projects', 'isAdmin', 'name', 'id']));
+        return ForstwirtLog::class;
     }
 
-    public function store(Request $request)
+    public function logEntryModel(): string
     {
-        // If the validation fails, the user will be redirected back to the form with error messages and old input data.
-        // The rest of the method will not be executed if validation fails, so we can safely assume that any code after the validation will only run if the input data is valid.
-        $mappedLogs = $this->validateForm($request);
-
-        foreach ($mappedLogs as $logData) {
-            $log = new ForstwirtLog();
-            // Get user_id from the form if the user is an admin, otherwise use the authenticated user's id
-            $log->user_id = $request->input('id');
-            $log->project_id = $logData['project_id'];
-            $log->date = $logData['date'];
-            $log->start = $logData['start'];
-            $log->end = $logData['end'];
-            $log->pause = $logData['pause'] ?? 0;
-            $log->sum = $logData['sum'] ?? null;
-            $log->save();
-
-            foreach ($logData['entries'] as $entry) {
-                $logEntry = new ForstwirtLogEntry();
-                $logEntry->forstwirt_log_id = $log->id;
-                $workingType = ForstwirtWorkingType::where('slug', $entry['type'])->first();
-                if ($workingType) {
-                    $logEntry->working_type_id = $workingType->id;
-                }
-                $logEntry->hours = $entry['hours'];
-                $logEntry->comment = $entry['comment'] ?? null;
-                $logEntry->save();
-            }
-        }
-
-        return redirect()->route('log.forstwirt.success', ['log_id' => $log->id]);
+        return ForstwirtLogEntry::class;
     }
 
-    public function validateForm(Request $request)
+    public function workingTypeModel(): string
     {
-        // Filter out empty work logs (where start, end and hours are all empty)
-        $workLogs = collect((array) $request->input('work_logs', [])) //if work_logs is null, treat it as an empty array to avoid errors
-            ->map(function (array $workLog) {
-                $entries = collect($workLog['entries'] ?? [])
-                    ->filter(fn(array $entry) => trim((string) ($entry['hours'] ?? '')) !== '')
-                    ->values()
-                    ->all();
+        return ForstwirtWorkingType::class;
+    }
 
-                $workLog['entries'] = $entries;
+    public function route(): string
+    {
+        return 'log.forstwirt';
+    }
 
-                return $workLog;
-            })
-            ->filter(function (array $workLog) {
-                // trim removes whitespace, (string) ensures that trim will definetly work
-                // ?? '' ensures that if the value is null, it will be treated as an empty string for the trim function
-                $start = trim((string) ($workLog['start'] ?? ''));
-                $end = trim((string) ($workLog['end'] ?? ''));
+    public function viewPrefix(): string
+    {
+        return 'log-forstwirt';
+    }
 
-                $hasHours = collect($workLog['entries'] ?? [])->isNotEmpty();
-
-                return !($start === '' && $end === '' && ! $hasHours);
-            })
-            ->values() // reindex the array after filtering
-            ->all(); // convert the collection back to a plain array
-
-        $request->merge(['work_logs' => $workLogs]);
-
+    public function validationRules(): array
+    {
         $workTypeKeys = ForstwirtWorkingType::all()->pluck('slug')->toArray();
 
-        $validator = Validator::make($request->all(), [
+        return [
             'log_date' => ['required', 'date'],
             'work_logs' => ['required', 'array', 'min:1'],
             'work_logs.*.project_id' => ['required', 'integer', Rule::exists('projects', 'id')],
@@ -124,29 +54,14 @@ class ForstwirtLogController extends Controller
             'work_logs.*.entries.*.type' => ['required', 'string', Rule::in($workTypeKeys)],
             'work_logs.*.entries.*.hours' => ['required', 'date_format:H:i'],
             'work_logs.*.entries.*.comment' => ['nullable', 'string', 'max:1000'],
-        ]);
+        ];
+    }
 
-        $validator->after(function ($validator) use ($request) {
-            foreach ((array) $request->input('work_logs', []) as $projectIndex => $workLog) {
-                $types = collect($workLog['entries'] ?? [])
-                    ->pluck('type')
-                    ->filter()
-                    ->values();
-
-                if ($types->count() !== $types->unique()->count()) {
-                    $validator->errors()->add(
-                        "work_logs.{$projectIndex}.entries",
-                        'Each work type can only be selected once per project.'
-                    );
-                }
-            }
-        });
-
-        $validated = $validator->validate();
-
+    protected function mapValidatedToLogs(array $validated): array
+    {
         $logDate = $validated['log_date'];
 
-        $mappedLogs = collect($validated['work_logs'])
+        return collect($validated['work_logs'])
             ->map(function (array $workLog) use ($logDate) {
                 return [
                     'project_id' => (int) $workLog['project_id'],
@@ -188,37 +103,73 @@ class ForstwirtLogController extends Controller
         return $mappedLogs;
     }
 
-    public function success(int $log_id)
+
+    public function store(Request $request)
     {
-        $user_id = ForstwirtLog::findOrFail($log_id)->user_id;
-        $log_user = User::findOrFail($user_id);
-        $name = $log_user->first_name . ' ' . $log_user->last_name;
-        $log = ForstwirtLog::findOrFail($log_id);
-        if (Auth::user()->isAdmin()) {
-            // Admin is redirected to worker detail page
-            return redirect()->route('admin.worker.show', ['id' => $user_id])->with('success', 'Eintrag erfolgreich hinzugefügt.');
-        } else if ($log->user_id !== Auth::id()) {
-            //Check if the log belongs to the authenticated user
-            return redirect()->route('log.forstwirt')->with('error', 'Unauthorized access to log entry.');
-        } else {
-            
-            return view('log-forms/log-success', compact('name', 'log_id'));
+        $validate = $this->validateForm($request);
+        // If the validation fails, the user will be redirected back to the form with error messages and old input data.
+        // The rest of the method will not be executed if validation fails, so we can safely assume that any code after the validation will only run if the input data is valid.
+        $mappedLogs = $this->mapValidatedToLogs($validate);
+
+        foreach ($mappedLogs as $logData) {
+            $log = new ForstwirtLog();
+            // Get user_id from the form if the user is an admin, otherwise use the authenticated user's id
+            $log->user_id = $request->input('id');
+            $log->project_id = $logData['project_id'];
+            $log->date = $logData['date'];
+            $log->start = $logData['start'];
+            $log->end = $logData['end'];
+            $log->pause = $logData['pause'] ?? 0;
+            $log->sum = $logData['sum'] ?? null;
+            $log->save();
+
+            foreach ($logData['entries'] as $entry) {
+                $logEntry = new ForstwirtLogEntry();
+                $logEntry->forstwirt_log_id = $log->id;
+                $workingType = ForstwirtWorkingType::where('slug', $entry['type'])->first();
+                if ($workingType) {
+                    $logEntry->working_type_id = $workingType->id;
+                }
+                $logEntry->hours = $entry['hours'];
+                $logEntry->comment = $entry['comment'] ?? null;
+                $logEntry->save();
+            }
         }
+
+        return redirect()->route('log.forstwirt.success', ['log_id' => $log->id]);
     }
 
-    public function deleteLog(int $log_id)
+    /**
+     * Trims whitespace from input data and filters out empty work logs.
+     */
+    protected function filterRequest(Request $request): array
     {
-        $log = ForstwirtLog::findOrFail($log_id);
+        
+        $workLogs = collect((array) $request->input('work_logs', [])) //if work_logs is null, treat it as an empty array to avoid errors
+            ->map(function (array $workLog) {
+                $entries = collect($workLog['entries'] ?? [])
+                    ->filter(fn(array $entry) => trim((string) ($entry['hours'] ?? '')) !== '')
+                    ->values()
+                    ->all();
 
-        // Check if the log belongs to the authenticated user
-        if ($log->user_id !== Auth::id()) {
-            abort(403, 'Unauthorized action.');
-        }
+                $workLog['entries'] = $entries;
 
-        // Delete the log and its entries
-        $log->entries()->delete();
-        $log->delete();
+                return $workLog;
+            })
+            ->filter(function (array $workLog) {
+                // trim removes whitespace, (string) ensures that trim will definetly work
+                // ?? '' ensures that if the value is null, it will be treated as an empty string for the trim function
+                $start = trim((string) ($workLog['start'] ?? ''));
+                $end = trim((string) ($workLog['end'] ?? ''));
 
-        return redirect()->route('log.forstwirt')->with('success', 'Log entry deleted successfully.');
+                $hasHours = collect($workLog['entries'] ?? [])->isNotEmpty();
+
+                return !($start === '' && $end === '' && ! $hasHours);
+            })
+            ->values() // reindex the array after filtering
+            ->all(); // convert the collection back to a plain array
+
+            return $workLogs;
     }
+
 }

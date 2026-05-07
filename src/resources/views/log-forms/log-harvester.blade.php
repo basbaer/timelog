@@ -1,9 +1,11 @@
 <!doctype html>
 <html lang="de">
 
-@include('partials.head', ['title' => 'Harvester'])
+@include('partials.head', ['title' => 'Log'])
 
 <body>
+  @include('partials.log_header', ['name' => $name])
+  
   <form class="container">
     <!-- Date -->
     <div class="container my-3 px-0">

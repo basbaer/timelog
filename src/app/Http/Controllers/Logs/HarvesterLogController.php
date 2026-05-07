@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\Logs\BaseLogController;
 
-class HarvesterLogController extends Controller
+
+class HarvesterLogController extends BaseLogController
 {
-    //
+       
 }
