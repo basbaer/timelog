@@ -136,7 +136,7 @@ class ForstwirtLogController extends BaseLogController
             }
         }
 
-        return redirect()->route('log.forstwirt.success', ['log_id' => $log->id]);
+        return redirect()->route($this->route() . '.success', ['log_id' => $log->id]);
     }
 
     /**

@@ -16,8 +16,7 @@ use App\Http\Controllers\Projects\AddProjectController;
 use App\Http\Controllers\Projects\OverviewProjectController;
 use App\Http\Middleware\Forstwirt;
 use App\Http\Middleware\Harvester;
-use App\Http\Controllers\HarvesterLogController;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\Logs\HarvesterLogController;
 
 Route::get('/play', function () {
     return session()->all();
@@ -135,21 +134,7 @@ Route::delete('/log-forstwirt/entry/{log_id}/delete', [ForstwirtLogController::c
 
 // ==== Harvester Route ====
 Route::middleware(Harvester::class)->group(function () {
-    //Route::get('/log-harvester', [HarvesterLogController::class, 'show'])->name('log.harvester');
-    Route::get('/log-harvester', function () {
-        return view('log-forms/log-harvester', [
-            'name' => Auth::user()->first_name . ' ' . Auth::user()->last_name,
-            'isAdmin' => Auth::user()->isAdmin(),
-            'projects' => Auth::user()->openProjects()
-                ->get()
-                ->map(function ($project) {
-                    return [
-                        'id' => $project->id,
-                        'name' => $project->client,
-                    ];
-                })
-        ]);
-    });
+    Route::get('/log-harvester', [HarvesterLogController::class, 'show'])->name('log.harvester');
 
     Route::post('/log-harvester', [HarvesterLogController::class, 'store'])->name('log.harvester.store');
 

@@ -24,13 +24,16 @@ abstract class BaseLogController extends Controller
 
     private function getUserAndProjects(?int $id): array
     {
-        $isAdmin = false; 
-        if ($this->hasPermissionToViewLog($id)){
+        $isAdmin = false;
+
+        // If no id is provided, show the log form for the authenticated user.
+        // Otherwise, check if the user has permission to view the log of the provided id (only admins can view logs of other users).
+        if ($id == null || $this->hasPermissionToViewLog($id)){
             /** @var \App\Models\User $user */
             $user = Auth::user();
 
             // If the current user is an admin an id is provided to get the specified user
-            if ($user->isAdmin() && $id !== null) {
+            if ($user->isAdmin()) {
                 $user = User::findOrFail($id);
                 $isAdmin = true;
             }

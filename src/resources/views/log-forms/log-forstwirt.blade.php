@@ -4,20 +4,10 @@
 @include('partials.head', ['title' => 'Log'])
 
 <body>
-    <div class="container d-flex justify-content-between align-items-center">
-        <h1 class="mt-2">{{ $name }}</h1>
-        <!-- Logout Button -->
-        <div class="d-flex justify-content-end">
-            <a href="/logout" class="btn btn-outline-danger">Logout</a>
-        </div>
-    </div>
-    <div id="form-errors" class="container alert alert-danger @if (!$errors->any()) d-none @endif">
-        <ul class="mb-0" id="form-errors-list">
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
+    @include('partials.log_header', ['name' => $name])
+
+    @include('partials.log_form_errors', ['errors' => $errors])
+
     <form id="forstwirt-log-form" class="container" method="POST" action="{{ route('log.forstwirt.store') }}">
         @csrf
         <input type="hidden" name="id" value="{{ $id }}">
@@ -50,6 +40,7 @@
                 });
             </script>
         </div>
+
         <div class="accordion" id="accordionProjects">
             @foreach ($projects as $project)
                 <div class="accordion-item">
@@ -62,6 +53,7 @@
                     </h2>
                     <div id="collapse{{ $loop->index }}" class="accordion-collapse collapse"
                         data-bs-parent="#accordionProjects">
+                        
                         <div class="accordion-body px-2">
                             <input type="hidden" name="work_logs[{{ $loop->index }}][project_id]"
                                 value="{{ $project->id }}">
