@@ -24,22 +24,15 @@ abstract class BaseLogController extends Controller
 
     private function getUserAndProjects(?int $id): array
     {
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
         $isAdmin = false;
 
-        // If no id is provided, show the log form for the authenticated user.
-        // Otherwise, check if the user has permission to view the log of the provided id (only admins can view logs of other users).
-        if ($id == null || $this->hasPermissionToViewLog($id)){
-            /** @var \App\Models\User $user */
-            $user = Auth::user();
-
-            // If the current user is an admin an id is provided to get the specified user
-            if ($user->isAdmin()) {
-                $user = User::findOrFail($id);
-                $isAdmin = true;
-            }
-
-        } else {
-            abort(403, 'Unauthorized action.');
+        // If an id is provided and the authenticated user is an admin, load the specified user.
+        // Permission to view other users' logs is enforced in middleware.
+        if ($user->isAdmin() && $id !== null) {
+            $user = User::findOrFail($id);
+            $isAdmin = true;
         }
 
         $name = $user->first_name . ' ' . $user->last_name;
@@ -49,16 +42,7 @@ abstract class BaseLogController extends Controller
         return compact(['isAdmin', 'user', 'name', 'projects', 'id']);
     }
 
-    /**
-     * Check if the authenticated user has permission to view the log of the given user ID.
-     * Admins can view all logs, while regular users can only view their own logs.
-     */
-    private function hasPermissionToViewLog($userId): bool
-    {
-        /** @var \App\Models\User $user */
-        $user = Auth::user();
-        return $user->isAdmin() || $user->id === $userId;
-    }
+    
 
     /**
      * Common logic for showing the log form

@@ -25,6 +25,17 @@ class Forstwirt
             return redirect('/');
         }
 
+        // Check permission to view another user's log: only admins may view other users' logs
+        $userId = $request->route('id') ?? $request->input('id');
+
+        if ($user->isAdmin()) {
+            return $next($request);
+        }
+
+        if ($userId !== null && (int) $userId !== $user->id) {
+            abort(403, 'Unauthorized action.');
+        }
+
         return $next($request);
     }
 }
