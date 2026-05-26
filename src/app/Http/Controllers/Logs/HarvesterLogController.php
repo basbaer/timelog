@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Logs;
 use App\Http\Controllers\Logs\BaseLogController;
 use App\Models\ForstwirtWorkingType;
 use App\Models\HarvesterLog;
-use App\Models\HarvesterLogEntry;
 use Illuminate\Http\Request;
 
 class HarvesterLogController extends BaseLogController
@@ -13,11 +12,6 @@ class HarvesterLogController extends BaseLogController
     public function logModel(): string
     {
         return HarvesterLog::class;
-    }
-
-    public function logEntryModel(): string
-    {
-        return HarvesterLogEntry::class;
     }
 
     public function workingTypeModel(): string
@@ -42,7 +36,7 @@ class HarvesterLogController extends BaseLogController
         return [
             'log_date' => ['required', 'date'],
             'work_logs' => ['required', 'array', 'min:1'],
-            'work_logs.*.project_id' => ['required', 'integer', 'exists:projects,id'],
+            'work_logs.*' => ['required', 'array'],
             'work_logs.*.start' => ['nullable', 'date_format:H:i'],
             'work_logs.*.end' => ['nullable', 'date_format:H:i'],
             'work_logs.*.bs_start' => ['nullable', 'integer', 'min:0'],
@@ -51,43 +45,69 @@ class HarvesterLogController extends BaseLogController
             'work_logs.*.stueckzahl' => ['nullable', 'integer', 'min:0'],
             'work_logs.*.fm_gesamt' => ['nullable', 'numeric'],
             'work_logs.*.day_fm' => ['nullable', 'string'],
-            'work_logs.*.entries' => ['nullable', 'array'],
-            'work_logs.*.entries.*.type' => ['required_with:work_logs.*.entries', 'string', 'in:' . implode(',', $workTypeKeys)],
-            'work_logs.*.entries.*.hours' => ['required_with:work_logs.*.entries', 'date_format:H:i'],
+            // Entries moved into `work_logs.<projectId>.entries` by filterRequest()
+            'work_logs.*.entries' => ['array'],
+            'work_logs.*.entries.*.type' => ['required', 'string', 'in:' . implode(',', $workTypeKeys)],
+            'work_logs.*.entries.*.start' => ['required', 'date_format:H:i'],
+            'work_logs.*.entries.*.end' => ['required', 'date_format:H:i'],
+            'work_logs.*.entries.*.pause' => ['nullable', 'integer', 'min:0'],
+            'work_logs.*.entries.*.sum' => ['required', 'date_format:H:i'],
             'work_logs.*.entries.*.comment' => ['nullable', 'string', 'max:1000'],
         ];
     }
 
     protected function filterRequest(Request $request): array
     {
-        $workLogs = collect((array) $request->input('work_logs', []))
-            ->map(function (array $workLog) {
-                $entries = collect($workLog['entries'] ?? [])
-                    ->filter(fn(array $entry) => trim((string) ($entry['hours'] ?? '')) !== '')
-                    ->values()
-                    ->all();
+        $projectFields = ['start', 'end', 'bs_start', 'bs_end', 'bs_diff', 'stueckzahl', 'fm_gesamt'];
 
-                $workLog['entries'] = $entries;
+        return collect((array) $request->input('work_logs', []))
+            ->map(function (array $workLog) use ($projectFields) {
+                // Holding the filtered log data
+                $filteredWorkLog = [];
 
-                return $workLog;
+                // Check project-level fields and include them if they have input
+                foreach ($projectFields as $field) {
+                    // Check if the field is set and not empty after trimming whitespace
+                    if (isset($workLog[$field]) && trim((string) $workLog[$field]) !== '') {
+                        $filteredWorkLog[$field] = $workLog[$field];
+                    }
+                }
+
+                // Check work entry fields and include entries that have at least one field with input
+                // Note: They need to be included in order to show the corresponding validation errors if the required fields for the work entry are not filled out, even if the project-level fields are empty
+                // collect numeric child entries and move them to `entries`
+                $entries = [];
+                foreach ($workLog as $key => $entry) {
+                    if (!is_numeric($key) || !is_array($entry)) {
+                        continue;
+                    }
+
+                    $hasEntryInput = collect([
+                        $entry['start'] ?? '',
+                        $entry['end'] ?? '',
+                        $entry['comment'] ?? '',
+                    ])->contains(fn($value) => trim((string) $value) !== '');
+
+                    if ($hasEntryInput) {
+                        $entries[] = $entry;
+                    }
+                }
+
+                if (!empty($entries)) {
+                    $filteredWorkLog['entries'] = array_values($entries);
+                }
+
+                return $filteredWorkLog;
             })
-            ->filter(function (array $workLog) {
-                $start = trim((string) ($workLog['start'] ?? ''));
-                $end = trim((string) ($workLog['end'] ?? ''));
-                $hasHours = collect($workLog['entries'] ?? [])->isNotEmpty();
+            ->filter(function (array $workLog) use ($projectFields) {
+                $hasProjectField = collect($projectFields)
+                    ->contains(fn(string $field) => trim((string) ($workLog[$field] ?? '')) !== '');
 
-                $bsStart = trim((string) ($workLog['bs_start'] ?? ''));
-                $bsEnd = trim((string) ($workLog['bs_end'] ?? ''));
-                $stueckzahl = trim((string) ($workLog['stueckzahl'] ?? ''));
-                $fmGesamt = trim((string) ($workLog['fm_gesamt'] ?? ''));
+                $hasEntries = !empty($workLog['entries'] ?? []);
 
-                // keep work log when at least one meaningful field is set
-                return !($start === '' && $end === '' && !$hasHours && $bsStart === '' && $bsEnd === '' && $stueckzahl === '' && $fmGesamt === '');
+                return $hasProjectField || $hasEntries;
             })
-            ->values()
             ->all();
-
-        return $workLogs;
     }
 
     protected function mapValidatedToLogs(array $validated): array
@@ -95,9 +115,9 @@ class HarvesterLogController extends BaseLogController
         $logDate = $validated['log_date'];
 
         return collect($validated['work_logs'] ?? [])
-            ->map(function (array $workLog) use ($logDate) {
+            ->map(function (array $workLog, $projectId) use ($logDate) {
                 return [
-                    'project_id' => (int) $workLog['project_id'],
+                    'project_id' => (int) $projectId,
                     'date' => $logDate,
                     'start' => $workLog['start'] ?? null,
                     'end' => $workLog['end'] ?? null,
@@ -107,10 +127,15 @@ class HarvesterLogController extends BaseLogController
                     'stueckzahl' => isset($workLog['stueckzahl']) ? (int) $workLog['stueckzahl'] : null,
                     'fm_gesamt' => isset($workLog['fm_gesamt']) ? $workLog['fm_gesamt'] : null,
                     'day_fm' => $workLog['day_fm'] ?? null,
-                    'entries' => collect($workLog['entries'] ?? [])
+                    'forstwirt_work_entries' => collect($workLog['entries'] ?? [])
                         ->map(fn(array $entry) => [
+                            'project_id' => (int) $projectId,
+                            'date' => $logDate,
                             'type' => $entry['type'],
-                            'hours' => $entry['hours'],
+                            'start' => $entry['start'],
+                            'end' => $entry['end'],
+                            'pause' => isset($entry['pause']) ? (int) $entry['pause'] : 0,
+                            'sum' => $entry['sum'] ?? null,
                             'comment' => $entry['comment'] ?? null,
                         ])
                         ->values()
@@ -121,19 +146,19 @@ class HarvesterLogController extends BaseLogController
             ->all();
     }
 
-    protected function store(Request $request)
+    public function store(Request $request)
     {
         $validated = $this->validateForm($request);
-
         $mappedLogs = $this->mapValidatedToLogs($validated);
+        $lastLog = null;
 
         foreach ($mappedLogs as $logData) {
             $log = new HarvesterLog();
-            $log->user_id = $request->input('id');
+            $log->user_id = $request->input('user_id');
             $log->project_id = $logData['project_id'];
             $log->date = $logData['date'];
-            $log->start = $logData['start'] ?? null;
-            $log->end = $logData['end'] ?? null;
+            $log->start = $logData['start'];
+            $log->end = $logData['end'];
             $log->bs_from = $logData['bs_start'] ?? null;
             $log->bs_to = $logData['bs_end'] ?? null;
             $log->bs_diff = $logData['bs_diff'] ?? null;
@@ -141,22 +166,13 @@ class HarvesterLogController extends BaseLogController
             $log->fm_total = $logData['fm_gesamt'] ?? null;
             $log->fm_day = $logData['day_fm'] ?? null;
             $log->save();
+            $lastLog = $log;
 
-            foreach ($logData['entries'] as $entry) {
-                $logEntry = new HarvesterLogEntry();
-                $logEntry->harvester_log_id = $log->id;
-                $workingType = ForstwirtWorkingType::where('slug', $entry['type'])->first();
-                if ($workingType) {
-                    $logEntry->working_type_id = $workingType->id;
-                }
-                $logEntry->hours = $entry['hours'];
-                $logEntry->comment = $entry['comment'] ?? null;
-                $logEntry->save();
+            if (!empty($logData['forstwirt_work_entries'])) {
+                $this->saveForstwirtLogs($logData['forstwirt_work_entries'], (int) $log->user_id);
             }
         }
 
-        return redirect()->route($this->route() . '.success', ['log_id' => $log->id]);
+        return redirect()->route($this->route() . '.success', ['log_id' => $lastLog->id]);
     }
-
-
 }

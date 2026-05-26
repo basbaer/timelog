@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Logs;
 
 use App\Http\Controllers\Controller;
+use App\Models\ForstwirtLog;
+use App\Models\ForstwirtWorkingType;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
@@ -12,7 +14,6 @@ abstract class BaseLogController extends Controller
 {
     // Subklassen müssen diese liefern:
     abstract protected function logModel(): string;       // z.B. ForstwirtLog::class
-    abstract protected function logEntryModel(): string;  // z.B. ForstwirtLogEntry::class
     abstract protected function workingTypeModel(): string;
     abstract protected function route(): string;    // z.B. 'log.forstwirt' oder 'log.harvester'
     abstract protected function viewPrefix(): string;     // z.B. 'log-forstwirt'
@@ -22,7 +23,7 @@ abstract class BaseLogController extends Controller
     abstract protected function store(Request $request);
 
 
-    private function getUserAndProjects(?int $id): array
+    private function getUserAndProjects(?int $user_id): array
     {
         /** @var \App\Models\User $user */
         $user = Auth::user();
@@ -30,19 +31,18 @@ abstract class BaseLogController extends Controller
 
         // If an id is provided and the authenticated user is an admin, load the specified user.
         // Permission to view other users' logs is enforced in middleware.
-        if ($user->isAdmin() && $id !== null) {
-            $user = User::findOrFail($id);
+        if ($user->isAdmin() && $user_id !== null) {
+            $user = User::findOrFail($user_id);
             $isAdmin = true;
         }
 
+        $user_id = $user->id;
         $name = $user->first_name . ' ' . $user->last_name;
         // Get all open projects for the user's role
         $projects = $user->openProjects()->get();
 
-        return compact(['isAdmin', 'user', 'name', 'projects', 'id']);
+        return compact(['isAdmin', 'user', 'name', 'projects', 'user_id']);
     }
-
-    
 
     /**
      * Common logic for showing the log form
@@ -50,15 +50,15 @@ abstract class BaseLogController extends Controller
      * Note: $id is optional and only used when an admin wants to view the log form for a specific user.
      *       Regular users will not provide an id and will see their own log form.
      */
-    public function show($id = null) { 
-        
-        $data = $this->getUserAndProjects($id);
-        extract($data); // Extrahiere Variablen wie $isAdmin, $user, $name, $projects, $id
+    public function show($user_id = null) { 
+ 
+        $data = $this->getUserAndProjects($user_id);
+        extract($data); // Extrahiere Variablen wie $isAdmin, $user, $name, $projects, $user_id
 
         // Check if today is alreay logged
         $today = now()->toDateString();
         $logClass = $this->logModel();
-        $existingLog = $logClass::where('user_id', $id)
+        $existingLog = $logClass::where('user_id', $user_id)
             ->where('date', $today)
             ->first();
         // if there is an existing log, show the success page instead of log form - but only for non-admin users (admins can view the log form for any user, even if they already have a log for today)
@@ -69,13 +69,15 @@ abstract class BaseLogController extends Controller
 
         $viewPrefix = $this->viewPrefix();
         // Route like: log-forms/log-forstwirt
-        return view('log-forms/' . $viewPrefix, compact(['projects', 'isAdmin', 'name', 'id']));
+        return view('log-forms/' . $viewPrefix, compact(['projects', 'isAdmin', 'name', 'user_id']));
     }
 
     public function validateForm(Request $request): array
     {
         $workLogs = $this->filterRequest($request);
 
+        // Merge the filtered work logs back into the request data for validation
+        // (the former work_log gets ovewritten)
         $request->merge(['work_logs' => $workLogs]);
 
         $validator = Validator::make($request->all(), $this->validationRules());
@@ -83,7 +85,8 @@ abstract class BaseLogController extends Controller
         // Ensure that each work type is only selected once per project
         $validator->after(function ($validator) use ($request) {
             foreach ((array) $request->input('work_logs', []) as $projectIndex => $workLog) {
-                $types = collect($workLog['entries'] ?? [])
+                $types = collect($workLog)
+                    ->filter(fn($entry) => is_array($entry) && array_key_exists('type', $entry))
                     ->pluck('type')
                     ->filter() // Filter out empty values
                     ->values();
@@ -91,7 +94,7 @@ abstract class BaseLogController extends Controller
                 if ($types->count() !== $types->unique()->count()) {
                     // If there is an error, laravel will automatically redirect back to the form and flash the old input and errors to the session. 
                     //The error message will be displayed next to the relevant form fields in the view.
-                    $validator->errors()->add("work_logs.$projectIndex.entries", 'Jeder Arbeitstyp darf pro Projekt nur einmal ausgewählt werden.');
+                    $validator->errors()->add("work_logs.$projectIndex", 'Jeder Arbeitstyp darf pro Projekt nur einmal ausgewählt werden.');
                 }
             }
         });
@@ -130,6 +133,32 @@ abstract class BaseLogController extends Controller
         $log->entries()->delete();
         $log->delete();
         return redirect()->route($this->route())->with('success', 'Log entry deleted successfully.');
+    }
+
+    /**
+     * Persist entries in the same shape used by Forstwirt logs.
+     */
+    protected function saveForstwirtLogs(array $mappedLogs, int $userId): ?ForstwirtLog
+    {
+        $lastLog = null;
+
+        foreach ($mappedLogs as $logData) {
+            $log = new ForstwirtLog();
+            $log->user_id = $userId;
+            $log->project_id = $logData['project_id'];
+            $log->working_type_id = ForstwirtWorkingType::where('slug', $logData['type'])->value('id');
+            $log->date = $logData['date'];
+            $log->start = $logData['start'];
+            $log->end = $logData['end'];
+            $log->pause = $logData['pause'] ?? 0;
+            $log->sum = $logData['sum'] ?? null;
+            $log->comment = $logData['comment'] ?? null;
+            $log->save();
+
+            $lastLog = $log;
+        }
+
+        return $lastLog;
     }
 }
 

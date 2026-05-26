@@ -10,7 +10,7 @@
 
     <form id="harvester-log-form" class="container" method="POST" action="{{ route('log.harvester.store') }}">
         @csrf
-        <input type="hidden" name="id" value="{{ $id }}">
+       <input type="hidden" name="user_id" value="{{ $user_id }}">
         @php
             $workTypes = [
                 'motorsage' => __('form.motorsage'),
@@ -45,14 +45,9 @@
                             {{ $project->location }} | {{ $project->date->format('m/Y') }} | {{ $project->client }}
                         </button>
                     </h2>
-                    <div id="collapse{{ $loop->index }}" class="accordion-collapse collapse "
+                    <div id="collapse{{ $loop->index }}" class="accordion-collapse collapse"
                         data-bs-parent="#accordionProjects">
                         <div class="accordion-body px-2">
-
-                            <input type="hidden" name="work_logs[{{ $loop->index }}][project_id]"
-                                value="{{ $project->id }}">
-
-                            <!-- Arbeitszeit -->
                             <div class="mb-2">
                                 <h3>Arbeitszeit</h3>
 
@@ -61,17 +56,16 @@
                                         <label for="start-{{ $loop->index }}"
                                             class="form-label">{{ __('form.from') }}</label>
                                         <input type="time" id="start-{{ $loop->index }}" class="form-control"
-                                            name="work_logs[{{ $loop->index }}][start]" lang="de-DE" step="900">
+                                            name="work_logs[{{ $project->id }}][start]" lang="de-DE" step="900">
                                     </div>
 
                                     <div class="col-sm-auto col-6">
                                         <label for="end-{{ $loop->index }}"
                                             class="form-label">{{ __('form.to') }}</label>
                                         <input type="time" id="end-{{ $loop->index }}" class="form-control"
-                                            name="work_logs[{{ $loop->index }}][end]" lang="de-DE" step="900">
+                                            name="work_logs[{{ $project->id }}][end]" lang="de-DE" step="900">
                                     </div>
                                 </div>
-
                             </div>
                             <!-- Betriebsstunden -->
                             <div class="mb-2">
@@ -82,28 +76,26 @@
                                         <label for="bs_start-{{ $loop->index }}"
                                             class="form-label">{{ __('form.from') }}</label>
                                         <input type="number" id="bs_start-{{ $loop->index }}" class="form-control"
-                                            name="work_logs[{{ $loop->index }}][bs_start]">
+                                            name="work_logs[{{ $project->id }}][bs_start]">
                                     </div>
 
                                     <div class="col-5 ps-1">
                                         <label for="bs_end-{{ $loop->index }}"
                                             class="form-label">{{ __('form.to') }}</label>
                                         <input type="number" id="bs_end-{{ $loop->index }}" class="form-control"
-                                            name="work_logs[{{ $loop->index }}][bs_end]">
+                                            name="work_logs[{{ $project->id }}][bs_end]">
                                     </div>
 
                                     <div class="col-2 ps-0">
                                         <label for="bs_diff-{{ $loop->index }}" class="form-label">Diff.</label>
                                         <input type="text" id="bs_diff-{{ $loop->index }}" class="form-control"
-                                            readonly name="work_logs[{{ $loop->index }}][bs_diff]">
+                                            readonly name="work_logs[{{ $project->id }}][bs_diff]">
                                     </div>
                                 </div>
-
                             </div>
 
                             <hr class="mx-3">
 
-                            <!-- Festmeter -->
                             <div class="mb-2">
                                 <h3 class="mt-2">Festmeter</h3>
                                 <div class="row">
@@ -111,17 +103,17 @@
                                         <label for="stueckzahl-{{ $loop->index }}"
                                             class="form-label">Stückzahl</label>
                                         <input type="number" id="stueckzahl-{{ $loop->index }}" class="form-control"
-                                            name="work_logs[{{ $loop->index }}][stueckzahl]">
+                                            name="work_logs[{{ $project->id }}][stueckzahl]">
                                     </div>
                                     <div class="col-4">
                                         <label for="fm_gesamt-{{ $loop->index }}" class="form-label">Gesamt fm</label>
                                         <input type="number" id="fm_gesamt-{{ $loop->index }}" class="form-control"
-                                            name="work_logs[{{ $loop->index }}][fm_gesamt]">
+                                            name="work_logs[{{ $project->id }}][fm_gesamt]">
                                     </div>
                                     <div class="col-4">
                                         <label for="day_fm-{{ $loop->index }}" class="form-label">fm/Tag</label>
                                         <input type="text" id="day_fm-{{ $loop->index }}" class="form-control"
-                                            readonly name="work_logs[{{ $loop->index }}][day_fm]">
+                                            readonly name="work_logs[{{ $project->id }}][day_fm]">
                                     </div>
 
                                 </div>
@@ -132,32 +124,22 @@
                             <div class="mb-2">
                                 <h3 class="mt-2">Weitere Arbeiten</h3>
 
-                                <div class="row mb-2">
-                                    <!-- Arbeitsart -->
-                                    <div id="work-type-entries-{{ $loop->index }}">
-                                        @for ($entryIndex = 0; $entryIndex < $workTypeCount; $entryIndex++)
-                                            <div id="work-type-entry-{{ $loop->index }}-{{ $entryIndex }}"
-                                                class="work-type-entry-container @if ($entryIndex > 0) d-none @endif"
-                                                data-project-index="{{ $loop->index }}"
-                                                data-entry-index="{{ $entryIndex }}">
-                                                <x-work-type-entry :project-index="$loop->index" :entry-index="$entryIndex"
-                                                    :work-types="$workTypes" />
-                                            </div>
-                                        @endfor
-                                    </div>
-                                    <!-- Button -->
-                                    <div class="mt-2 mx-3">
-                                        <button id="add-work-type-button-{{ $loop->index }}" class="btn btn-primary"
-                                            type="button" data-project-index="{{ $loop->index }}"
-                                            onclick="showWorkTypeEntry({{ $loop->index }}, this)">
-                                            {{ __('form.add_work_type') }}
-                                        </button>
-                                    </div>
+                                <div id="forstwirt-work-entries-{{ $loop->index }}">
+                                    @for ($entryIndex = 0; $entryIndex < $workTypeCount; $entryIndex++)
+                                        <x-forstwirt-work-type :project-index="$loop->index" :project-id="$project->id"
+                                            :entry-index="$entryIndex" :work-types="$workTypes"
+                                            :hidden="$entryIndex > 0" />
+                                    @endfor
                                 </div>
 
-
+                                <div class="mt-2 mx-3">
+                                    <button id="add-work-type-button-{{ $loop->index }}" class="btn btn-primary"
+                                        type="button" data-project-index="{{ $loop->index }}"
+                                        onclick="showWorkTypeEntry({{ $loop->index }}, this)">
+                                        {{ __('form.add_work_type') }}
+                                    </button>
+                                </div>
                             </div>
-
 
                         </div>
                     </div>
@@ -174,26 +156,12 @@
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous">
     </script>
     <script>
-        function getProjectLabel(projectIndex) {
-            const headerButton = document.querySelector(`button[data-bs-target="#collapse${projectIndex}"]`);
-            return headerButton ? headerButton.textContent.trim() : `Projekt ${projectIndex}`;
-        }
-
-        function getVisibleWorkTypeSelects(projectIndex) {
-            return Array.from(document.querySelectorAll(`.work-type-select[data-project-index="${projectIndex}"]`))
-                .filter(select => {
-                    const container = select.closest('.work-type-entry-container');
-                    return container && !container.classList.contains('d-none');
-                });
-        }
-
         function calculateDiff(projectIndex) {
             const startInput = document.getElementById(`bs_start-${projectIndex}`);
             const endInput = document.getElementById(`bs_end-${projectIndex}`);
             const diffInput = document.getElementById(`bs_diff-${projectIndex}`);
 
-
-            if (!startInput || !endInput) {
+            if (!startInput || !endInput || !diffInput) {
                 return;
             }
 
@@ -205,109 +173,15 @@
                 return;
             }
 
-            let diff = parseFloat(end) - parseFloat(start);
-
+            const diff = parseFloat(end) - parseFloat(start);
             diffInput.value = diff.toFixed(2);
         }
 
-        function syncWorkTypeOptions(projectIndex) {
-            const visibleSelects = getVisibleWorkTypeSelects(projectIndex)
-                .sort((a, b) => Number(a.dataset.entryIndex) - Number(b.dataset.entryIndex));
-
-            // Keep the first occurrence of a selected work type and auto-correct duplicates in later entries.
-            const usedValues = new Set();
-            visibleSelects.forEach(select => {
-                const currentValue = select.value;
-                const hasDuplicate = currentValue !== "" && usedValues.has(currentValue);
-
-                if (hasDuplicate || currentValue === "") {
-                    const replacement = Array.from(select.options).find(option => !usedValues.has(option.value));
-                    if (replacement) {
-                        select.value = replacement.value;
-                    }
-                }
-
-                if (select.value !== "") {
-                    usedValues.add(select.value);
-                }
-            });
-
-            visibleSelects.forEach(select => {
-                const ownValue = select.value;
-                const usedByOthers = new Set(
-                    visibleSelects
-                    .filter(otherSelect => otherSelect !== select)
-                    .map(otherSelect => otherSelect.value)
-                    .filter(value => value !== "")
-                );
-
-                Array.from(select.options).forEach(option => {
-                    const isSelectedInAnotherEntry = usedByOthers.has(option.value);
-                    option.disabled = isSelectedInAnotherEntry;
-                    option.hidden = isSelectedInAnotherEntry;
-                });
-
-                if (ownValue === "" || usedByOthers.has(ownValue)) {
-                    const firstAvailable = Array.from(select.options).find(option => !option.disabled);
-                    if (firstAvailable) {
-                        select.value = firstAvailable.value;
-                    }
-                }
-            });
-
-            const addButton = document.getElementById(`add-work-type-button-${projectIndex}`);
-            if (addButton) {
-                const hiddenEntryExists = Array.from(document.querySelectorAll(
-                    `.work-type-entry-container[data-project-index="${projectIndex}"]`
-                )).some(container => container.classList.contains('d-none'));
-
-                addButton.disabled = !hiddenEntryExists;
-                addButton.classList.toggle('disabled', !hiddenEntryExists);
-            }
-        }
-
-        function showWorkTypeEntry(projectIndex, button) {
-            const nextHiddenEntry = Array.from(document.querySelectorAll(
-                `.work-type-entry-container[data-project-index="${projectIndex}"]`
-            )).find(container => container.classList.contains('d-none'));
-
-            if (!nextHiddenEntry) {
-                return;
-            }
-
-            nextHiddenEntry.classList.remove('d-none');
-            nextHiddenEntry.querySelectorAll('input, select, textarea').forEach(field => {
-                field.disabled = false;
-            });
-            syncWorkTypeOptions(projectIndex);
-
-            if (button) {
-                const hasMoreHiddenEntries = Array.from(document.querySelectorAll(
-                    `.work-type-entry-container[data-project-index="${projectIndex}"]`
-                )).some(container => container.classList.contains('d-none'));
-                button.disabled = !hasMoreHiddenEntries;
-                button.classList.toggle('disabled', !hasMoreHiddenEntries);
-            }
-        }
-
         document.addEventListener("DOMContentLoaded", function() {
-            const handledProjectIndexes = new Set();
-            const form = document.getElementById('harvester-log-form');
-
-            document.querySelectorAll('.work-type-entry-container.d-none').forEach(container => {
-                container.querySelectorAll('input, select, textarea').forEach(field => {
-                    field.disabled = true;
-                });
-            });
+            initForstwirtWorkTypeEntries();
 
             document.querySelectorAll('[id^="bs_start-"]').forEach(startInput => {
                 const projectIndex = startInput.id.substring("bs_start-".length);
-
-                if (handledProjectIndexes.has(projectIndex)) {
-                    return;
-                }
-
-                handledProjectIndexes.add(projectIndex);
 
                 ["bs_start", "bs_end"].forEach(field => {
                     const input = document.getElementById(`${field}-${projectIndex}`);
@@ -316,29 +190,6 @@
                     }
                 });
             });
-
-            document.querySelectorAll('[id^="start-"]').forEach(startInput => {
-                const projectIndex = startInput.id.substring("start-".length);
-
-                if (handledProjectIndexes.has(projectIndex)) {
-                    return;
-                }
-
-                handledProjectIndexes.add(projectIndex);
-
-            });
-
-            document.querySelectorAll('.work-type-select').forEach(select => {
-                select.addEventListener("change", () => {
-                    syncWorkTypeOptions(select.dataset.projectIndex);
-                });
-            });
-
-            handledProjectIndexes.forEach(projectIndex => {
-                syncWorkTypeOptions(projectIndex);
-            });
-
-
         });
     </script>
 </body>

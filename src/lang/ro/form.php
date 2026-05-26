@@ -19,7 +19,6 @@ return [
     'to' => 'La',
     'pause' => 'Pauză (Proces-verbal)',
     'sum' => 'Total',
-    'hours' => 'Ore :Minute',
     'working_type' => 'Tip de activitate',
     'motorsage' => 'Motorsäge',
     'freischneider' => 'Freischneider',

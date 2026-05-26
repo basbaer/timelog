@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Models\Project;
 use App\Models\User;
@@ -25,11 +24,6 @@ class HarvesterLog extends Model
         'fm_total',
         'fm_day',
     ];
-
-    public function entries(): HasMany
-    {
-        return $this->hasMany(HarvesterLogEntry::class);
-    }
 
     public function user(): BelongsTo
     {

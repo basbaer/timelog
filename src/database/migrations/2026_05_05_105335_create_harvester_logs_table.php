@@ -23,12 +23,12 @@ return new class extends Migration
             $table->time('end');
             $table->unsignedInteger('pause')->nullable();
             $table->time('sum')->nullable();
-            $table->float('bs_from', 10, 2)->nullable();
-            $table->float('bs_to', 10, 2)->nullable();
-            $table->float('bs_diff', 10, 2)->nullable();
-            $table->float('fm_amount', 10, 2)->nullable();
-            $table->float('fm_total', 10, 2)->nullable();
-            $table->float('fm_day', 10, 2)->nullable();
+            $table->float('bs_from', 10)->nullable();
+            $table->float('bs_to', 10)->nullable();
+            $table->float('bs_diff', 10)->nullable();
+            $table->float('fm_amount', 10)->nullable();
+            $table->float('fm_total', 10)->nullable();
+            $table->float('fm_day', 10)->nullable();
         });
     }
 

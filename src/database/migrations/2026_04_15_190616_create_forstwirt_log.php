@@ -25,22 +25,13 @@ return new class extends Migration
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->unsignedBigInteger('project_id');
             $table->foreign('project_id')->references('id')->on('projects')->onDelete('cascade');
+            $table->unsignedBigInteger('working_type_id');
+            $table->foreign('working_type_id')->references('id')->on('forstwirt_working_types')->onDelete('cascade');
             $table->date('date');
             $table->time('start');
             $table->time('end');
             $table->unsignedInteger('pause')->nullable();
             $table->time('sum')->nullable();
-
-        });
-
-        Schema::create('forstwirt_log_entries', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-            $table->unsignedBigInteger('forstwirt_log_id');
-            $table->foreign('forstwirt_log_id')->references('id')->on('forstwirt_logs')->onDelete('cascade');
-            $table->unsignedBigInteger('working_type_id');
-            $table->foreign('working_type_id')->references('id')->on('forstwirt_working_types')->onDelete('cascade');
-            $table->time('hours');
             $table->string('comment')->nullable();
         });
     }
@@ -50,8 +41,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('forstwirt_log_entries');
-        Schema::dropIfExists('forstwirt_working_types');
         Schema::dropIfExists('forstwirt_logs');
+        Schema::dropIfExists('forstwirt_working_types');
+        
     }
 };
