@@ -46,7 +46,7 @@ abstract class BaseLogController extends Controller
         if ($user->isHarvester()) {
             $lastLog = $this->logModel()::where('user_id', $user_id)->latest()->first();
             
-            $fm_before = $lastLog ? $lastLog->fm_day : 0;
+            $fm_before = $lastLog ? $lastLog->fm_total : 0;
         }
 
         return compact(['isAdmin', 'user', 'name', 'projects', 'user_id', 'fm_before']);

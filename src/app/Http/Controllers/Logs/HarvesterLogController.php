@@ -39,6 +39,8 @@ class HarvesterLogController extends BaseLogController
             'work_logs.*' => ['required', 'array'],
             'work_logs.*.start' => ['nullable', 'date_format:H:i'],
             'work_logs.*.end' => ['nullable', 'date_format:H:i'],
+            //'work_logs.*.pause' => ['nullable', 'integer', 'min:0'],
+            //'work_logs.*.sum' => ['required', 'date_format:H:i'],
             'work_logs.*.bs_start' => ['nullable', 'integer', 'min:0'],
             'work_logs.*.bs_end' => ['nullable', 'integer', 'min:0'],
             'work_logs.*.bs_diff' => ['nullable', 'string'],
@@ -58,7 +60,8 @@ class HarvesterLogController extends BaseLogController
 
     protected function filterRequest(Request $request): array
     {
-        $projectFields = ['start', 'end', 'bs_start', 'bs_end', 'bs_diff', 'stueckzahl', 'fm_gesamt'];
+        //$projectFields = ['start', 'end','pause', 'sum', 'bs_start', 'bs_end', 'bs_diff', 'stueckzahl', 'fm_gesamt'];
+        $projectFields = ['start', 'end', 'bs_start', 'bs_end', 'bs_diff', 'stueckzahl', 'fm_gesamt', 'day_fm'];
 
         return collect((array) $request->input('work_logs', []))
             ->map(function (array $workLog) use ($projectFields) {
