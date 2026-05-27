@@ -5,10 +5,8 @@ namespace App\Http\Controllers\Logs;
 use App\Http\Controllers\Controller;
 use App\Models\ForstwirtLog;
 use App\Models\ForstwirtWorkingType;
-use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
 
 abstract class BaseLogController extends Controller
 {
@@ -17,10 +15,7 @@ abstract class BaseLogController extends Controller
     abstract protected function workingTypeModel(): string;
     abstract protected function route(): string;    // z.B. 'log.forstwirt' oder 'log.harvester'
     abstract protected function viewPrefix(): string;     // z.B. 'log-forstwirt'
-    abstract protected function validationRules(): array;
-    abstract protected function filterRequest(Request $request): array;
     abstract protected function mapValidatedToLogs(array $validated): array;
-    abstract protected function store(Request $request);
 
 
     private function getUserAndProjects(?int $user_id): array
@@ -80,37 +75,7 @@ abstract class BaseLogController extends Controller
         return view('log-forms/' . $viewPrefix, compact(['projects', 'isAdmin', 'name', 'user_id', 'fm_before']));
     }
 
-    public function validateForm(Request $request): array
-    {
-        $workLogs = $this->filterRequest($request);
-
-        // Merge the filtered work logs back into the request data for validation
-        // (the former work_log gets ovewritten)
-        $request->merge(['work_logs' => $workLogs]);
-
-        $validator = Validator::make($request->all(), $this->validationRules());
-
-        // Ensure that each work type is only selected once per project
-        $validator->after(function ($validator) use ($request) {
-            foreach ((array) $request->input('work_logs', []) as $projectIndex => $workLog) {
-                $types = collect($workLog)
-                    ->filter(fn($entry) => is_array($entry) && array_key_exists('type', $entry))
-                    ->pluck('type')
-                    ->filter() // Filter out empty values
-                    ->values();
-
-                if ($types->count() !== $types->unique()->count()) {
-                    // If there is an error, laravel will automatically redirect back to the form and flash the old input and errors to the session. 
-                    //The error message will be displayed next to the relevant form fields in the view.
-                    $validator->errors()->add("work_logs.$projectIndex", 'Jeder Arbeitstyp darf pro Projekt nur einmal ausgewählt werden.');
-                }
-            }
-        });
-
-        return $validator->validate();
-    }
-
-    public function success(int $log_id) { 
+    public function success(int $log_id) {
         $user_id = $this->logModel()::findOrFail($log_id)->user_id;
         $log_user = User::findOrFail($user_id);
         $name = $log_user->first_name . ' ' . $log_user->last_name;
@@ -129,7 +94,7 @@ abstract class BaseLogController extends Controller
             return view('log-forms/log-success', compact('name', 'log_id'));
         }
     }
-    public function deleteLog(int $log_id) { 
+    public function deleteLog(int $log_id) {
         $log = $this->logModel()::findOrFail($log_id);
 
         // Check if the log belongs to the authenticated user
