@@ -41,7 +41,15 @@ abstract class BaseLogController extends Controller
         // Get all open projects for the user's role
         $projects = $user->openProjects()->get();
 
-        return compact(['isAdmin', 'user', 'name', 'projects', 'user_id']);
+        $fm_before = null; // Initialize $fm_before to null
+        // If user is harvester, also get the last log entry for fm_day calculation in the form
+        if ($user->isHarvester()) {
+            $lastLog = $this->logModel()::where('user_id', $user_id)->latest()->first();
+            
+            $fm_before = $lastLog ? $lastLog->fm_day : 0;
+        }
+
+        return compact(['isAdmin', 'user', 'name', 'projects', 'user_id', 'fm_before']);
     }
 
     /**
@@ -69,7 +77,7 @@ abstract class BaseLogController extends Controller
 
         $viewPrefix = $this->viewPrefix();
         // Route like: log-forms/log-forstwirt
-        return view('log-forms/' . $viewPrefix, compact(['projects', 'isAdmin', 'name', 'user_id']));
+        return view('log-forms/' . $viewPrefix, compact(['projects', 'isAdmin', 'name', 'user_id', 'fm_before']));
     }
 
     public function validateForm(Request $request): array

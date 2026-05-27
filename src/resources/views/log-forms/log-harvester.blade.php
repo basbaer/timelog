@@ -177,6 +177,22 @@
             diffInput.value = diff.toFixed(2);
         }
 
+        function calculateDayFm(projectIndex) {
+            const fmInput = document.getElementById(`fm_gesamt-${projectIndex}`);
+            const dayFmInput = document.getElementById(`day_fm-${projectIndex}`);
+
+            if (!fmInput || !dayFmInput) {
+                return;
+            }
+
+            const fm = parseFloat(fmInput.value);
+            // get the fm_before value from a data attribute on the fm input (set in the blade template)
+            const fm_before = parseFloat(fmInput.dataset.fmBefore) || 0;
+            const dayFm = fm - fm_before;
+
+            dayFmInput.value = dayFm.toFixed(2);
+        }
+
         document.addEventListener("DOMContentLoaded", function() {
             initForstwirtWorkTypeEntries();
 
@@ -189,6 +205,15 @@
                         input.addEventListener("input", () => calculateDiff(projectIndex));
                     }
                 });
+            });
+
+            document.querySelectorAll('[id^="fm_gesamt-"]').forEach(fmInput => {
+                const projectIndex = fmInput.id.substring("fm_gesamt-".length);
+
+                // Store the fm_before value in a data attribute on the fm input for later use in the calculation
+                fmInput.dataset.fmBefore = @json($fm_before);
+
+                fmInput.addEventListener("input", () => calculateDayFm(projectIndex));
             });
         });
     </script>
