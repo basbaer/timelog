@@ -36,15 +36,24 @@ abstract class BaseLogController extends Controller
         // Get all open projects for the user's role
         $projects = $user->openProjects()->get();
 
-        $fm_before = null; // Initialize $fm_before to null
-        // If user is harvester, also get the last log entry for fm_day calculation in the form
+        $fm_before_by_project = []; // map project_id => last fm_total
+
+        // If user is harvester, also get the last log entry per project for fm_day calculation in the form
         if ($user->isHarvester()) {
-            $lastLog = $this->logModel()::where('user_id', $user_id)->latest()->first();
-            
-            $fm_before = $lastLog ? $lastLog->fm_total : 0;
+            foreach ($projects as $project) {
+                $lastLog = $this->logModel()::where('user_id', $user_id)
+                    ->where('project_id', $project->id)
+                    ->latest()
+                    ->first();
+
+                // Add last fm_total to the project collection for use in the form
+                $project->last_fm_total = $lastLog ? $lastLog->fm_total : 0;
+                $fm_before_by_project[$project->id] = $lastLog ? $lastLog->fm_total : 0; // per-project baseline
+                
+            }
         }
 
-        return compact(['isAdmin', 'user', 'name', 'projects', 'user_id', 'fm_before']);
+        return compact(['isAdmin', 'user', 'name', 'projects', 'user_id','fm_before_by_project']);
     }
 
     /**
@@ -72,7 +81,7 @@ abstract class BaseLogController extends Controller
 
         $viewPrefix = $this->viewPrefix();
         // Route like: log-forms/log-forstwirt
-        return view('log-forms/' . $viewPrefix, compact(['projects', 'isAdmin', 'name', 'user_id', 'fm_before']));
+        return view('log-forms/' . $viewPrefix, compact(['projects', 'isAdmin', 'name', 'user_id', 'fm_before_by_project']));
     }
 
     public function success(int $log_id) {

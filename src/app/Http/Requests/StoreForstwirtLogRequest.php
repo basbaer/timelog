@@ -35,7 +35,7 @@ class StoreForstwirtLogRequest extends FormRequest
             'work_logs.*.*.start' => ['required', 'date_format:H:i'],
             'work_logs.*.*.end' => ['required', 'date_format:H:i'],
             'work_logs.*.*.pause' => ['nullable', 'integer', 'min:0'],
-            'work_logs.*.*.sum' => ['required', 'date_format:H:i'],
+            'work_logs.*.*.sum' => ['date_format:H:i'],
             'work_logs.*.*.comment' => ['nullable', 'string', 'max:1000'],
         ];
     }
@@ -58,7 +58,7 @@ class StoreForstwirtLogRequest extends FormRequest
                     continue;
                 }
 
-                foreach (['type', 'start', 'end', 'sum'] as $field) {
+                foreach (['type', 'start', 'end'] as $field) {
                     if (!array_key_exists($field, $entry) || trim((string) ($entry[$field] ?? '')) === '') {
                         $messages["work_logs.$projectId.$entryIndex.$field.required"] = __('log_validation.messages.required', [
                             'project' => $projectLabel,

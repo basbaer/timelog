@@ -45,7 +45,7 @@ class HarvesterLogController extends BaseLogController
                     'bs_diff' => $workLog['bs_diff'] ?? null,
                     'stueckzahl' => isset($workLog['stueckzahl']) ? (int) $workLog['stueckzahl'] : null,
                     'fm_gesamt' => isset($workLog['fm_gesamt']) ? $workLog['fm_gesamt'] : null,
-                    'day_fm' => $workLog['day_fm'] ?? null,
+                    'fm_day' => $workLog['fm_day'] ?? null,
                     'forstwirt_work_entries' => collect($workLog['entries'] ?? [])
                         ->map(fn(array $entry) => [
                             'project_id' => (int) $projectId,
@@ -83,7 +83,7 @@ class HarvesterLogController extends BaseLogController
             $log->bs_diff = $logData['bs_diff'] ?? null;
             $log->fm_amount = $logData['stueckzahl'] ?? null;
             $log->fm_total = $logData['fm_gesamt'] ?? null;
-            $log->fm_day = $logData['day_fm'] ?? null;
+            $log->fm_day = $logData['fm_day'] ?? null;
             $log->save();
             $lastLog = $log;
 

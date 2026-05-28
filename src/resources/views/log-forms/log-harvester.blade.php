@@ -108,12 +108,12 @@
                                     <div class="col-4">
                                         <label for="fm_gesamt-{{ $loop->index }}" class="form-label">Gesamt fm</label>
                                         <input type="number" id="fm_gesamt-{{ $loop->index }}" class="form-control"
-                                            name="work_logs[{{ $project->id }}][fm_gesamt]">
+                                            name="work_logs[{{ $project->id }}][fm_gesamt]" data-project-id="{{ $project->id }}">
                                     </div>
                                     <div class="col-4">
-                                        <label for="day_fm-{{ $loop->index }}" class="form-label">fm/Tag</label>
-                                        <input type="text" id="day_fm-{{ $loop->index }}" class="form-control"
-                                            readonly name="work_logs[{{ $project->id }}][day_fm]">
+                                        <label for="fm_day-{{ $loop->index }}" class="form-label">fm/Tag</label>
+                                        <input type="text" id="fm_day-{{ $loop->index }}" class="form-control"
+                                            readonly name="work_logs[{{ $project->id }}][fm_day]">
                                     </div>
 
                                 </div>
@@ -179,7 +179,7 @@
 
         function calculateDayFm(projectIndex) {
             const fmInput = document.getElementById(`fm_gesamt-${projectIndex}`);
-            const dayFmInput = document.getElementById(`day_fm-${projectIndex}`);
+            const dayFmInput = document.getElementById(`fm_day-${projectIndex}`);
 
             if (!fmInput || !dayFmInput) {
                 return;
@@ -207,11 +207,15 @@
                 });
             });
 
+            // Map of fm_before per project id (provided by controller)
+            const fmBeforeMap = @json($fm_before_by_project ?? []);
+
             document.querySelectorAll('[id^="fm_gesamt-"]').forEach(fmInput => {
                 const projectIndex = fmInput.id.substring("fm_gesamt-".length);
+                const projectId = fmInput.dataset.projectId;
 
-                // Store the fm_before value in a data attribute on the fm input for later use in the calculation
-                fmInput.dataset.fmBefore = @json($fm_before);
+                // Store the fm_before value (per-project) in a data attribute on the fm input for later use
+                fmInput.dataset.fmBefore = (fmBeforeMap[projectId] !== undefined) ? fmBeforeMap[projectId] : 0;
 
                 fmInput.addEventListener("input", () => calculateDayFm(projectIndex));
             });
