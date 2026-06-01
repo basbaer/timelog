@@ -21,24 +21,12 @@
                 'other' => __('form.other'),
             ];
             $workTypeCount = count($workTypes);
+            $today = now()->format('Y-m-d');
         @endphp
         <div class="container my-3 px-0">
             <label for="date" class="form-label">{{ __('form.date') }}</label>
             <input id="date" name="log_date" class="form-control" type="date" lang="de"
-                @unless ($isAdmin) readonly @endunless />
-            <script>
-                document.addEventListener("DOMContentLoaded", function() {
-                    const input = document.getElementById("date");
-
-                    const now = new Date();
-                    const yyyy = now.getFullYear();
-                    const mm = String(now.getMonth() + 1).padStart(2, "0");
-                    const dd = String(now.getDate()).padStart(2, "0");
-                    const today = `${yyyy}-${mm}-${dd}`; // YYYY-MM-DD
-
-                    input.value = today;
-                });
-            </script>
+                value="{{ old('log_date', $today) }}" @unless ($isAdmin) readonly @endunless />
         </div>
 
         <div class="accordion" id="accordionProjects">

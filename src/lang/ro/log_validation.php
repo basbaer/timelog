@@ -3,6 +3,7 @@
 return [
     'messages' => [
         'required' => "În proiectul :project nu s-au furnizat informații referitoare la ':field'. Te rugăm să completezi și acest câmp și să trimiți din nou datele.",
+        'required_with' => "În proiectul :project ai completat ':other_field', dar nu și ':field' (te rugăm să completezi ambele câmpuri sau să le lași ambele necompletate).",
     ],
 
     'fields' => [

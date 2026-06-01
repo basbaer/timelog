@@ -9,8 +9,11 @@
 @php
     $entryBase = "work-{$projectIndex}-{$entryIndex}";
     $entryClass = 'work-type-entry-container';
+    $oldEntry = old("work_logs.$projectId.$entryIndex", []);
+    $hasOldEntry = is_array($oldEntry)
+        && collect($oldEntry)->contains(fn ($value) => trim((string) $value) !== '');
 
-    if ($hidden) {
+    if ($hidden && ! $hasOldEntry) {
         $entryClass .= ' d-none';
     }
 @endphp
@@ -24,8 +27,11 @@
             <select id="{{ $entryBase }}-type" class="form-select work-type-select"
                 name="work_logs[{{ $projectId }}][{{ $entryIndex }}][type]" data-project-index="{{ $projectIndex }}"
                 data-entry-index="{{ $entryIndex }}">
+                @php
+                    $selectedWorkType = old("work_logs.$projectId.$entryIndex.type", array_key_first($workTypes));
+                @endphp
                 @foreach ($workTypes as $type => $label)
-                    <option value="{{ $type }}">{{ $label }}</option>
+                    <option value="{{ $type }}" @selected($selectedWorkType === $type)>{{ $label }}</option>
                 @endforeach
             </select>
         </div>
@@ -33,32 +39,36 @@
         <div class="col-6 col-md-2 mb-2">
             <label for="{{ $entryBase }}-start" class="form-label">{{ __('form.from') }}</label>
             <input type="time" id="{{ $entryBase }}-start" class="form-control"
-                name="work_logs[{{ $projectId }}][{{ $entryIndex }}][start]" lang="de-DE" step="900">
+                name="work_logs[{{ $projectId }}][{{ $entryIndex }}][start]" lang="de-DE" step="900"
+                value="{{ old("work_logs.$projectId.$entryIndex.start") }}">
         </div>
 
         <div class="col-6 col-md-2 mb-2">
             <label for="{{ $entryBase }}-end" class="form-label">{{ __('form.to') }}</label>
             <input type="time" id="{{ $entryBase }}-end" class="form-control"
-                name="work_logs[{{ $projectId }}][{{ $entryIndex }}][end]" lang="de-DE" step="900">
+                name="work_logs[{{ $projectId }}][{{ $entryIndex }}][end]" lang="de-DE" step="900"
+                value="{{ old("work_logs.$projectId.$entryIndex.end") }}">
         </div>
 
         <div class="col-6 col-md-2 mb-2">
             <label for="{{ $entryBase }}-pause" class="form-label">{{ __('form.pause') }}</label>
             <input type="number" id="{{ $entryBase }}-pause" class="form-control"
-                name="work_logs[{{ $projectId }}][{{ $entryIndex }}][pause]" min="0" value="0" step="15">
+                name="work_logs[{{ $projectId }}][{{ $entryIndex }}][pause]" min="0"
+                value="{{ old("work_logs.$projectId.$entryIndex.pause", 0) }}" step="15">
         </div>
 
         <div class="col-6 col-md-2 mb-2">
             <label for="{{ $entryBase }}-sum" class="form-label">{{ __('form.working_time') }}</label>
             <input type="text" id="{{ $entryBase }}-sum" class="form-control"
-                name="work_logs[{{ $projectId }}][{{ $entryIndex }}][sum]" readonly>
+                name="work_logs[{{ $projectId }}][{{ $entryIndex }}][sum]" readonly
+                value="{{ old("work_logs.$projectId.$entryIndex.sum") }}">
         </div>
     </div>
 
     <div class="mb-3">
         <label for="{{ $entryBase }}-comment" class="form-label">{{ __('form.comment') }}</label>
         <textarea class="form-control" id="{{ $entryBase }}-comment"
-            name="work_logs[{{ $projectId }}][{{ $entryIndex }}][comment]" rows="3"></textarea>
+            name="work_logs[{{ $projectId }}][{{ $entryIndex }}][comment]" rows="3">{{ old("work_logs.$projectId.$entryIndex.comment") }}</textarea>
     </div>
 </div>
 
@@ -258,6 +268,10 @@
 
             handledProjectIndexes.forEach(projectIndex => {
                 syncWorkTypeOptions(projectIndex);
+            });
+
+            document.querySelectorAll('.work-type-entry-container').forEach(container => {
+                calculateWorkingHours(container.dataset.projectIndex, container.dataset.entryIndex);
             });
         }
 

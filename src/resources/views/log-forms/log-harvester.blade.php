@@ -21,18 +21,12 @@
                 'other' => __('form.other'),
             ];
             $workTypeCount = count($workTypes);
+            $today = now()->format('Y-m-d');
         @endphp
         <!-- Date -->
         <div class="container my-3 px-0">
             <label for="date" class="form-label">Datum</label>
-            <input id="date" name="log_date" class="form-control" type="date" />
-            <script>
-                document.addEventListener("DOMContentLoaded", function() {
-                    const input = document.getElementById("date");
-                    const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
-                    input.value = today;
-                });
-            </script>
+            <input id="date" name="log_date" class="form-control" type="date" value="{{ old('log_date', $today) }}" />
         </div>
 
         <div class="accordion" id="accordionProjects">
@@ -56,14 +50,16 @@
                                         <label for="start-{{ $loop->index }}"
                                             class="form-label">{{ __('form.from') }}</label>
                                         <input type="time" id="start-{{ $loop->index }}" class="form-control"
-                                            name="work_logs[{{ $project->id }}][start]" lang="de-DE" step="900">
+                                            name="work_logs[{{ $project->id }}][start]" lang="de-DE" step="900"
+                                            value="{{ old("work_logs.$project->id.start") }}">
                                     </div>
 
                                     <div class="col-sm-auto col-6">
                                         <label for="end-{{ $loop->index }}"
                                             class="form-label">{{ __('form.to') }}</label>
                                         <input type="time" id="end-{{ $loop->index }}" class="form-control"
-                                            name="work_logs[{{ $project->id }}][end]" lang="de-DE" step="900">
+                                            name="work_logs[{{ $project->id }}][end]" lang="de-DE" step="900"
+                                            value="{{ old("work_logs.$project->id.end") }}">
                                     </div>
                                 </div>
                             </div>
@@ -76,20 +72,23 @@
                                         <label for="bs_start-{{ $loop->index }}"
                                             class="form-label">{{ __('form.from') }}</label>
                                         <input type="number" id="bs_start-{{ $loop->index }}" class="form-control"
-                                            name="work_logs[{{ $project->id }}][bs_start]">
+                                            name="work_logs[{{ $project->id }}][bs_start]"
+                                            value="{{ old("work_logs.$project->id.bs_start") }}">
                                     </div>
 
                                     <div class="col-5 ps-1">
                                         <label for="bs_end-{{ $loop->index }}"
                                             class="form-label">{{ __('form.to') }}</label>
                                         <input type="number" id="bs_end-{{ $loop->index }}" class="form-control"
-                                            name="work_logs[{{ $project->id }}][bs_end]">
+                                            name="work_logs[{{ $project->id }}][bs_end]"
+                                            value="{{ old("work_logs.$project->id.bs_end") }}">
                                     </div>
 
                                     <div class="col-2 ps-0">
                                         <label for="bs_diff-{{ $loop->index }}" class="form-label">Diff.</label>
                                         <input type="text" id="bs_diff-{{ $loop->index }}" class="form-control"
-                                            readonly name="work_logs[{{ $project->id }}][bs_diff]">
+                                            readonly name="work_logs[{{ $project->id }}][bs_diff]"
+                                            value="{{ old("work_logs.$project->id.bs_diff") }}">
                                     </div>
                                 </div>
                             </div>
@@ -103,17 +102,20 @@
                                         <label for="stueckzahl-{{ $loop->index }}"
                                             class="form-label">Stückzahl</label>
                                         <input type="number" id="stueckzahl-{{ $loop->index }}" class="form-control"
-                                            name="work_logs[{{ $project->id }}][stueckzahl]">
+                                            name="work_logs[{{ $project->id }}][stueckzahl]"
+                                            value="{{ old("work_logs.$project->id.stueckzahl") }}">
                                     </div>
                                     <div class="col-4">
                                         <label for="fm_gesamt-{{ $loop->index }}" class="form-label">Gesamt fm</label>
                                         <input type="number" id="fm_gesamt-{{ $loop->index }}" class="form-control"
-                                            name="work_logs[{{ $project->id }}][fm_gesamt]" data-project-id="{{ $project->id }}">
+                                            name="work_logs[{{ $project->id }}][fm_gesamt]" data-project-id="{{ $project->id }}"
+                                            value="{{ old("work_logs.$project->id.fm_gesamt") }}">
                                     </div>
                                     <div class="col-4">
                                         <label for="fm_day-{{ $loop->index }}" class="form-label">fm/Tag</label>
-                                        <input type="text" id="fm_day-{{ $loop->index }}" class="form-control"
-                                            readonly name="work_logs[{{ $project->id }}][fm_day]">
+                                        <input type="number" id="fm_day-{{ $loop->index }}" class="form-control"
+                                            readonly name="work_logs[{{ $project->id }}][fm_day]"
+                                            value="{{ old("work_logs.$project->id.fm_day") }}">
                                     </div>
 
                                 </div>
@@ -177,24 +179,29 @@
             diffInput.value = diff.toFixed(2);
         }
 
-        function calculateDayFm(projectIndex) {
+        function calculateFmDay(projectIndex) {
             const fmInput = document.getElementById(`fm_gesamt-${projectIndex}`);
-            const dayFmInput = document.getElementById(`fm_day-${projectIndex}`);
+            const fmdayInput = document.getElementById(`fm_day-${projectIndex}`);
 
-            if (!fmInput || !dayFmInput) {
+            if (!fmInput || !fmdayInput) {
                 return;
             }
 
             const fm = parseFloat(fmInput.value);
             // get the fm_before value from a data attribute on the fm input (set in the blade template)
             const fm_before = parseFloat(fmInput.dataset.fmBefore) || 0;
-            const dayFm = fm - fm_before;
+            const fm_day = fm - fm_before;
 
-            dayFmInput.value = dayFm.toFixed(2);
+            fmdayInput.value = fm_day.toFixed(2);
         }
 
         document.addEventListener("DOMContentLoaded", function() {
             initForstwirtWorkTypeEntries();
+
+            document.querySelectorAll('[id^="bs_start-"]').forEach(startInput => {
+                const projectIndex = startInput.id.substring("bs_start-".length);
+                calculateDiff(projectIndex);
+            });
 
             document.querySelectorAll('[id^="bs_start-"]').forEach(startInput => {
                 const projectIndex = startInput.id.substring("bs_start-".length);
@@ -217,7 +224,8 @@
                 // Store the fm_before value (per-project) in a data attribute on the fm input for later use
                 fmInput.dataset.fmBefore = (fmBeforeMap[projectId] !== undefined) ? fmBeforeMap[projectId] : 0;
 
-                fmInput.addEventListener("input", () => calculateDayFm(projectIndex));
+                fmInput.addEventListener("input", () => calculateFmDay(projectIndex));
+                //calculateFmDay(projectIndex);
             });
         });
     </script>

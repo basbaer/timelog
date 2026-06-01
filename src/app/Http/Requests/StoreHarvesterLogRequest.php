@@ -65,13 +65,31 @@ class StoreHarvesterLogRequest extends FormRequest
                 (array_key_exists('bs_start', $workLog) && trim((string) ($workLog['bs_start'] ?? '')) !== '')
                 || (array_key_exists('bs_end', $workLog) && trim((string) ($workLog['bs_end'] ?? '')) !== '')
             ) {
-                $messages["work_logs.$projectId.bs_end.required_with"] = __('log_validation.messages.required', [
+                $messages["work_logs.$projectId.bs_end.required_with"] = __('log_validation.messages.required_with', [
                     'project' => $projectLabel,
                     'field' => __('log_validation.fields.bs_end'),
+                    'other_field' => __('log_validation.fields.bs_start'),
                 ]);
-                $messages["work_logs.$projectId.bs_start.required_with"] = __('log_validation.messages.required', [
+                $messages["work_logs.$projectId.bs_start.required_with"] = __('log_validation.messages.required_with', [
                     'project' => $projectLabel,
                     'field' => __('log_validation.fields.bs_start'),
+                    'other_field' => __('log_validation.fields.bs_end'),
+                ]);
+            }
+
+            if (
+                (array_key_exists('stueckzahl', $workLog) && trim((string) ($workLog['stueckzahl'] ?? '')) !== '')
+                || (array_key_exists('fm_gesamt', $workLog) && trim((string) ($workLog['fm_gesamt'] ?? '')) !== '')
+            ) {
+                $messages["work_logs.$projectId.fm_gesamt.required_with"] = __('log_validation.messages.required_with', [
+                    'project' => $projectLabel,
+                    'field' => __('log_validation.fields.fm_gesamt'),
+                    'other_field' => __('log_validation.fields.stueckzahl'),
+                ]);
+                $messages["work_logs.$projectId.stueckzahl.required_with"] = __('log_validation.messages.required_with', [
+                    'project' => $projectLabel,
+                    'field' => __('log_validation.fields.stueckzahl'),
+                    'other_field' => __('log_validation.fields.fm_gesamt'),
                 ]);
             }
 

@@ -2,7 +2,8 @@
 
 return [
     'messages' => [
-        'required' => "Im Projekt :project wurde keine Angabe zu ':field' gemacht. Bitte gib auch dieses Feld an und sende die Daten erneut.",
+        'required' => "Im Projekt :project wurde fehlt die Angabe zu ':field'.",
+        'required_with' => "Im Projekt :project wurde ':other_field' angegeben, aber nicht ':field' (gib beide Felder an oder lasse beide leer).",
     ],
 
     'fields' => [
