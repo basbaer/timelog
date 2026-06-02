@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Logs;
 use App\Http\Requests\StoreHarvesterLogRequest;
 use App\Models\ForstwirtWorkingType;
 use App\Models\HarvesterLog;
+use Illuminate\Support\Collection;
 use Illuminate\Http\RedirectResponse;
 
 class HarvesterLogController extends BaseLogController
@@ -27,6 +28,26 @@ class HarvesterLogController extends BaseLogController
     public function viewPrefix(): string
     {
         return 'log-harvester';
+    }
+
+    protected function addPreviousData(int $user_id, Collection $projects): Collection
+    {
+ 
+        foreach ($projects as $project) {
+
+            $lastLog = $this->logModel()::where('user_id', $user_id)
+                ->where('project_id', $project->id)
+                ->latest()
+                ->first();
+
+            // Add last fm_total to the project collection for use in the form
+            $project->last_fm_total = $lastLog ? $lastLog->fm_total : 0;
+            $project->last_bs = $lastLog ? $lastLog->bs_to : 0;
+
+            $projects[$project->id] = $project;
+
+        }
+        return $projects;
     }
 
     protected function mapValidatedToLogs(array $validated): array

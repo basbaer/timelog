@@ -73,7 +73,8 @@
                                             class="form-label">{{ __('form.from') }}</label>
                                         <input type="number" id="bs_start-{{ $loop->index }}" class="form-control"
                                             name="work_logs[{{ $project->id }}][bs_start]"
-                                            value="{{ old("work_logs.$project->id.bs_start") }}">
+                                            value="{{ old("work_logs.$project->id.bs_start") }}"
+                                            placeholder="Stand: {{ $projects[$project->id]['last_bs'] }}">
                                     </div>
 
                                     <div class="col-5 ps-1">
@@ -108,8 +109,9 @@
                                     <div class="col-4">
                                         <label for="fm_gesamt-{{ $loop->index }}" class="form-label">Gesamt fm</label>
                                         <input type="number" id="fm_gesamt-{{ $loop->index }}" class="form-control"
-                                            name="work_logs[{{ $project->id }}][fm_gesamt]" data-project-id="{{ $project->id }}"
-                                            value="{{ old("work_logs.$project->id.fm_gesamt") }}">
+                                            name="work_logs[{{ $project->id }}][fm_gesamt]" data-fm-before="{{ $projects[$project->id]['last_fm_total'] }}"
+                                            value="{{ old("work_logs.$project->id.fm_gesamt") }}"
+                                            placeholder="Stand: {{ $projects[$project->id]['last_fm_total'] }}">
                                     </div>
                                     <div class="col-4">
                                         <label for="fm_day-{{ $loop->index }}" class="form-label">fm/Tag</label>
@@ -187,6 +189,11 @@
                 return;
             }
 
+            if (fmInput.value.trim() === "") {
+                fmdayInput.value = "";
+                return;
+            }
+
             const fm = parseFloat(fmInput.value);
             // get the fm_before value from a data attribute on the fm input (set in the blade template)
             const fm_before = parseFloat(fmInput.dataset.fmBefore) || 0;
@@ -214,18 +221,11 @@
                 });
             });
 
-            // Map of fm_before per project id (provided by controller)
-            const fmBeforeMap = @json($fm_before_by_project ?? []);
-
             document.querySelectorAll('[id^="fm_gesamt-"]').forEach(fmInput => {
                 const projectIndex = fmInput.id.substring("fm_gesamt-".length);
-                const projectId = fmInput.dataset.projectId;
-
-                // Store the fm_before value (per-project) in a data attribute on the fm input for later use
-                fmInput.dataset.fmBefore = (fmBeforeMap[projectId] !== undefined) ? fmBeforeMap[projectId] : 0;
 
                 fmInput.addEventListener("input", () => calculateFmDay(projectIndex));
-                //calculateFmDay(projectIndex);
+                calculateFmDay(projectIndex);
             });
         });
     </script>

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\ForstwirtLog;
 use App\Models\ForstwirtWorkingType;
 use App\Models\User;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 
 abstract class BaseLogController extends Controller
@@ -16,6 +17,7 @@ abstract class BaseLogController extends Controller
     abstract protected function route(): string;    // z.B. 'log.forstwirt' oder 'log.harvester'
     abstract protected function viewPrefix(): string;     // z.B. 'log-forstwirt'
     abstract protected function mapValidatedToLogs(array $validated): array;
+    abstract protected function addPreviousData(int $user_id, Collection $projects): Collection;
 
 
     private function getUserAndProjects(?int $user_id): array
@@ -36,24 +38,12 @@ abstract class BaseLogController extends Controller
         // Get all open projects for the user's role
         $projects = $user->openProjects()->get();
 
-        $fm_before_by_project = []; // map project_id => last fm_total
+        // Change $projects keys to id's
+        $projects = $projects->keyBy('id');
 
-        // If user is harvester, also get the last log entry per project for fm_day calculation in the form
-        if ($user->isHarvester()) {
-            foreach ($projects as $project) {
-                $lastLog = $this->logModel()::where('user_id', $user_id)
-                    ->where('project_id', $project->id)
-                    ->latest()
-                    ->first();
+        $projects = $this->addPreviousData($user_id, $projects);
 
-                // Add last fm_total to the project collection for use in the form
-                $project->last_fm_total = $lastLog ? $lastLog->fm_total : 0;
-                $fm_before_by_project[$project->id] = $lastLog ? $lastLog->fm_total : 0; // per-project baseline
-                
-            }
-        }
-
-        return compact(['isAdmin', 'user', 'name', 'projects', 'user_id','fm_before_by_project']);
+        return compact(['isAdmin', 'user', 'name', 'projects', 'user_id']);
     }
 
     /**
@@ -81,7 +71,7 @@ abstract class BaseLogController extends Controller
 
         $viewPrefix = $this->viewPrefix();
         // Route like: log-forms/log-forstwirt
-        return view('log-forms/' . $viewPrefix, compact(['projects', 'isAdmin', 'name', 'user_id', 'fm_before_by_project']));
+        return view('log-forms/' . $viewPrefix, compact(['projects', 'isAdmin', 'name', 'user_id']));
     }
 
     public function success(int $log_id) {
