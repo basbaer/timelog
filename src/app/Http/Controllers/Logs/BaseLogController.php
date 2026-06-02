@@ -63,10 +63,12 @@ abstract class BaseLogController extends Controller
         $existingLog = $logClass::where('user_id', $user_id)
             ->where('date', $today)
             ->first();
+
         // if there is an existing log, show the success page instead of log form - but only for non-admin users (admins can view the log form for any user, even if they already have a log for today)
         if ($existingLog && !$isAdmin) {
             // Route like: log.forstwirt.success
-            return redirect()->route($this->route() . '.success', ['log_id' => $existingLog->id]);
+            session()->flash('last_log', $existingLog); // Store log in session for retrieval in success method
+            return redirect()->route($this->route() . '.success');
         }
 
         $viewPrefix = $this->viewPrefix();
@@ -74,7 +76,10 @@ abstract class BaseLogController extends Controller
         return view('log-forms/' . $viewPrefix, compact(['projects', 'isAdmin', 'name', 'user_id']));
     }
 
-    public function success(int $log_id) {
+    public function success() {
+        $log = session()->get('last_log');
+        $log_id = $log ? $log->id : null;
+
         $user_id = $this->logModel()::findOrFail($log_id)->user_id;
         $log_user = User::findOrFail($user_id);
         $name = $log_user->first_name . ' ' . $log_user->last_name;
@@ -95,11 +100,6 @@ abstract class BaseLogController extends Controller
     }
     public function deleteLog(int $log_id) {
         $log = $this->logModel()::findOrFail($log_id);
-
-        // Check if the log belongs to the authenticated user
-        if ($log->user_id !== Auth::id()) {
-            abort(403, 'Unauthorized action.');
-        }
 
         // Delete the log and its entries
         $log->entries()->delete();

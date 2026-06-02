@@ -113,6 +113,8 @@ class HarvesterLogController extends BaseLogController
             }
         }
 
-        return redirect()->route($this->route() . '.success', ['log_id' => $lastLog->id]);
+        session()->flash('last_log', $lastLog);
+
+        return redirect()->route($this->route() . '.success');
     }
 }

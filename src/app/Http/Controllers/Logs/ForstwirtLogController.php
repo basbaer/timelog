@@ -7,6 +7,7 @@ use App\Http\Requests\StoreForstwirtLogRequest;
 use App\Models\ForstwirtLog;
 use App\Models\ForstwirtWorkingType;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Collection;
 
 class ForstwirtLogController extends BaseLogController
 {
@@ -29,6 +30,12 @@ class ForstwirtLogController extends BaseLogController
     {
         return 'log-forstwirt';
     }
+
+    protected function addPreviousData(int $user_id, Collection $projects): Collection
+    {
+        return $projects;
+    }
+
     protected function mapValidatedToLogs(array $validated): array
     {
         $logDate = $validated['log_date'];
@@ -60,6 +67,8 @@ class ForstwirtLogController extends BaseLogController
 
         $lastLog = $this->saveForstwirtLogs($mappedLogs, $request->input('user_id'));
 
-        return redirect()->route($this->route() . '.success', ['log_id' => $lastLog->id]);
+        session()->flash('last_log', $lastLog);
+
+        return redirect()->route($this->route() . '.success');
     }
 }
