@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Logs;
 
 use App\Http\Requests\StoreHarvesterLogRequest;
+use App\Models\ForstwirtLog;
 use App\Models\ForstwirtWorkingType;
 use App\Models\HarvesterLog;
 use Illuminate\Support\Collection;
@@ -23,6 +24,34 @@ class HarvesterLogController extends BaseLogController
     public function route(): string
     {
         return 'log.harvester';
+    }
+
+    protected function loadSuccessLogs(int $userId, string $date): Collection
+    {
+        $harvesterLogs = HarvesterLog::with(['project'])
+            ->where('user_id', $userId)
+            ->whereDate('date', $date)
+            ->get()
+            ->map(function (HarvesterLog $log) {
+                $log->entry_label = 'harvester';
+                return $log;
+            });
+
+        $forstwirtLogs = ForstwirtLog::with(['project', 'workingType'])
+            ->where('user_id', $userId)
+            ->whereDate('date', $date)
+            ->get()
+            ->map(function (ForstwirtLog $log) {
+                $log->entry_label = 'forstwirt';
+                return $log;
+            });
+
+        return $harvesterLogs
+            ->concat($forstwirtLogs)
+            ->sortBy(function ($log) {
+                return sprintf('%s|%s|%s', $log->project_id, $log->start ?? '', $log->created_at ?? '');
+            })
+            ->values();
     }
 
     public function viewPrefix(): string
@@ -113,8 +142,17 @@ class HarvesterLogController extends BaseLogController
             }
         }
 
-        session()->flash('last_log', $lastLog);
+        return redirect()->route($this->route() . '.success', ['worker_id' => (int) $lastLog->user_id]);
+    }
 
-        return redirect()->route($this->route() . '.success');
+    public function getLogOfToday(int $user_id)
+    {
+        $harvesterLog =$this->logModel()::where('user_id', $user_id)->whereDate('date', today())->first();
+
+        if (!$harvesterLog) {
+            $log = ForstwirtLog::where('user_id', $user_id)->whereDate('date', today())->first();
+        }
+
+        return $harvesterLog ?? $log;
     }
 }

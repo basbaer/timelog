@@ -67,8 +67,11 @@ class ForstwirtLogController extends BaseLogController
 
         $lastLog = $this->saveForstwirtLogs($mappedLogs, $request->input('user_id'));
 
-        session()->flash('last_log', $lastLog);
+        return redirect()->route($this->route() . '.success', ['worker_id' => (int) $lastLog->user_id]);
+    }
 
-        return redirect()->route($this->route() . '.success');
+    public function getLogOfToday(int $user_id)
+    {
+        return ForstwirtLog::where('user_id', $user_id)->whereDate('date', today())->first();
     }
 }

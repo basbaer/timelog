@@ -17,7 +17,7 @@ return [
     'working_time' => 'Programul de lucru',
     'from' => 'De',
     'to' => 'La',
-    'pause' => 'Pauză (Proces-verbal)',
+    'pause' => 'Pauză (minute)',
     'sum' => 'Total',
     'working_type' => 'Tip de activitate',
     'motorsage' => 'Motorsäge',

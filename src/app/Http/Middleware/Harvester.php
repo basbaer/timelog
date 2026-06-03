@@ -26,13 +26,14 @@ class Harvester
         }
 
         // Check permission to view another user's log: only admins may view other users' logs
-        $userId = $request->route('id') ?? $request->input('id');
+        $workerId = $request->route('worker_id') ?? $request->input('worker_id');
 
         if ($user->isAdmin()) {
             return $next($request);
         }
 
-        if ($userId !== null && (int) $userId !== $user->id) {
+        // When there is a worker_id in the route or request, check if it matches the authenticated user's id
+        if ($workerId !== null && (int) $workerId !== $user->id) {
             abort(403, 'Unauthorized action.');
         }
 

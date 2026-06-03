@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\ForstwirtLog;
 use App\Models\ForstwirtWorkingType;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 
@@ -18,7 +19,7 @@ abstract class BaseLogController extends Controller
     abstract protected function viewPrefix(): string;     // z.B. 'log-forstwirt'
     abstract protected function mapValidatedToLogs(array $validated): array;
     abstract protected function addPreviousData(int $user_id, Collection $projects): Collection;
-
+    abstract public function getLogOfToday(int $user_id);
 
     private function getUserAndProjects(?int $user_id): array
     {
@@ -52,8 +53,9 @@ abstract class BaseLogController extends Controller
      * Note: $id is optional and only used when an admin wants to view the log form for a specific user.
      *       Regular users will not provide an id and will see their own log form.
      */
-    public function show($user_id = null) { 
- 
+    public function show($user_id = null)
+    {
+
         $data = $this->getUserAndProjects($user_id);
         extract($data); // Extrahiere Variablen wie $isAdmin, $user, $name, $projects, $user_id
 
@@ -76,14 +78,21 @@ abstract class BaseLogController extends Controller
         return view('log-forms/' . $viewPrefix, compact(['projects', 'isAdmin', 'name', 'user_id']));
     }
 
-    public function success() {
-        $log = session()->get('last_log');
+    public function success(int $worker_id)
+    {
+        $log = $this->getLogOfToday($worker_id);
+
+        if (!$log) {
+            return redirect()->route($this->route())->with('error', 'Log entry not found.');
+        }
+
         $log_id = $log ? $log->id : null;
 
-        $user_id = $this->logModel()::findOrFail($log_id)->user_id;
+        $log = $this->logModel()::with(['project'])->findOrFail($log_id);
+        $user_id = $log->user_id;
         $log_user = User::findOrFail($user_id);
         $name = $log_user->first_name . ' ' . $log_user->last_name;
-        $log = $this->logModel()::findOrFail($log_id);
+        $logDate = Carbon::parse($log->date);
 
         /** @var \App\Models\User $user */
         $user = Auth::user();
@@ -91,14 +100,49 @@ abstract class BaseLogController extends Controller
         if ($user->isAdmin()) {
             // Admin is redirected to worker detail page
             return redirect()->route('admin.worker.show', ['id' => $user_id])->with('success', 'Eintrag erfolgreich hinzugefügt.');
-        } else if ($log->user_id !== $user->id) {
-            //Check if the log belongs to the authenticated user
-            return redirect()->route($this->route())->with('error', 'Unauthorized access to log entry.');
         } else {
-            return view('log-forms/log-success', compact('name', 'log_id'));
+            $logOverview = $this->buildSuccessOverview($user_id, $logDate);
+            $deleteRouteName = $this->route() . '.delete';
+
+            $logDate = Carbon::parse($log->date)->format('d.m.Y');
+            return view('log-forms/log-success', compact('name', 'log_id', 'logOverview', 'logDate', 'deleteRouteName'));
         }
     }
-    public function deleteLog(int $log_id) {
+
+
+
+    protected function buildSuccessOverview(int $userId, string $date): Collection
+    {
+        return $this->loadSuccessLogs($userId, $date)
+            ->groupBy(fn($log) => $log->project_id)
+            ->map(function (Collection $logs) {
+                $firstLog = $logs->first();
+
+                return [
+                    'project' => $firstLog->project,
+                    'logs' => $logs->values(),
+                ];
+            })
+            ->values();
+    }
+
+    protected function loadSuccessLogs(int $userId, string $date): Collection
+    {
+        return $this->logModel()::with(['project', 'workingType'])
+            ->where('user_id', $userId)
+            ->whereDate('date', $date)
+            ->orderBy('project_id')
+            ->orderBy('start')
+            ->get()
+            ->map(function ($log) {
+                $log->entry_label = class_basename($this->logModel()) === 'HarvesterLog' ? 'harvester' : 'forstwirt';
+
+                return $log;
+            });
+    }
+
+    public function deleteLog(int $log_id)
+    {
         $log = $this->logModel()::findOrFail($log_id);
 
         // Delete the log and its entries
@@ -133,5 +177,3 @@ abstract class BaseLogController extends Controller
         return $lastLog;
     }
 }
-
-?>
