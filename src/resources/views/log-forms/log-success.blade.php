@@ -93,12 +93,12 @@
         </div>
     @endif
 
-    <form id="success-form" action="{{ route($deleteRouteName, ['log_id' => $log_id]) }}" method="POST"
+    <form id="success-form" action="{{ route($deleteRouteName, ['worker_id' => $user_id]) }}" method="POST"
         class="mt-3">
         @csrf
         @method('DELETE')
         <div class="container d-flex justify-content-center">
-            <button class="btn btn-danger"> {{ __('form.edit_entry') }}</button>
+            <button class="btn btn-danger" type="submit"> {{ __('form.edit_entry') }}</button>
         </div>
     </form>
 

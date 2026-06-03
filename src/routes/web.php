@@ -126,7 +126,7 @@ Route::get('/log-forstwirt/{worker_id}/success', [ForstwirtLogController::class,
     ->name('log.forstwirt.success')
     ->middleware([Forstwirt::class]);
 
-Route::delete('/log-forstwirt/{log_id}/delete', [ForstwirtLogController::class, 'deleteLog'])
+Route::delete('/log-forstwirt/{worker_id}/delete', [ForstwirtLogController::class, 'deleteLog'])
     ->middleware([Forstwirt::class])
     ->name('log.forstwirt.delete');
 
@@ -140,7 +140,7 @@ Route::middleware(Harvester::class)->group(function () {
 
     Route::get('/log-harvester/{worker_id}/success', [HarvesterLogController::class, 'success'])->name('log.harvester.success');
 
-    Route::delete('/log-harvester/{log_id}/delete', [HarvesterLogController::class, 'deleteLog'])->name('log.harvester.delete');
+    Route::delete('/log-harvester/{worker_id}/delete', [HarvesterLogController::class, 'deleteLog'])->name('log.harvester.delete');
 });
 
 

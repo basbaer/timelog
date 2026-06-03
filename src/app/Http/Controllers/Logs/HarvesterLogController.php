@@ -8,9 +8,13 @@ use App\Models\ForstwirtWorkingType;
 use App\Models\HarvesterLog;
 use Illuminate\Support\Collection;
 use Illuminate\Http\RedirectResponse;
+use App\Services\ForstwirtLogService;
 
 class HarvesterLogController extends BaseLogController
 {
+    public function __construct(
+        private ForstwirtLogService $forstwirtLogService
+    ) {}
     public function logModel(): string
     {
         return HarvesterLog::class;
@@ -138,7 +142,7 @@ class HarvesterLogController extends BaseLogController
             $lastLog = $log;
 
             if (!empty($logData['forstwirt_work_entries'])) {
-                $this->saveForstwirtLogs($logData['forstwirt_work_entries'], (int) $log->user_id);
+                $this->forstwirtLogService->saveLogs($logData['forstwirt_work_entries'], (int) $log->user_id);
             }
         }
 
@@ -154,5 +158,17 @@ class HarvesterLogController extends BaseLogController
         }
 
         return $harvesterLog ?? $log;
+    }
+
+    public function deleteLogsOfDate(int $user_id, string $date)
+    {
+        $harvesterLogs = HarvesterLog::where('user_id', $user_id)->whereDate('date', $date)->get();
+
+        foreach ($harvesterLogs as $log) {
+            $log->delete();
+        }
+
+        $this->forstwirtLogService->deleteLogsFrom($user_id, $date);
+
     }
 }

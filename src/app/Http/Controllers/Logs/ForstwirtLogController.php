@@ -6,11 +6,16 @@ use App\Http\Controllers\Logs\BaseLogController;
 use App\Http\Requests\StoreForstwirtLogRequest;
 use App\Models\ForstwirtLog;
 use App\Models\ForstwirtWorkingType;
+use App\Services\ForstwirtLogService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Collection;
 
 class ForstwirtLogController extends BaseLogController
 {
+    public function __construct(
+        private ForstwirtLogService $forstwirtLogService
+    ) {}    
+
     public function logModel(): string
     {
         return ForstwirtLog::class;
@@ -65,7 +70,7 @@ class ForstwirtLogController extends BaseLogController
         $validated = $request->validated();
         $mappedLogs = $this->mapValidatedToLogs($validated);
 
-        $lastLog = $this->saveForstwirtLogs($mappedLogs, $request->input('user_id'));
+        $lastLog = $this->forstwirtLogService->saveLogs($mappedLogs, $request->input('user_id'));
 
         return redirect()->route($this->route() . '.success', ['worker_id' => (int) $lastLog->user_id]);
     }
@@ -73,5 +78,10 @@ class ForstwirtLogController extends BaseLogController
     public function getLogOfToday(int $user_id)
     {
         return ForstwirtLog::where('user_id', $user_id)->whereDate('date', today())->first();
+    }
+
+    public function deleteLogsOfDate(int $user_id, string $date)
+    {
+        $this->forstwirtLogService->deleteLogsFrom($user_id, $date);
     }
 }

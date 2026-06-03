@@ -3,8 +3,6 @@
 namespace App\Http\Controllers\Logs;
 
 use App\Http\Controllers\Controller;
-use App\Models\ForstwirtLog;
-use App\Models\ForstwirtWorkingType;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
@@ -19,7 +17,8 @@ abstract class BaseLogController extends Controller
     abstract protected function viewPrefix(): string;     // z.B. 'log-forstwirt'
     abstract protected function mapValidatedToLogs(array $validated): array;
     abstract protected function addPreviousData(int $user_id, Collection $projects): Collection;
-    abstract public function getLogOfToday(int $user_id);
+    abstract protected function getLogOfToday(int $user_id);
+    abstract protected function deleteLogsOfDate(int $user_id, string $date);
 
     private function getUserAndProjects(?int $user_id): array
     {
@@ -51,26 +50,24 @@ abstract class BaseLogController extends Controller
      * Common logic for showing the log form
      * 
      * Note: $id is optional and only used when an admin wants to view the log form for a specific user.
-     *       Regular users will not provide an id and will see their own log form.
+     *       Regular users will not provide an id and will see their own log form (when they try to add an id, the middelware handels the restriction).
      */
     public function show($user_id = null)
     {
-
+        // After this call, $user is definetly set
         $data = $this->getUserAndProjects($user_id);
         extract($data); // Extrahiere Variablen wie $isAdmin, $user, $name, $projects, $user_id
 
         // Check if today is alreay logged
         $today = now()->toDateString();
         $logClass = $this->logModel();
-        $existingLog = $logClass::where('user_id', $user_id)
-            ->where('date', $today)
-            ->first();
-
+        // Just to check if there are any logs for today, the actual log data is loaded in the success method
+        $existingLog = $this->getLogOfToday($user_id);
         // if there is an existing log, show the success page instead of log form - but only for non-admin users (admins can view the log form for any user, even if they already have a log for today)
         if ($existingLog && !$isAdmin) {
             // Route like: log.forstwirt.success
             session()->flash('last_log', $existingLog); // Store log in session for retrieval in success method
-            return redirect()->route($this->route() . '.success');
+            return redirect()->route($this->route() . '.success', ['worker_id' => (int) $user_id]);
         }
 
         $viewPrefix = $this->viewPrefix();
@@ -78,15 +75,24 @@ abstract class BaseLogController extends Controller
         return view('log-forms/' . $viewPrefix, compact(['projects', 'isAdmin', 'name', 'user_id']));
     }
 
+    /**
+     * Common logic for showing succes page
+     * 
+     * getLogOfToday() is used to retrieve any log from that day,
+     * just to see if there are any logs. 
+     * The actual logs shown on the success page are loaded in buildSuccessOverview, 
+     * which is called inside the success method of each controller.
+     * 
+     */
     public function success(int $worker_id)
     {
-        $log = $this->getLogOfToday($worker_id);
+        $log = session()->get('last_log') ?: $this->getLogOfToday($worker_id);
 
         if (!$log) {
             return redirect()->route($this->route())->with('error', 'Log entry not found.');
         }
 
-        $log_id = $log ? $log->id : null;
+        $log_id = $log->id;
 
         $log = $this->logModel()::with(['project'])->findOrFail($log_id);
         $user_id = $log->user_id;
@@ -105,11 +111,9 @@ abstract class BaseLogController extends Controller
             $deleteRouteName = $this->route() . '.delete';
 
             $logDate = Carbon::parse($log->date)->format('d.m.Y');
-            return view('log-forms/log-success', compact('name', 'log_id', 'logOverview', 'logDate', 'deleteRouteName'));
+            return view('log-forms/log-success', compact('name', 'user_id', 'log_id', 'logOverview', 'logDate', 'deleteRouteName'));
         }
     }
-
-
 
     protected function buildSuccessOverview(int $userId, string $date): Collection
     {
@@ -141,39 +145,18 @@ abstract class BaseLogController extends Controller
             });
     }
 
-    public function deleteLog(int $log_id)
+    public function deleteLog(int $worker_id)
     {
-        $log = $this->logModel()::findOrFail($log_id);
-
-        // Delete the log and its entries
-        $log->entries()->delete();
-        $log->delete();
-        return redirect()->route($this->route())->with('success', 'Log entry deleted successfully.');
-    }
-
-    /**
-     * Persist entries in the same shape used by Forstwirt logs.
-     */
-    protected function saveForstwirtLogs(array $mappedLogs, int $userId): ?ForstwirtLog
-    {
-        $lastLog = null;
-
-        foreach ($mappedLogs as $logData) {
-            $log = new ForstwirtLog();
-            $log->user_id = $userId;
-            $log->project_id = $logData['project_id'];
-            $log->working_type_id = ForstwirtWorkingType::where('slug', $logData['type'])->value('id');
-            $log->date = $logData['date'];
-            $log->start = $logData['start'];
-            $log->end = $logData['end'];
-            $log->pause = $logData['pause'] ?? 0;
-            $log->sum = $logData['sum'] ?? null;
-            $log->comment = $logData['comment'] ?? null;
-            $log->save();
-
-            $lastLog = $log;
+        $date = session()->get('delete_log_date');
+        
+        if (!$date) {
+            $date = Carbon::today()->toDateString();
         }
 
-        return $lastLog;
+        $this->deleteLogsOfDate($worker_id, $date);
+
+        return redirect()->route($this->route())->with('success', 'Eintrag erfolgreich gelöscht.');
+
     }
+
 }
