@@ -75,6 +75,21 @@ class ForstwirtLogController extends BaseLogController
         return redirect()->route($this->route() . '.success', ['worker_id' => (int) $lastLog->user_id]);
     }
 
+
+    protected function loadSuccessLogs(int $userId, string $date): Collection
+    {
+        return $this->logModel()::with(['project', 'workingType'])
+            ->where('user_id', $userId)
+            ->whereDate('date', $date)
+            ->orderBy('project_id')
+            ->orderBy('start')
+            ->get()
+            ->map(function ($log) {
+                $log->entry_label ='forstwirt';
+                return $log;
+            });
+    }
+
     public function getLogOfToday(int $user_id)
     {
         return ForstwirtLog::where('user_id', $user_id)->whereDate('date', today())->first();

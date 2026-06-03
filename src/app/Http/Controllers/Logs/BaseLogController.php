@@ -19,6 +19,7 @@ abstract class BaseLogController extends Controller
     abstract protected function addPreviousData(int $user_id, Collection $projects): Collection;
     abstract protected function getLogOfToday(int $user_id);
     abstract protected function deleteLogsOfDate(int $user_id, string $date);
+    abstract protected function loadSuccessLogs(int $userId, string $date): Collection;
 
     private function getUserAndProjects(?int $user_id): array
     {
@@ -128,21 +129,6 @@ abstract class BaseLogController extends Controller
                 ];
             })
             ->values();
-    }
-
-    protected function loadSuccessLogs(int $userId, string $date): Collection
-    {
-        return $this->logModel()::with(['project', 'workingType'])
-            ->where('user_id', $userId)
-            ->whereDate('date', $date)
-            ->orderBy('project_id')
-            ->orderBy('start')
-            ->get()
-            ->map(function ($log) {
-                $log->entry_label = class_basename($this->logModel()) === 'HarvesterLog' ? 'harvester' : 'forstwirt';
-
-                return $log;
-            });
     }
 
     public function deleteLog(int $worker_id)

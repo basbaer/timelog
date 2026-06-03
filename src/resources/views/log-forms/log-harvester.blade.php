@@ -43,7 +43,7 @@
                         data-bs-parent="#accordionProjects">
                         <div class="accordion-body px-2">
                             <div class="mb-2">
-                                <h3>Arbeitszeit</h3>
+                                <h3>Arbeitszeit Harvester</h3>
 
                                 <div class="row d-flex mb-2">
                                     <div class="col-sm-auto col-6">
@@ -94,19 +94,17 @@
                                 </div>
                             </div>
 
-                            <hr class="mx-3">
-
                             <div class="mb-2">
                                 <h3 class="mt-2">Festmeter</h3>
                                 <div class="row">
-                                    <div class="col-4">
+                                    <div class="col-3">
                                         <label for="stueckzahl-{{ $loop->index }}"
                                             class="form-label">Stückzahl</label>
                                         <input type="number" id="stueckzahl-{{ $loop->index }}" class="form-control"
                                             name="work_logs[{{ $project->id }}][stueckzahl]"
                                             value="{{ old("work_logs.$project->id.stueckzahl") }}">
                                     </div>
-                                    <div class="col-4">
+                                    <div class="col-5">
                                         <label for="fm_gesamt-{{ $loop->index }}" class="form-label">Gesamt fm</label>
                                         <input type="number" id="fm_gesamt-{{ $loop->index }}" class="form-control"
                                             name="work_logs[{{ $project->id }}][fm_gesamt]" data-fm-before="{{ $projects[$project->id]['last_fm_total'] }}"
