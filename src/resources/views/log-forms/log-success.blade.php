@@ -97,7 +97,7 @@
         class="mt-3">
         @csrf
         @method('DELETE')
-        <div class="container d-flex justify-content-center">
+        <div class="container d-flex justify-content-center mb-4">
             <button class="btn btn-danger" type="submit"> {{ __('form.edit_entry') }}</button>
         </div>
     </form>

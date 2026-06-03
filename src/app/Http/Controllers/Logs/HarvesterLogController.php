@@ -94,6 +94,7 @@ class HarvesterLogController extends BaseLogController
                     'date' => $logDate,
                     'start' => $workLog['start'] ?? null,
                     'end' => $workLog['end'] ?? null,
+                    'sum' => $workLog['sum'] ?? null,
                     'bs_start' => isset($workLog['bs_start']) ? (int) $workLog['bs_start'] : null,
                     'bs_end' => isset($workLog['bs_end']) ? (int) $workLog['bs_end'] : null,
                     'bs_diff' => $workLog['bs_diff'] ?? null,
@@ -132,6 +133,7 @@ class HarvesterLogController extends BaseLogController
             $log->date = $logData['date'];
             $log->start = $logData['start'];
             $log->end = $logData['end'];
+            $log->sum = $logData['sum'];
             $log->bs_from = $logData['bs_start'] ?? null;
             $log->bs_to = $logData['bs_end'] ?? null;
             $log->bs_diff = $logData['bs_diff'] ?? null;

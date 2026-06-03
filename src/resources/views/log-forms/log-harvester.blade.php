@@ -61,6 +61,10 @@
                                             name="work_logs[{{ $project->id }}][end]" lang="de-DE" step="900"
                                             value="{{ old("work_logs.$project->id.end") }}">
                                     </div>
+
+                                    <input type="hidden" id="sum-{{ $loop->index }}"
+                                        name="work_logs[{{ $project->id }}][sum]"
+                                        value="{{ old("work_logs.$project->id.sum") }}">
                                 </div>
                             </div>
                             <!-- Betriebsstunden -->
@@ -179,6 +183,42 @@
             diffInput.value = diff.toFixed(2);
         }
 
+        function formatHarvesterMinutesToHHMM(minutes) {
+            const safeMinutes = Math.max(0, Math.round(minutes));
+            const hours = Math.floor(safeMinutes / 60);
+            const remainingMinutes = safeMinutes % 60;
+
+            return `${String(hours).padStart(2, "0")}:${String(remainingMinutes).padStart(2, "0")}`;
+        }
+
+        function calculateHarvesterSum(projectIndex) {
+            const startInput = document.getElementById(`start-${projectIndex}`);
+            const endInput = document.getElementById(`end-${projectIndex}`);
+            const sumInput = document.getElementById(`sum-${projectIndex}`);
+
+            if (!startInput || !endInput || !sumInput) {
+                return;
+            }
+
+            const start = startInput.value;
+            const end = endInput.value;
+
+            if (!start || !end) {
+                sumInput.value = "";
+                return;
+            }
+
+            const startDate = new Date(`1970-01-01T${start}:00`);
+            const endDate = new Date(`1970-01-01T${end}:00`);
+            let diff = (endDate - startDate) / 60000;
+
+            if (diff < 0) {
+                diff += 24 * 60;
+            }
+
+            sumInput.value = formatHarvesterMinutesToHHMM(diff);
+        }
+
         function calculateFmDay(projectIndex) {
             const fmInput = document.getElementById(`fm_gesamt-${projectIndex}`);
             const fmdayInput = document.getElementById(`fm_day-${projectIndex}`);
@@ -217,6 +257,19 @@
                         input.addEventListener("input", () => calculateDiff(projectIndex));
                     }
                 });
+            });
+
+            document.querySelectorAll('[id^="start-"]').forEach(startInput => {
+                const projectIndex = startInput.id.substring("start-".length);
+
+                ["start", "end"].forEach(field => {
+                    const input = document.getElementById(`${field}-${projectIndex}`);
+                    if (input) {
+                        input.addEventListener("input", () => calculateHarvesterSum(projectIndex));
+                    }
+                });
+
+                calculateHarvesterSum(projectIndex);
             });
 
             document.querySelectorAll('[id^="fm_gesamt-"]').forEach(fmInput => {

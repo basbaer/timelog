@@ -23,6 +23,7 @@ class StoreHarvesterLogRequest extends FormRequest
             'work_logs.*' => ['required', 'array'],
             'work_logs.*.start' => ['required', 'date_format:H:i'],
             'work_logs.*.end' => ['required', 'date_format:H:i'],
+            'work_logs.*.sum' => ['nullable', 'date_format:H:i'],
             'work_logs.*.bs_start' => ['nullable', 'integer', 'min:0', 'required_with:work_logs.*.bs_end'],
             'work_logs.*.bs_end' => ['nullable', 'integer', 'min:0', 'required_with:work_logs.*.bs_start'],
             'work_logs.*.bs_diff' => ['nullable', 'string'],
@@ -123,7 +124,7 @@ class StoreHarvesterLogRequest extends FormRequest
 
     protected function prepareForValidation(): void
     {
-        $projectFields = ['start', 'end', 'bs_start', 'bs_end', 'bs_diff', 'stueckzahl', 'fm_gesamt', 'fm_day'];
+        $projectFields = ['start', 'end', 'sum', 'bs_start', 'bs_end', 'bs_diff', 'stueckzahl', 'fm_gesamt', 'fm_day'];
 
         $workLogs = collect((array) $this->input('work_logs', []))
             ->map(function (array $workLog) use ($projectFields) {
