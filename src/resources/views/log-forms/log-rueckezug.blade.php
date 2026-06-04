@@ -8,7 +8,7 @@
 
     @include('partials.log_form_errors', ['errors' => $errors])
 
-    <form id="harvester-log-form" class="container" method="POST" action="{{ route('log.harvester.store') }}">
+    <form id="rueckezug-log-form" class="container" method="POST" action="{{ route('log.rueckezug.store') }}">
         @csrf
        <input type="hidden" name="user_id" value="{{ $user_id }}">
         @php
@@ -43,7 +43,7 @@
                         data-bs-parent="#accordionProjects">
                         <div class="accordion-body px-2">
                             <div class="mb-2">
-                                <h3>Arbeitszeit Harvester</h3>
+                                <h3>Arbeitszeit Rückezug</h3>
 
                                 <div class="row d-flex mb-2">
                                     <div class="col-sm-auto col-6">
