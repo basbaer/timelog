@@ -52,9 +52,9 @@
                 <div class="small text-muted">Fuhren</div>
                 <div>{{ $savedLog->loadings ?? '-' }}</div>
             </div>
-            <div class="col-md-3 col-6">
-                <div class="small text-muted">Durchschnittliche Distanz</div>
-                <div>{{ $savedLog->averarge_distance ?? '-' }}</div>
+            <div class="col-md-6 col-6">
+                <div class="small text-muted">Durchschnittliche Distanz (km)</div>
+                <div>{{ $savedLog->average_distance ?? '-' }}</div>
             </div>
         </div>
     @else
