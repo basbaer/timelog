@@ -24,8 +24,8 @@ class StoreRueckezugLogRequest extends FormRequest
             'work_logs.*.start' => ['date_format:H:i', 'required_with:work_logs.*.end'],
             'work_logs.*.end' => ['date_format:H:i', 'required_with:work_logs.*.start'],
             'work_logs.*.sum' => ['nullable', 'date_format:H:i'],
-            'work_logs.*.bs_from' => ['nullable', 'numeric', 'required_with:work_logs.*.bs_to'],
-            'work_logs.*.bs_to' => ['nullable', 'numeric', 'required_with:work_logs.*.bs_from'],
+            'work_logs.*.bs_start' => ['nullable', 'numeric', 'required_with:work_logs.*.bs_end'],
+            'work_logs.*.bs_end' => ['nullable', 'numeric', 'required_with:work_logs.*.bs_start'],
             'work_logs.*.bs_diff' => ['nullable', 'numeric'],
             'work_logs.*.loadings' => ['nullable', 'numeric'],
             'work_logs.*.average_distance' => ['nullable', 'numeric'],
@@ -78,18 +78,18 @@ class StoreRueckezugLogRequest extends FormRequest
             }
 
             if (
-                (array_key_exists('bs_from', $workLog) && trim((string) ($workLog['bs_from'] ?? '')) !== '')
-                || (array_key_exists('bs_to', $workLog) && trim((string) ($workLog['bs_to'] ?? '')) !== '')
+                (array_key_exists('bs_start', $workLog) && trim((string) ($workLog['bs_start'] ?? '')) !== '')
+                || (array_key_exists('bs_end', $workLog) && trim((string) ($workLog['bs_end'] ?? '')) !== '')
             ) {
-                $messages["work_logs.$projectId.bs_to.required_with"] = __('log_validation.messages.required_with', [
+                $messages["work_logs.$projectId.bs_end.required_with"] = __('log_validation.messages.required_with', [
                     'project' => $projectLabel,
-                    'field' => __('log_validation.fields.bs_to'),
-                    'other_field' => __('log_validation.fields.bs_from'),
+                    'field' => __('log_validation.fields.bs_end'),
+                    'other_field' => __('log_validation.fields.bs_start'),
                 ]);
-                $messages["work_logs.$projectId.bs_from.required_with"] = __('log_validation.messages.required_with', [
+                $messages["work_logs.$projectId.bs_start.required_with"] = __('log_validation.messages.required_with', [
                     'project' => $projectLabel,
-                    'field' => __('log_validation.fields.bs_from'),
-                    'other_field' => __('log_validation.fields.bs_to'),
+                    'field' => __('log_validation.fields.bs_start'),
+                    'other_field' => __('log_validation.fields.bs_end'),
                 ]);
             }
 
@@ -114,7 +114,7 @@ class StoreRueckezugLogRequest extends FormRequest
 
     protected function prepareForValidation(): void
     {
-        $projectFields = ['start', 'end', 'sum', 'bs_from', 'bs_to', 'bs_diff', 'loadings', 'average_distance'];
+        $projectFields = ['start', 'end', 'sum', 'bs_start', 'bs_end', 'bs_diff', 'loadings', 'average_distance'];
 
         $workLogs = collect((array) $this->input('work_logs', []))
             ->map(function (array $workLog) use ($projectFields) {
