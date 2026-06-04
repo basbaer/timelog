@@ -48,11 +48,11 @@
             </div>
         </div>
         <div class="row g-3 mt-2">
-            <div class="col-md-3 col-6">
+            <div class="col-3">
                 <div class="small text-muted">Fuhren</div>
                 <div>{{ $savedLog->loadings ?? '-' }}</div>
             </div>
-            <div class="col-md-6 col-6">
+            <div class="col-9">
                 <div class="small text-muted">Durchschnittliche Distanz (km)</div>
                 <div>{{ $savedLog->average_distance ?? '-' }}</div>
             </div>
