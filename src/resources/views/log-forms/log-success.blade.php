@@ -18,10 +18,6 @@
         </div>
     </div>
 
-    @php
-        use Carbon\Carbon;
-    @endphp
-
     @if (!empty($logOverview) && count($logOverview))
         <div class="container mt-4">
             <h2 class="mb-3">{{ __('form.date') }}: {{ $logDate }}</h2>
@@ -39,53 +35,7 @@
                     </div>
                     <div class="card-body">
                         @foreach ($projectLogs as $savedLog)
-                            <div class="border rounded p-3 mb-3">
-                                <div class="mb-2">
-                                    <h3 class="h5 mb-0">
-                                        {{ $savedLog->entry_label === 'forstwirt' ? $savedLog->workingType?->name ?? __('form.other') : 'Harvester' }}
-                                    </h3>
-                                    <div class="row g-3">
-                                        <div class="col">
-                                            {{ Carbon::create($savedLog->start)->format('H:i') }} -
-                                            {{ Carbon::create($savedLog->end)->format('H:i') }}
-                                            ({{ __('form.working_time') }}:
-                                            {{ Carbon::parse($savedLog->sum)->format('H:i') ?? '-' }})
-                                        </div>
-                                    </div>
-                                </div>
-
-                                @if ($savedLog->entry_label === 'harvester')
-                                    <div class="row g-3">
-                                        <div class="col-md-3 col-6">
-                                            <div class="small text-muted">Betriebsstunden</div>
-                                            <div>{{ $savedLog->bs_from ?? '-' }} - {{ $savedLog->bs_to ?? '-' }}</div>
-                                        </div>
-                                    </div>
-                                    <div class="row g-3 mt-2">
-                                        <div class="cold-md-3 col-4">
-                                            <div class="small text-muted">Stückzahl</div>
-                                            <div>{{ $savedLog->fm_amount ?? '-' }}</div>
-                                        </div>
-                                        <div class="col-md-3 col-4">
-                                            <div class="small text-muted">Gesamt fm</div>
-                                            <div>{{ $savedLog->fm_total ?? '-' }}</div>
-                                        </div>
-                                        <div class="col-md-3 col-4">
-                                            <div class="small text-muted">fm/Tag</div>
-                                            <div>{{ $savedLog->fm_day ?? '-' }}</div>
-                                        </div>
-
-                                    </div>
-                                @else
-                                    <div class="row g-2">
-                                        <div class="col">
-                                            <div class="small text-muted">{{ __('form.comment') }}</div>
-                                            <div>{{ $savedLog->comment ?: '-' }}</div>
-                                        </div>
-
-                                    </div>
-                                @endif
-                            </div>
+                            @include('log-forms.partials.log-summary-item', ['savedLog' => $savedLog])
                         @endforeach
                     </div>
                 </div>

@@ -15,6 +15,7 @@ class HarvesterLogController extends BaseLogController
     public function __construct(
         private ForstwirtLogService $forstwirtLogService
     ) {}
+    
     public function logModel(): string
     {
         return HarvesterLog::class;
