@@ -17,6 +17,8 @@ use App\Http\Controllers\Projects\OverviewProjectController;
 use App\Http\Middleware\Forstwirt;
 use App\Http\Middleware\Harvester;
 use App\Http\Controllers\Logs\HarvesterLogController;
+use App\Http\Middleware\Rueckezug;
+use App\Http\Controllers\Logs\RueckezugLogController;
 
 Route::get('/play', function () {
     return session()->all();
@@ -99,15 +101,15 @@ Route::middleware(Admin::class)->prefix('admin')->group(function () {
     });
 
     // Show worker details
-    Route::get('/workers/{id}', [WorkerDetailController::class, 'show'])->name('admin.worker.show');
+    Route::get('/workers/{worker_id}', [WorkerDetailController::class, 'show'])->name('admin.worker.show');
 
     // Show worker card
-    Route::get('/workers/{id}/card', [WorkerCardController::class, 'show'])->name('admin.worker.card');
+    Route::get('/workers/{worker_id}/card', [WorkerCardController::class, 'show'])->name('admin.worker.card');
 
     // Deletet Worker
-    Route::post('/workers/{id}/delete', [DeleteWorkerController::class, 'deleteWorker'])->name('admin.worker.delete');
+    Route::post('/workers/{worker_id}/delete', [DeleteWorkerController::class, 'deleteWorker'])->name('admin.worker.delete');
 
-    Route::get('/workers/{id}/log/create', [ForstwirtLogController::class, 'show'])->name('admin.worker.log.create');
+    Route::get('/workers/{worker_id}/log/create', [ForstwirtLogController::class, 'show'])->name('admin.worker.log.create');
 });
 
 
@@ -143,6 +145,18 @@ Route::middleware(Harvester::class)->group(function () {
     Route::delete('/log-harvester/{worker_id}/delete', [HarvesterLogController::class, 'deleteLog'])->name('log.harvester.delete');
 });
 
+//====================================================================================
+
+// ==== Rueckezug Route ====
+Route::middleware(Rueckezug::class)->group(function () {
+    Route::get('/log-rueckezug', [RueckezugLogController::class, 'show'])->name('log.rueckezug');
+
+    Route::post('/log-rueckezug', [RueckezugLogController::class, 'store'])->name('log.rueckezug.store');
+
+    Route::get('/log-rueckezug/{worker_id}/success', [RueckezugLogController::class, 'success'])->name('log.rueckezug.success');
+
+    Route::delete('/log-rueckezug/{worker_id}/delete', [RueckezugLogController::class, 'deleteLog'])->name('log.rueckezug.delete');
+});
 
 // ==== Later ====
 Route::get('/workers/{id}', function ($id) {
