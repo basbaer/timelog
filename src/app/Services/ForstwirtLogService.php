@@ -5,18 +5,12 @@ namespace App\Services;
 use App\Models\ForstwirtLog;
 use App\Models\ForstwirtWorkingType;
 
-class ForstwirtLogService
+class ForstwirtLogService extends BaseLogService
 {
-
-    public function deleteLogsFrom(int $user_id, string $date): void
+    protected function getModel(): string
     {
-        $logs = ForstwirtLog::where('user_id', $user_id)->whereDate('date', $date)->get();
-
-        foreach ($logs as $log) {
-            $log->delete();
-        }
+        return ForstwirtLog::class;
     }
-
 
     /**
      * Persist entries in the same shape used by Forstwirt logs.
@@ -43,4 +37,5 @@ class ForstwirtLogService
 
         return $lastLog;
     }
+
 }
