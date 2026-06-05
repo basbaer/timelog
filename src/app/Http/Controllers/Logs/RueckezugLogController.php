@@ -4,18 +4,19 @@ namespace App\Http\Controllers\Logs;
 
 use App\Http\Controllers\Logs\BaseLogController;
 use App\Http\Requests\StoreRueckezugLogRequest;
-use App\Models\ForstwirtLog;
 use App\Models\ForstwirtWorkingType;
 use App\Models\RueckezugLog;
-use App\Services\ForstwirtLogService;
+use App\Models\User;
+use App\Services\WorkerLogService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Collection;
 
 class RueckezugLogController extends BaseLogController
 {
-    public function __construct(
-        private ForstwirtLogService $forstwirtLogService
-    ) {}
+    public function __construct(WorkerLogService $workerLogService)
+    {
+        parent::__construct($workerLogService);
+    }
 
     protected function logModel(): string
     {
@@ -94,79 +95,12 @@ class RueckezugLogController extends BaseLogController
     {
         $validated = $request->validated();
         $mappedLogs = $this->mapValidatedToLogs($validated);
-        $lastLog = null;
-
-        foreach ($mappedLogs as $logData) {
-            $log = new RueckezugLog();
-            $log->user_id = $request->input('user_id');
-            $log->project_id = $logData['project_id'];
-            $log->date = $logData['date'];
-            $log->start = $logData['start'];
-            $log->end = $logData['end'];
-            $log->sum = $logData['sum'];
-            $log->bs_from = $logData['bs_start'] ?? null;
-            $log->bs_to = $logData['bs_end'] ?? null;
-            $log->bs_diff = $logData['bs_diff'] ?? null;
-            $log->loadings = $logData['loadings'] ?? null;
-            $log->averarge_distance = $logData['average_distance'] ?? null;
-            $log->save();
-            $lastLog = $log;
-
-            if (!empty($logData['forstwirt_work_entries'])) {
-                $this->forstwirtLogService->saveLogs($logData['forstwirt_work_entries'], (int) $log->user_id);
-            }
-        }
+        $user = User::findOrFail((int) $request->input('user_id'));
+        $lastLog = $this->workerLogService->saveLogs($user, $mappedLogs);
 
         return redirect()->route($this->route() . '.success', ['worker_id' => (int) $lastLog->user_id]);
     }
 
-    protected function loadSuccessLogs(int $userId, string $date): Collection
-    {
-        $rueckezugLogs = RueckezugLog::with(['project'])
-            ->where('user_id', $userId)
-            ->whereDate('date', $date)
-            ->get()
-            ->map(function (RueckezugLog $log) {
-                $log->entry_label = 'rueckezug';
-                return $log;
-            });
 
-        $forstwirtLogs = ForstwirtLog::with(['project', 'workingType'])
-            ->where('user_id', $userId)
-            ->whereDate('date', $date)
-            ->get()
-            ->map(function (ForstwirtLog $log) {
-                $log->entry_label = 'forstwirt';
-                return $log;
-            });
-
-        return $rueckezugLogs
-            ->concat($forstwirtLogs)
-            ->sortBy(function ($log) {
-                return sprintf('%s|%s|%s', $log->project_id, $log->start ?? '', $log->created_at ?? '');
-            })
-            ->values();
-    }
-
-    public function getLogOfToday(int $user_id)
-    {
-        $rueckezugLog = $this->logModel()::where('user_id', $user_id)->whereDate('date', today())->first();
-
-        if (!$rueckezugLog) {
-            $log = ForstwirtLog::where('user_id', $user_id)->whereDate('date', today())->first();
-        }
-
-        return $rueckezugLog ?? $log;
-    }
-
-    public function deleteLogsOfDate(int $user_id, string $date)
-    {
-        $rueckezugLogs = RueckezugLog::where('user_id', $user_id)->whereDate('date', $date)->get();
-
-        foreach ($rueckezugLogs as $log) {
-            $log->delete();
-        }
-
-        $this->forstwirtLogService->deleteLogsFrom($user_id, $date);
-    }
+    
 }

@@ -3,18 +3,19 @@
 namespace App\Http\Controllers\Logs;
 
 use App\Http\Requests\StoreHarvesterLogRequest;
-use App\Models\ForstwirtLog;
 use App\Models\ForstwirtWorkingType;
 use App\Models\HarvesterLog;
+use App\Models\User;
 use Illuminate\Support\Collection;
 use Illuminate\Http\RedirectResponse;
-use App\Services\ForstwirtLogService;
+use App\Services\WorkerLogService;
 
 class HarvesterLogController extends BaseLogController
 {
-    public function __construct(
-        private ForstwirtLogService $forstwirtLogService
-    ) {}
+    public function __construct(WorkerLogService $workerLogService)
+    {
+        parent::__construct($workerLogService);
+    }
     
     public function logModel(): string
     {
@@ -31,33 +32,6 @@ class HarvesterLogController extends BaseLogController
         return 'log.harvester';
     }
 
-    protected function loadSuccessLogs(int $userId, string $date): Collection
-    {
-        $harvesterLogs = HarvesterLog::with(['project'])
-            ->where('user_id', $userId)
-            ->whereDate('date', $date)
-            ->get()
-            ->map(function (HarvesterLog $log) {
-                $log->entry_label = 'harvester';
-                return $log;
-            });
-
-        $forstwirtLogs = ForstwirtLog::with(['project', 'workingType'])
-            ->where('user_id', $userId)
-            ->whereDate('date', $date)
-            ->get()
-            ->map(function (ForstwirtLog $log) {
-                $log->entry_label = 'forstwirt';
-                return $log;
-            });
-
-        return $harvesterLogs
-            ->concat($forstwirtLogs)
-            ->sortBy(function ($log) {
-                return sprintf('%s|%s|%s', $log->project_id, $log->start ?? '', $log->created_at ?? '');
-            })
-            ->values();
-    }
 
     public function viewPrefix(): string
     {
@@ -125,53 +99,11 @@ class HarvesterLogController extends BaseLogController
     {
         $validated = $request->validated();
         $mappedLogs = $this->mapValidatedToLogs($validated);
-        $lastLog = null;
-
-        foreach ($mappedLogs as $logData) {
-            $log = new HarvesterLog();
-            $log->user_id = $request->input('user_id');
-            $log->project_id = $logData['project_id'];
-            $log->date = $logData['date'];
-            $log->start = $logData['start'];
-            $log->end = $logData['end'];
-            $log->sum = $logData['sum'];
-            $log->bs_from = $logData['bs_start'] ?? null;
-            $log->bs_to = $logData['bs_end'] ?? null;
-            $log->bs_diff = $logData['bs_diff'] ?? null;
-            $log->fm_amount = $logData['stueckzahl'] ?? null;
-            $log->fm_total = $logData['fm_gesamt'] ?? null;
-            $log->fm_day = $logData['fm_day'] ?? null;
-            $log->save();
-            $lastLog = $log;
-
-            if (!empty($logData['forstwirt_work_entries'])) {
-                $this->forstwirtLogService->saveLogs($logData['forstwirt_work_entries'], (int) $log->user_id);
-            }
-        }
+        $user = User::findOrFail((int) $request->input('user_id'));
+        $lastLog = $this->workerLogService->saveLogs($user, $mappedLogs);
 
         return redirect()->route($this->route() . '.success', ['worker_id' => (int) $lastLog->user_id]);
     }
 
-    public function getLogOfToday(int $user_id)
-    {
-        $harvesterLog =$this->logModel()::where('user_id', $user_id)->whereDate('date', today())->first();
-
-        if (!$harvesterLog) {
-            $log = ForstwirtLog::where('user_id', $user_id)->whereDate('date', today())->first();
-        }
-
-        return $harvesterLog ?? $log;
-    }
-
-    public function deleteLogsOfDate(int $user_id, string $date)
-    {
-        $harvesterLogs = HarvesterLog::where('user_id', $user_id)->whereDate('date', $date)->get();
-
-        foreach ($harvesterLogs as $log) {
-            $log->delete();
-        }
-
-        $this->forstwirtLogService->deleteLogsFrom($user_id, $date);
-
-    }
+    
 }

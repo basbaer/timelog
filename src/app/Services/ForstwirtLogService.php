@@ -12,6 +12,16 @@ class ForstwirtLogService extends BaseLogService
         return ForstwirtLog::class;
     }
 
+    protected function getRelations(): array
+    {
+        return ['project', 'workingType'];
+    }
+
+    protected function getEntryLabel(): ?string
+    {
+        return 'forstwirt';
+    }
+
     /**
      * Persist entries in the same shape used by Forstwirt logs.
      */
@@ -36,6 +46,20 @@ class ForstwirtLogService extends BaseLogService
         }
 
         return $lastLog;
+    }
+
+    public function loadSuccessLogs(int $userId, string $date)
+    {
+        return $this->getModel()::with(['project', 'workingType'])
+            ->where('user_id', $userId)
+            ->whereDate('date', $date)
+            ->orderBy('project_id')
+            ->orderBy('start')
+            ->get()
+            ->map(function ($log) {
+                $log->entry_label ='forstwirt';
+                return $log;
+            });
     }
 
 }

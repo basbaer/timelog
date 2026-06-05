@@ -7,9 +7,16 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use App\Services\WorkerLogService;
 
 abstract class BaseLogController extends Controller
 {
+    protected WorkerLogService $workerLogService;
+
+    public function __construct(WorkerLogService $workerLogService)
+    {
+        $this->workerLogService = $workerLogService;
+    }
     // Subklassen müssen diese liefern:
     abstract protected function logModel(): string;       // z.B. ForstwirtLog::class
     abstract protected function workingTypeModel(): string;
@@ -17,9 +24,6 @@ abstract class BaseLogController extends Controller
     abstract protected function viewPrefix(): string;     // z.B. 'log-forstwirt'
     abstract protected function mapValidatedToLogs(array $validated): array;
     abstract protected function addPreviousData(int $user_id, Collection $projects): Collection;
-    abstract protected function getLogOfToday(int $user_id);
-    abstract protected function deleteLogsOfDate(int $user_id, string $date);
-    abstract protected function loadSuccessLogs(int $userId, string $date): Collection;
 
     private function getUserAndProjects(?int $user_id): array
     {
@@ -145,4 +149,18 @@ abstract class BaseLogController extends Controller
 
     }
 
+    protected function loadSuccessLogs(int $userId, string $date): Collection
+    {
+        return $this->workerLogService->loadSuccessLogs($userId, $date);
+    }
+
+    public function getLogOfToday(int $user_id)
+    {
+        return $this->workerLogService->getLogOfToday($user_id);
+    }
+
+    public function deleteLogsOfDate(int $user_id, string $date)
+    {
+        $this->workerLogService->deleteLogsFrom($user_id, $date);
+    }
 }

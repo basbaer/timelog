@@ -7,14 +7,19 @@ use App\Http\Requests\StoreForstwirtLogRequest;
 use App\Models\ForstwirtLog;
 use App\Models\ForstwirtWorkingType;
 use App\Services\ForstwirtLogService;
+use App\Services\WorkerLogService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Collection;
 
 class ForstwirtLogController extends BaseLogController
 {
-    public function __construct(
-        private ForstwirtLogService $forstwirtLogService
-    ) {}    
+    private ForstwirtLogService $forstwirtLogService;
+
+    public function __construct(WorkerLogService $workerLogService, ForstwirtLogService $forstwirtLogService)
+    {
+        parent::__construct($workerLogService);
+        $this->forstwirtLogService = $forstwirtLogService;
+    }
 
     public function logModel(): string
     {
@@ -76,27 +81,5 @@ class ForstwirtLogController extends BaseLogController
     }
 
 
-    protected function loadSuccessLogs(int $userId, string $date): Collection
-    {
-        return $this->logModel()::with(['project', 'workingType'])
-            ->where('user_id', $userId)
-            ->whereDate('date', $date)
-            ->orderBy('project_id')
-            ->orderBy('start')
-            ->get()
-            ->map(function ($log) {
-                $log->entry_label ='forstwirt';
-                return $log;
-            });
-    }
-
-    public function getLogOfToday(int $user_id)
-    {
-        return ForstwirtLog::where('user_id', $user_id)->whereDate('date', today())->first();
-    }
-
-    public function deleteLogsOfDate(int $user_id, string $date)
-    {
-        $this->forstwirtLogService->deleteLogsFrom($user_id, $date);
-    }
+    
 }
