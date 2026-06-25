@@ -12,7 +12,7 @@ abstract class BaseLogService
 
     protected function getRelations(): array
     {
-        return ['project'];
+        return ['project', 'user.role'];
     }
 
     protected function getEntryLabel(): ?string
@@ -54,11 +54,9 @@ abstract class BaseLogService
                 $entry->end = $this->formatTime($entry->end);
                 $entry->pause = $this->formatPause($entry->pause ?? null);
                 $entry->sum = $this->formatTime($entry->sum ?? null);
-                $entry->total = $this->formatTime($entry->total ?? $entry->sum ?? null);
-                $entry->hours = $this->formatTime($entry->hours ?? $entry->sum ?? null);
                 $entry->project_client = $entry->project?->client;
                 $entry->project_location = $entry->project?->location;
-                $entry->working_type_name = $entry->workingType?->name;
+                $entry->working_type_name = $entry->workingType?->name ?? $entry->user?->role?->name;
 
                 if ($this->getEntryLabel() !== null) {
                     $entry->entry_label = $this->getEntryLabel();

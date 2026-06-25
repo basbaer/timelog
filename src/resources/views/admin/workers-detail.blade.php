@@ -51,7 +51,6 @@
                     <th scope="col">Gesamt</th>
                     <th scope="col">Baustelle</th>
                     <th scope="col">Arbeitsart</th>
-                    <th scope="col">Stunden</th>
                     <th scope="col">Anmerkung</th>
                 </tr>
             </thead>
@@ -71,10 +70,9 @@
                         <td>{{ $row->start }}</td>
                         <td>{{ $row->end }}</td>
                         <td>{{ $row->pause }}</td>
-                        <td>{{ $row->total }}</td>
+                        <td>{{ $row->sum }}</td>
                         <td>{{ $row->project_client }} ({{ $row->project_location }})</td>
                         <td>{{ $row->working_type_name }}</td>
-                        <td>{{ $row->hours }}</td>
                         <td>{{ $row->comment }}</td>
                     </tr>
                 @endforeach

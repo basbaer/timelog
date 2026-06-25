@@ -14,7 +14,7 @@ class ForstwirtLogService extends BaseLogService
 
     protected function getRelations(): array
     {
-        return ['project', 'workingType'];
+        return ['project', 'workingType', 'user.role'];
     }
 
     protected function getEntryLabel(): ?string
