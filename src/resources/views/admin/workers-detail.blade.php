@@ -81,7 +81,7 @@
             </tbody>
         </table>
     </div>
-    <div class="container mt-3 d-flex justify-content-center">
+    <div class="container my-3 d-flex justify-content-center">
         <a href="{{ route('admin.worker.log.create', ['worker_id' => $worker_id]) }}" role="button" class="btn btn-primary">Eintrag
             hinzufügen</a>
     </div>
