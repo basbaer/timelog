@@ -12,7 +12,7 @@
                 <h2 class="h2 m-3">{{ $name }}</h2>
             </div>
             <div class="col justify-content-end d-flex">
-                <a href="{{ route('admin.worker.card', ['id' => $id]) }}" type="button"
+                <a href="{{ route('admin.worker.card', ['worker_id' => $worker_id]) }}" type="button"
                     class="btn btn-secondary m-3">Kontaktinformationen</a>
             </div>
         </div>
@@ -28,12 +28,12 @@
     @endif
 
     <div class="container mt-3 d-flex justify-content-center align-items-center gap-4">
-        <a href="{{ route('admin.worker.show', ['id' => $id, 'month' => $previousMonth]) }}"
+        <a href="{{ route('admin.worker.show', ['worker_id' => $worker_id, 'month' => $previousMonth]) }}"
             id="previousMonthBtn" aria-label="Vorheriger Monat">
             <i class="bi bi-caret-left-fill" style="font-size: 1.5rem; color: grey;" aria-hidden="true"></i>
         </a>
         <h3 class="mb-0">{{ $month }}</h3>
-        <a href="{{ route('admin.worker.show', ['id' => $id, 'month' => $nextMonth]) }}" 
+        <a href="{{ route('admin.worker.show', ['worker_id' => $worker_id, 'month' => $nextMonth]) }}" 
             id="nextMonthBtn" aria-label="Nächster Monat">
             <i class="bi bi-caret-right-fill" style="font-size: 1.5rem; color: grey;" aria-hidden="true"></i>
         </a>
@@ -82,7 +82,7 @@
         </table>
     </div>
     <div class="container mt-3 d-flex justify-content-center">
-        <a href="{{ route('admin.worker.log.create', ['id' => $id]) }}" role="button" class="btn btn-primary">Eintrag
+        <a href="{{ route('admin.worker.log.create', ['worker_id' => $worker_id]) }}" role="button" class="btn btn-primary">Eintrag
             hinzufügen</a>
     </div>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>

@@ -13,11 +13,11 @@ class WorkerDetailController extends Controller
         private readonly WorkerLogService $workerLogService
     ) {}
 
-    public function show(int $id)
+    public function show(int $worker_id)
     {
         try{
             // Get worker details from the database using the $id
-            $worker = User::findOrFail($id);
+            $worker = User::findOrFail($worker_id);
 
             $requestedMonth = request()->query('month');
             $currentMonth = Carbon::now()->startOfMonth();
@@ -45,7 +45,7 @@ class WorkerDetailController extends Controller
             
             return view('admin/workers-detail', [
                 'name' => $worker->first_name . ' ' . $worker->last_name,
-                'id' => $worker->id,
+                'worker_id' => $worker->id,
                 'log_entries' => $log_entries,
                 'month' => $month,
                 'previousMonth' => $previousMonth,

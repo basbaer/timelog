@@ -110,7 +110,7 @@ abstract class BaseLogController extends Controller
 
         if ($user->isAdmin()) {
             // Admin is redirected to worker detail page
-            return redirect()->route('admin.worker.show', ['id' => $user_id])->with('success', 'Eintrag erfolgreich hinzugefügt.');
+            return redirect()->route('admin.worker.show', ['worker_id' => $user_id])->with('success', 'Eintrag erfolgreich hinzugefügt.');
         } else {
             $logOverview = $this->buildSuccessOverview($user_id, $logDate);
             $deleteRouteName = $this->route() . '.delete';

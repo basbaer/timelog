@@ -157,12 +157,3 @@ Route::middleware(Rueckezug::class)->group(function () {
 
     Route::delete('/log-rueckezug/{worker_id}/delete', [RueckezugLogController::class, 'deleteLog'])->name('log.rueckezug.delete');
 });
-
-// ==== Later ====
-Route::get('/workers/{id}', function ($id) {
-    return view('admin/workers-detail', ['workerId' => $id]);
-});
-
-Route::get('/workers/{id}/cards', function ($id) {
-    return view('admin/workers-card', ['workerId' => $id]);
-});

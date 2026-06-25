@@ -2,21 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class WorkerCardController extends Controller
 {
-    public function show($id)
+    public function show(int $worker_id)
     {
         // Get worker details from the database using the $id
         try {
-            $worker = User::findOrFail($id);
+            $worker = User::findOrFail($worker_id);
 
             // For now, we'll just return a view with the worker ID
         return view('admin/workers-card', [
-            'id' => $id,
+            'worker_id' => $worker->id,
             'name' => $worker->first_name . ' ' . $worker->last_name,
             'role' => $worker->role->name, 
             'username' => $worker->username,
