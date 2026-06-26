@@ -6,7 +6,7 @@
 <body>
     @include('partials.admin_navbar', ['active' => 'workers'])
 
-    @include('partials.admin_worker_detail_top', [
+    @include('partials.admin-worker-detail-top', [
         'name' => $name,
         'worker_id' => $worker_id,
         'month' => $month,
@@ -15,45 +15,11 @@
     ])
 
     <div class=" m-3">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th scope="col">Tag</th>
-                    <th scope="col">Datum</th>
-                    <th scope="col">Von</th>
-                    <th scope="col">Bis</th>
-                    <th scope="col">Pause</th>
-                    <th scope="col">Gesamt</th>
-                    <th scope="col">Baustelle</th>
-                    <th scope="col">Arbeitsart</th>
-                    <th scope="col">Anmerkung</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($log_entries as $row)
-                    <tr>
-                        <th scope="row">
-                            @if ($row->show_date)
-                                {{ $row->weekday }}
-                            @endif
-                        </th>
-                        <td>
-                            @if ($row->show_date)
-                                {{ $row->date }}
-                            @endif
-                        </td>
-                        <td>{{ $row->start }}</td>
-                        <td>{{ $row->end }}</td>
-                        <td>{{ $row->pause }}</td>
-                        <td>{{ $row->sum }}</td>
-                        <td>{{ $row->project_client }} ({{ $row->project_location }})</td>
-                        <td>{{ $row->working_type_name }}</td>
-                        <td>{{ $row->comment }}</td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
+        <div class="table-responsive">
+            <x-worker-detail-forstwirt-table :log_entries="$log_entries" />
+        </div>
     </div>
+
     <div class="container my-3 d-flex justify-content-center">
         <a href="{{ route('admin.worker.log.create', ['worker_id' => $worker_id]) }}" role="button" class="btn btn-primary">Eintrag
             hinzufügen</a>

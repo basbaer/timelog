@@ -46,6 +46,7 @@ class WorkerDetailController extends Controller
             return view('admin/workers-detail', [
                 'name' => $worker->first_name . ' ' . $worker->last_name,
                 'worker_id' => $worker->id,
+                'role' => $worker->role->slug,
                 'log_entries' => $log_entries,
                 'month' => $month,
                 'previousMonth' => $previousMonth,
