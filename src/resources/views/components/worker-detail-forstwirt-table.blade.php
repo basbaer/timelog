@@ -1,40 +1,55 @@
-@props(['log_entries'])
+@props(['log_entries', 'show_partial_headers' => true, 'show_header_row' => true])
 
-<table class="table">
-    <thead>
-        <tr>
-            <th scope="col">Tag</th>
-            <th scope="col">Datum</th>
-            <th scope="col">Von</th>
-            <th scope="col">Bis</th>
-            <th scope="col">Pause</th>
-            <th scope="col">Gesamt</th>
-            <th scope="col">Baustelle</th>
-            <th scope="col">Arbeitsart</th>
-            <th scope="col">Anmerkung</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach ($log_entries as $row)
-            <tr>
-                <th scope="row">
-                    @if ($row->show_date)
-                        {{ $row->weekday }}
-                    @endif
-                </th>
-                <td>
-                    @if ($row->show_date)
-                        {{ $row->date }}
-                    @endif
-                </td>
-                <td>{{ $row->start }}</td>
-                <td>{{ $row->end }}</td>
-                <td>{{ $row->pause }}</td>
-                <td>{{ $row->sum }}</td>
-                <td>{{ $row->project_client }} ({{ $row->project_location }})</td>
-                <td>{{ $row->working_type_name }}</td>
-                <td>{{ $row->comment }}</td>
-            </tr>
-        @endforeach
-    </tbody>
-</table>
+@if ($show_header_row)
+    <div class="row mt-2">
+        <div class="col-1"><strong>
+                @if ($show_partial_headers)
+                    Datum
+                @endif
+            </strong></div>
+        <div class="col-1"><strong>
+                @if ($show_partial_headers)
+                    Von
+                @endif
+            </strong></div>
+        <div class="col-1"><strong>
+                @if ($show_partial_headers)
+                    Bis
+                @endif
+            </strong></div>
+        <div class="col-1"><strong>
+                @if ($show_partial_headers)
+                    Pause
+                @endif
+            </strong></div>
+        <div class="col-1"><strong>
+                @if ($show_partial_headers)
+                    Gesamt
+                @endif
+            </strong></div>
+        <div class="col-2"><strong>
+                @if ($show_partial_headers)
+                    Baustelle
+                @endif
+            </strong></div>
+        <div class="col-1"><strong>Arbeitsart</strong></div>
+        <div class="col-4"><strong>Anmerkung</strong></div>
+    </div>
+@endif
+<div class="row">
+    @foreach ($log_entries as $row)
+        <div class="col-1">
+            @if ($row->show_date)
+                {{ $row->weekday }},
+                {{ $row->date }}
+            @endif
+        </div>
+        <div class="col-1">{{ $row->start }}</div>
+        <div class="col-1">{{ $row->end }}</div>
+        <div class="col-1">{{ $row->pause }}</div>
+        <div class="col-1">{{ $row->sum }}</div>
+        <div class="col-2">{{ $row->project_client }} ({{ $row->project_location }})</div>
+        <div class="col-1">{{ $row->working_type_name }}</div>
+        <div class="col-4">{{ $row->comment }}</div>
+    @endforeach
+</div>

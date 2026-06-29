@@ -56,7 +56,7 @@ abstract class BaseLogService
                 $entry->sum = $this->formatTime($entry->sum ?? null);
                 $entry->project_client = $entry->project?->client;
                 $entry->project_location = $entry->project?->location;
-                $entry->working_type_name = $entry->workingType?->name ?? $entry->user?->role?->name;
+                $entry->working_type_name = $entry->workingType?->name ?? $entry->user?->role?->slug;
 
                 if ($this->getEntryLabel() !== null) {
                     $entry->entry_label = $this->getEntryLabel();

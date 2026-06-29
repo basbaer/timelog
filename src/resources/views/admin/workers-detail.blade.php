@@ -14,14 +14,18 @@
         'nextMonth' => $nextMonth,
     ])
 
-    <div class=" m-3">
-        <div class="table-responsive">
-            <x-worker-detail-forstwirt-table :log_entries="$log_entries" />
+    @if ($role === 'forstwirt')
+        <div class=" m-3">
+                <x-worker-detail-forstwirt-table :log_entries="$log_entries" />
         </div>
-    </div>
-
+    @else
+        <div class=" m-3">
+                <x-worker-detail-harvester-table :log_entries="$log_entries" />
+        </div>
+    @endif
     <div class="container my-3 d-flex justify-content-center">
-        <a href="{{ route('admin.worker.log.create', ['worker_id' => $worker_id]) }}" role="button" class="btn btn-primary">Eintrag
+        <a href="{{ route('admin.worker.log.create', ['worker_id' => $worker_id]) }}" role="button"
+            class="btn btn-primary">Eintrag
             hinzufügen</a>
     </div>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
