@@ -65,7 +65,7 @@
                     <div class="col-1">{{ $entry->bs_from }}</div>
                     <div class="col-1">{{ $entry->bs_to }}</div>
                     <div class="col-1">{{ $entry->loadings }}</div>
-                    <div class="col-2">{{ $entry->averarge_distance }}</div>
+                    <div class="col-2">{{ $entry->average_distance }}</div>
                 </div>
                 <hr class="my-0" />
             @endif

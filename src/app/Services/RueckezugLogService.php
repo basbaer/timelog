@@ -36,7 +36,7 @@ class RueckezugLogService extends BaseLogService
             $log->bs_to = $logData['bs_end'] ?? null;
             $log->bs_diff = $logData['bs_diff'] ?? null;
             $log->loadings = $logData['loadings'] ?? null;
-            $log->averarge_distance = $logData['average_distance'] ?? null;
+            $log->average_distance = $logData['average_distance'] ?? null;
             $log->save();
             $lastLog = $log;
 

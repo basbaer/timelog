@@ -47,7 +47,7 @@ class RueckezugLogController extends BaseLogController
                 ->first();
 
             $project->last_bs = $lastLog ? $lastLog->bs_to : 0;
-            $project->last_average_distance = $lastLog ? $lastLog->averarge_distance : 0;
+            $project->last_average_distance = $lastLog ? $lastLog->average_distance : 0;
 
             $projects[$project->id] = $project;
         }

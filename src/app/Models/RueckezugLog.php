@@ -19,7 +19,7 @@ class RueckezugLog extends Model
         'bs_to',
         'bs_diff',
         'loadings',
-        'averarge_distance',
+        'average_distance',
     ];
 
         public function project(): BelongsTo
