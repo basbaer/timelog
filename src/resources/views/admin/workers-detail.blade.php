@@ -18,9 +18,13 @@
         <div class=" m-3">
                 <x-worker-detail-forstwirt-table :log_entries="$log_entries" />
         </div>
-    @else
+    @elseif ($role === 'harvester')
         <div class=" m-3">
                 <x-worker-detail-harvester-table :log_entries="$log_entries" />
+        </div>
+    @elseif ($role === 'rueckezug')
+        <div class=" m-3">
+                <x-worker-detail-rueckezug-table :log_entries="$log_entries" />
         </div>
     @endif
     <div class="container my-3 d-flex justify-content-center">
