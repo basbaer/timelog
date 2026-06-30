@@ -35,9 +35,10 @@
         <div class="col-1"><strong>Arbeitsart</strong></div>
         <div class="col-4"><strong>Anmerkung</strong></div>
     </div>
+    <hr class="my-0" />
 @endif
-<div class="row">
-    @foreach ($log_entries as $row)
+@foreach ($log_entries as $row)
+    <div class="row">
         <div class="col-1">
             @if ($row->show_date)
                 {{ $row->weekday }},
@@ -51,5 +52,6 @@
         <div class="col-2">{{ $row->project_client }} ({{ $row->project_location }})</div>
         <div class="col-1">{{ $row->working_type_name }}</div>
         <div class="col-4">{{ $row->comment }}</div>
-    @endforeach
-</div>
+    </div>
+    <hr class="my-0" />
+@endforeach

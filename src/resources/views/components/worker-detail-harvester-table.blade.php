@@ -9,24 +9,49 @@
         @foreach ($dayEntries as $entry)
             @if ($entry->working_type_name === 'harvester')
                 @if ($lastTableHeadIsHarvester === null || !$lastTableHeadIsHarvester)
-                    @php($show_partial_headers =  $lastTableHeadIsHarvester === null)
+                    @php($show_partial_headers = $lastTableHeadIsHarvester === null)
                     @php($lastTableHeadIsHarvester = true)
                     <div class="row mt-2">
-                        <div class="col-1"><strong>@if ($show_partial_headers) Datum @endif</strong></div>
-                        <div class="col-1"><strong>@if ($show_partial_headers) Von @endif</strong></div>
-                        <div class="col-1"><strong>@if ($show_partial_headers) Bis @endif</strong></div>
-                        <div class="col-1"><strong>@if ($show_partial_headers) Pause @endif</strong></div>
-                        <div class="col-1"><strong>@if ($show_partial_headers) Gesamt @endif</strong></div>
-                        <div class="col-2"><strong>@if ($show_partial_headers) Baustelle @endif</strong></div>
+                        <div class="col-1"><strong>
+                                @if ($show_partial_headers)
+                                    Datum
+                                @endif
+                            </strong></div>
+                        <div class="col-1"><strong>
+                                @if ($show_partial_headers)
+                                    Von
+                                @endif
+                            </strong></div>
+                        <div class="col-1"><strong>
+                                @if ($show_partial_headers)
+                                    Bis
+                                @endif
+                            </strong></div>
+                        <div class="col-1"><strong>
+                                @if ($show_partial_headers)
+                                    Pause
+                                @endif
+                            </strong></div>
+                        <div class="col-1"><strong>
+                                @if ($show_partial_headers)
+                                    Gesamt
+                                @endif
+                            </strong></div>
+                        <div class="col-2"><strong>
+                                @if ($show_partial_headers)
+                                    Baustelle
+                                @endif
+                            </strong></div>
                         <div class="col-1"><strong>BS von</strong></div>
                         <div class="col-1"><strong>BS bis</strong></div>
                         <div class="col-1"><strong>Anzahl</strong></div>
                         <div class="col-1"><strong>FM (gesamt)</strong></div>
                         <div class="col-1"><strong>FM (Tag)</strong></div>
                     </div>
+                    <hr class="my-0" />
                 @endif
 
-                <div class="row mt-2">
+                <div class="row">
                     <div class="col-1">
                         @if ($entry->show_date)
                             {{ $entry->weekday }},
@@ -44,6 +69,7 @@
                     <div class="col-1">{{ $entry->fm_total }}</div>
                     <div class="col-1">{{ $entry->fm_day }}</div>
                 </div>
+                <hr class="my-0" />
             @endif
 
             @if ($entry->working_type_name !== 'harvester')
