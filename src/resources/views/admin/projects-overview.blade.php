@@ -19,7 +19,7 @@
         <h2>Übersicht Projekte</h2>
         <div class="list-group">
             @foreach ($projects as $project)
-                <a href="{{ route('admin.projects.detail', $project->id) }}" class="list-group-item list-group-item-action">
+                <a href="{{ route('admin.project.detail', $project->id) }}" class="list-group-item list-group-item-action">
                     {{ $project->location }} | {{ $project->date->format('m/Y') }} | {{ $project->client }}
                 </a>
             @endforeach
