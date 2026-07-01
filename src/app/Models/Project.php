@@ -44,6 +44,10 @@ class Project extends Model
         return $this->hasMany(HarvesterLog::class);
     }
 
+    public function rueckezugLogs(): HasMany
+    {
+        return $this->hasMany(RueckezugLog::class);
+    }
 
     public function scopeOpenProjects($query)
     {

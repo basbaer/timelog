@@ -1,0 +1,94 @@
+<?php
+
+namespace App\Services;
+
+use App\Models\Project;
+use App\Models\ForstwirtWorkingType;
+use Carbon\Carbon;
+use Illuminate\Support\Collection;
+
+class ProjectService
+{
+    public function getDetailedProject(int $id): Collection
+    {
+        // Get the project details from the database
+        $project = Project::findOrFail($id);
+
+
+        // Get the details for each role
+        $rueckezug = $this->getRueckezugDetails($project);
+        $harvester = $this->getHarvesterDetails($project);   
+        $forstwirt = $this->getForstwirtDetails($project);
+        
+        
+        // Create a collection to hold the project details and logs
+        $projectDetailed = collect([
+            'project' => $project,
+            'harvester' => $harvester,
+            'rueckezug_logs' => $rueckezug
+        ]);
+
+        foreach ($forstwirt as $roleDetails) {
+            $projectDetailed->put($roleDetails['role'], collect([
+                'sum' => $roleDetails['sum'],
+                'logs' => $roleDetails['logs'],
+            ]));
+        }
+
+        return $projectDetailed;
+    }
+
+    private function getHarvesterDetails(Project $project): Collection
+    {
+        $harvesterLogs = $project->harvesterLogs()->get();
+        $harvesterSum = $harvesterLogs->sum(function ($log) {
+            return $this->timeToNumber($log->sum);
+        });
+
+        return collect([
+            'logs' => $harvesterLogs,
+            'sum' => $harvesterSum,
+        ]);
+    
+    }
+
+    private function getRueckezugDetails(Project $project): Collection
+    {
+        $rueckezugLogs = $project->rueckezugLogs()->get();
+        $rueckezugSum = $rueckezugLogs->sum(function ($log) {
+            return $this->timeToNumber($log->sum);
+        });
+
+        return collect([
+            'logs' => $rueckezugLogs,
+            'sum' => $rueckezugSum,
+        ]);
+    }
+
+    private function getForstwirtDetails(Project $project): Collection
+    {
+
+        //Get the logs for each role associated with the project
+        $forstwirtLogs = $project->forstwirtLogs()->get();
+
+        $forstwirtRolesSum = $forstwirtLogs->groupBy('working_type_id')->map(function ($logs, $roleId) {
+            return [
+                'role' => ForstwirtWorkingType::find($roleId)->slug,
+                'sum' => $logs->sum(function ($log) {
+                    return $this->timeToNumber($log->sum);
+                }),
+                'logs' => $logs,
+            ];
+        });
+
+        return $forstwirtRolesSum;
+
+    }
+
+    private function timeToNumber($time)
+    {
+        $time = Carbon::parse($time);
+
+        return $time->hour + ($time->minute / 60);
+    }
+}
