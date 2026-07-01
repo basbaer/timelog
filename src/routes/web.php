@@ -1,24 +1,25 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Auth\AddWorkerController;
-use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\WorkersOverviewController;
 use App\Http\Controllers\Auth\ActivationController;
+use App\Http\Controllers\Auth\AddWorkerController;
 use App\Http\Controllers\Auth\DeleteWorkerController;
-use Illuminate\Support\Facades\App;
-use App\Http\Middleware\Admin;
+use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\LogoutController;
 use App\Http\Controllers\Logs\ForstwirtLogController;
-use App\Http\Controllers\WorkerDetailController;
-use App\Http\Controllers\WorkerCardController;
+use App\Http\Controllers\Logs\HarvesterLogController;
+use App\Http\Controllers\Logs\RueckezugLogController;
 use App\Http\Controllers\Projects\AddProjectController;
 use App\Http\Controllers\Projects\OverviewProjectController;
+use App\Http\Controllers\Projects\ProjectDetailController;
+use App\Http\Controllers\WorkerCardController;
+use App\Http\Controllers\WorkerDetailController;
+use App\Http\Controllers\WorkersOverviewController;
+use App\Http\Middleware\Admin;
 use App\Http\Middleware\Forstwirt;
 use App\Http\Middleware\Harvester;
-use App\Http\Controllers\Logs\HarvesterLogController;
 use App\Http\Middleware\Rueckezug;
-use App\Http\Controllers\Logs\RueckezugLogController;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/play', function () {
     return session()->all();
@@ -78,9 +79,7 @@ Route::middleware(Admin::class)->prefix('admin')->group(function () {
 
     Route::get('/projects/add', [AddProjectController::class, 'show'])->name('admin.projects.add');
 
-    Route::get('/projects/{id}', function ($id) {
-        return view('admin/projects-detail', ['projectId' => $id]);
-    })->name('admin.projects.detail');
+    Route::get('/projects/{id}', [ProjectDetailController::class, 'show'])->name('admin.project.detail');
 
     Route::post('/projects/add/request', [AddProjectController::class, 'store'])->name('admin.projects.store');
 
