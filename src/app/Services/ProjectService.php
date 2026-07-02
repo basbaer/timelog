@@ -13,6 +13,7 @@ class ProjectService
     {
         // Get the project details from the database
         $project = Project::findOrFail($id);
+        $projectTitle = $this->getTitle($project);
 
 
         // Get the details for each role
@@ -20,16 +21,18 @@ class ProjectService
         $harvester = $this->getHarvesterDetails($project);   
         $forstwirt = $this->getForstwirtDetails($project);
         
+        $project = collect($project->toArray());
+        $project->put('title', $projectTitle);
         
         // Create a collection to hold the project details and logs
         $projectDetailed = collect([
             'project' => $project,
             'harvester' => $harvester,
-            'rueckezug_logs' => $rueckezug
+            'rueckezug' => $rueckezug
         ]);
 
         foreach ($forstwirt as $roleDetails) {
-            $projectDetailed->put($roleDetails['role'], collect([
+            $projectDetailed->put($roleDetails['working_type'], collect([
                 'sum' => $roleDetails['sum'],
                 'logs' => $roleDetails['logs'],
             ]));
@@ -73,7 +76,7 @@ class ProjectService
 
         $forstwirtRolesSum = $forstwirtLogs->groupBy('working_type_id')->map(function ($logs, $roleId) {
             return [
-                'role' => ForstwirtWorkingType::find($roleId)->slug,
+                'working_type' => ForstwirtWorkingType::find($roleId)->slug,
                 'sum' => $logs->sum(function ($log) {
                     return $this->timeToNumber($log->sum);
                 }),
@@ -90,5 +93,10 @@ class ProjectService
         $time = Carbon::parse($time);
 
         return $time->hour + ($time->minute / 60);
+    }
+
+    private function getTitle(Project $project): string
+    {
+        return $project->location . ' | ' . $project->date->format('m/Y') . ' | ' . $project->client;
     }
 }

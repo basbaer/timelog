@@ -26,6 +26,8 @@ return [
     'messkluppe' => 'Messkluppe',
     'reparatur' => 'Reparatur',
     'other' => 'Sonstiges',
+    'harvester' => 'Harvester',
+    'rueckezug' => 'Rückezug',
     'comment' => 'Kommentar',
     'add_work_type' => 'Klicke, um weitere Arbeitsarten hinzuzufügen',
     'submit' => 'Eintrag speichern',

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Projects;
 
 use App\Http\Controllers\Controller;
 use App\Services\ProjectService;
+use Illuminate\Support\Collection;
 
 class ProjectDetailController extends Controller
 {
@@ -13,6 +14,23 @@ class ProjectDetailController extends Controller
         $projectService = new ProjectService();
         $project = $projectService->getDetailedProject($id);
 
-        return view('admin/projects-detail', ['project' => $project]);
+        $projectForView = $this->prepareProjectForView($project);
+
+        return view('admin/projects-detail', ['project' => $projectForView]);
+    }
+
+    private function prepareProjectForView(Collection $project): Collection
+    {
+        $projectForView = collect([
+            'title' => $project->get('project')->get('title'),
+            'working_types' => $project->keys()->filter(function ($key) {
+                return $key !== 'project';
+            })->values(),            
+            'project' => $project->get('project'),
+            'harvester' => $project->get('harvester'),
+            'rueckezug' => $project->get('rueckezug'),
+        ]);
+
+        return $projectForView;
     }
 }
