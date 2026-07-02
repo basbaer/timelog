@@ -26,10 +26,14 @@ class ProjectDetailController extends Controller
             'working_types' => $project->keys()->filter(function ($key) {
                 return $key !== 'project';
             })->values(),            
-            'project' => $project->get('project'),
-            'harvester' => $project->get('harvester'),
-            'rueckezug' => $project->get('rueckezug'),
         ]);
+
+        foreach ($projectForView->get('working_types') as $workingType) {
+            $projectForView->put($workingType, collect([
+                'sum' => $project->get($workingType)->get('sum'),
+                'logs' => $project->get($workingType)->get('logs'),
+            ]));
+        };
 
         return $projectForView;
     }

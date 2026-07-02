@@ -21,9 +21,12 @@
                             <div class="container p-0 m-0">
                                 <div class="row p-0 m-0">
                                     <h5 class="col-8 p-0 m-0">{{ __('form.' . $workingType) }}</h5>
+                                    <h5 class="col-4 text-end" id="{{ $workingType }}_sum">{{ $project->get($workingType)->get('sum') }} h</h5>
+                                    <!-- Display the sum of hours and fm for harvester 
                                     <h5 class="col-2 text-end border-end py-0 m-0" id="{{ $workingType }}_hours">18h
                                     </h5>
                                     <h5 class="col-2 text-start py-0 m-0" id="{{ $workingType }}_hours">12fm</h5>
+                                    -->
                                 </div>
                             </div>
                         </button>
