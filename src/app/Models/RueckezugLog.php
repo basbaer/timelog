@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasMinutePrecisionTimes;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class RueckezugLog extends Model
 {
+    use HasMinutePrecisionTimes;
+
     protected $fillable = [
         'user_id',
         'project_id',
