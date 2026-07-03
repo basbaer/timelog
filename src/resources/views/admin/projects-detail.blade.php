@@ -34,33 +34,9 @@
                     <div id="collapse{{ $workingType }}" class="accordion-collapse collapse "
                         data-bs-parent="#accordionProject">
                         <div class="accordion-body p-1">
-                            <table class="table p-0">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Datum</th>
-                                        <th scope="col">Arbeiter</th>
-                                        <th scope="col">Zeit</th>
-                                        <th scope="col">Stk.</th>
-                                        <th scope="col">fm/Tag</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td scope="row">06.12.25</td>
-                                        <td>B. Bär</td>
-                                        <td>8h</td>
-                                        <td>10</td>
-                                        <td>5</td>
-                                    </tr>
-                                    <tr>
-                                        <td scope="row">07.12.25</td>
-                                        <td>B. Bär</td>
-                                        <td>10h</td>
-                                        <td>13</td>
-                                        <td>7</td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                            @if ($workingType == 'harvester')
+                                <x-project-detail-harvester-table :logs="$project->get($workingType)->get('logs')" />
+                            @endif
                         </div>
                     </div>
                 </div>

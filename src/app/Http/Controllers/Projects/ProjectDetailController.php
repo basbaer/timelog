@@ -21,19 +21,22 @@ class ProjectDetailController extends Controller
 
     private function prepareProjectForView(Collection $project): Collection
     {
+        $workingTypes = $project->keys()
+            ->reject(fn($key) => $key === 'project')
+            ->values()
+            ->all();
+
         $projectForView = collect([
             'title' => $project->get('project')->get('title'),
-            'working_types' => $project->keys()->filter(function ($key) {
-                return $key !== 'project';
-            })->values(),            
+            'working_types' => $workingTypes,
         ]);
 
-        foreach ($projectForView->get('working_types') as $workingType) {
+        foreach ($workingTypes as $workingType) {
             $projectForView->put($workingType, collect([
                 'sum' => $project->get($workingType)->get('sum'),
                 'logs' => $project->get($workingType)->get('logs'),
             ]));
-        };
+        }
 
         return $projectForView;
     }

@@ -34,7 +34,7 @@ class ProjectService
         foreach ($forstwirt as $roleDetails) {
             $projectDetailed->put($roleDetails['working_type'], collect([
                 'sum' => $roleDetails['sum'],
-                'logs' => $roleDetails['logs'],
+                'logs' => collect($roleDetails['logs']),
             ]));
         }
 
@@ -43,7 +43,7 @@ class ProjectService
 
     private function getHarvesterDetails(Project $project): Collection
     {
-        $harvesterLogs = $project->harvesterLogs()->get();
+        $harvesterLogs = $project->harvesterLogs()->with('user')->get();
         $harvesterSum = $harvesterLogs->sum(function ($log) {
             return $this->timeToNumber($log->sum);
         });
@@ -57,7 +57,7 @@ class ProjectService
 
     private function getRueckezugDetails(Project $project): Collection
     {
-        $rueckezugLogs = $project->rueckezugLogs()->get();
+        $rueckezugLogs = $project->rueckezugLogs()->with('user')->get();
         $rueckezugSum = $rueckezugLogs->sum(function ($log) {
             return $this->timeToNumber($log->sum);
         });
@@ -72,7 +72,7 @@ class ProjectService
     {
 
         //Get the logs for each role associated with the project
-        $forstwirtLogs = $project->forstwirtLogs()->get();
+        $forstwirtLogs = $project->forstwirtLogs()->with('user')->get();
 
         $forstwirtRolesSum = $forstwirtLogs->groupBy('working_type_id')->map(function ($logs, $roleId) {
             return [
