@@ -62,6 +62,15 @@
                                             value="{{ old("work_logs.$project->id.end") }}">
                                     </div>
 
+                                    <div class="col-sm-auto col-6">
+                                        <label for="pause-{{ $loop->index }}"
+                                            class="form-label">{{ __('form.pause') }}</label>
+                                        <input type="number" id="pause-{{ $loop->index }}" class="form-control"
+                                            name="work_logs[{{ $project->id }}][pause]" min="0" step="15"
+                                            value="{{ old("work_logs.$project->id.pause") }}"
+                                            placeholder="0">
+                                    </div>
+
                                     <input type="hidden" id="sum-{{ $loop->index }}"
                                         name="work_logs[{{ $project->id }}][sum]"
                                         value="{{ old("work_logs.$project->id.sum") }}">
@@ -187,14 +196,16 @@
         function calculateHarvesterSum(projectIndex) {
             const startInput = document.getElementById(`start-${projectIndex}`);
             const endInput = document.getElementById(`end-${projectIndex}`);
+            const pauseInput = document.getElementById(`pause-${projectIndex}`);
             const sumInput = document.getElementById(`sum-${projectIndex}`);
 
-            if (!startInput || !endInput || !sumInput) {
+            if (!startInput || !endInput || !pauseInput || !sumInput) {
                 return;
             }
 
             const start = startInput.value;
             const end = endInput.value;
+            const pause = parseInt(pauseInput.value || 0, 10);
 
             if (!start || !end) {
                 sumInput.value = "";
@@ -207,6 +218,11 @@
 
             if (diff < 0) {
                 diff += 24 * 60;
+            }
+
+            diff -= pause;
+            if (diff < 0) {
+                diff = 0;
             }
 
             sumInput.value = formatHarvesterMinutesToHHMM(diff);
@@ -234,7 +250,7 @@
             document.querySelectorAll('[id^="start-"]').forEach(startInput => {
                 const projectIndex = startInput.id.substring("start-".length);
 
-                ["start", "end"].forEach(field => {
+                ["start", "end", "pause"].forEach(field => {
                     const input = document.getElementById(`${field}-${projectIndex}`);
                     if (input) {
                         input.addEventListener("input", () => calculateHarvesterSum(projectIndex));

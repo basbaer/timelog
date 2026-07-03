@@ -24,6 +24,7 @@ class StoreRueckezugLogRequest extends FormRequest
             'work_logs.*.start' => ['date_format:H:i', 'required_with:work_logs.*.end'],
             'work_logs.*.end' => ['date_format:H:i', 'required_with:work_logs.*.start'],
             'work_logs.*.sum' => ['nullable', 'date_format:H:i'],
+            'work_logs.*.pause' => ['nullable', 'integer', 'min:0'],
             'work_logs.*.bs_start' => ['nullable', 'numeric', 'required_with:work_logs.*.bs_end'],
             'work_logs.*.bs_end' => ['nullable', 'numeric', 'required_with:work_logs.*.bs_start'],
             'work_logs.*.bs_diff' => ['nullable', 'numeric'],
@@ -114,7 +115,7 @@ class StoreRueckezugLogRequest extends FormRequest
 
     protected function prepareForValidation(): void
     {
-        $projectFields = ['start', 'end', 'sum', 'bs_start', 'bs_end', 'bs_diff', 'loadings', 'average_distance'];
+        $projectFields = ['start', 'end', 'sum', 'pause', 'bs_start', 'bs_end', 'bs_diff', 'loadings', 'average_distance'];
 
         $workLogs = collect((array) $this->input('work_logs', []))
             ->map(function (array $workLog) use ($projectFields) {

@@ -59,7 +59,7 @@
                     </div>
                     <div class="col-1">{{ $entry->start }}</div>
                     <div class="col-1">{{ $entry->end }}</div>
-                    <div class="col-1">{{ $entry->pause }}</div>
+                    <div class="col-1">{{ $entry->pause ?? '-' }}</div>
                     <div class="col-1">{{ $entry->sum }}</div>
                     <div class="col-2">{{ $entry->project_client }} ({{ $entry->project_location }})</div>
                     <div class="col-1">{{ $entry->bs_from }}</div>

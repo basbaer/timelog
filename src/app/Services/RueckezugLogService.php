@@ -32,6 +32,7 @@ class RueckezugLogService extends BaseLogService
             $log->start = $logData['start'] ?? null;
             $log->end = $logData['end'] ?? null;
             $log->sum = $logData['sum'] ?? null;
+            $log->pause = $logData['pause'] ?? 0;
             $log->bs_from = $logData['bs_start'] ?? null;
             $log->bs_to = $logData['bs_end'] ?? null;
             $log->bs_diff = $logData['bs_diff'] ?? null;

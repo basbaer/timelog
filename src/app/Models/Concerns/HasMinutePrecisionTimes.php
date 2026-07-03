@@ -22,6 +22,14 @@ trait HasMinutePrecisionTimes
         return $this->minutePrecisionTime();
     }
 
+    protected function pause(): Attribute
+    {
+        return Attribute::make(
+            get: fn (mixed $value) => $this->formatMinutePrecisionTime($value),
+            set: fn (mixed $value) => $this->normalizePauseTime($value),
+        );
+    }
+
     protected function minutePrecisionTime(): Attribute
     {
         return Attribute::make(
@@ -43,6 +51,19 @@ trait HasMinutePrecisionTimes
     {
         if ($value === null || $value === '') {
             return null;
+        }
+
+        return Carbon::parse($value)->format('H:i:s');
+    }
+
+    protected function normalizePauseTime(mixed $value): string
+    {
+        if ($value === null || $value === '') {
+            return '00:00:00';
+        }
+
+        if (is_numeric($value)) {
+            return Carbon::createFromTime(0, (int) $value)->format('H:i:s');
         }
 
         return Carbon::parse($value)->format('H:i:s');

@@ -47,7 +47,7 @@
         </div>
         <div class="col-1">{{ $row->start }}</div>
         <div class="col-1">{{ $row->end }}</div>
-        <div class="col-1">{{ $row->pause }}</div>
+        <div class="col-1">{{ $row->pause ?? '-' }}</div>
         <div class="col-1">{{ $row->sum }}</div>
         <div class="col-2">{{ $row->project_client }} ({{ $row->project_location }})</div>
         <div class="col-1">{{ $row->working_type_name }}</div>

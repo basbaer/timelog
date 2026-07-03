@@ -67,6 +67,7 @@ class RueckezugLogController extends BaseLogController
                     'start' => $workLog['start'] ?? null,
                     'end' => $workLog['end'] ?? null,
                     'sum' => $workLog['sum'] ?? null,
+                    'pause' => isset($workLog['pause']) ? (int) $workLog['pause'] : 0,
                     'bs_start' => isset($workLog['bs_start']) ? (float) $workLog['bs_start'] : null,
                     'bs_end' => isset($workLog['bs_end']) ? (float) $workLog['bs_end'] : null,
                     'bs_diff' => $workLog['bs_diff'] ?? null,
