@@ -1,7 +1,6 @@
 @props(['logs'])
 
 <div class="container">
-    <div class="row mx-auto">BS = Betriebsstunden, FM = Festmeter</div>
     <div class="row mt-2">
         <div class="col"><strong>Datum</strong></div>
         <div class="col"><strong>Stunden</strong></div>

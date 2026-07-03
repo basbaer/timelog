@@ -37,7 +37,8 @@
                                 <x-project-detail-harvester-table :logs="$project->get($workingType)->get('logs')" />
                             @elseif ($workingType == 'rueckezug')
                                 <x-project-detail-rueckezug-table :logs="$project->get($workingType)->get('logs')" />
-
+                            @else
+                                <x-project-detail-forstwirt-working-types-table :logs="$project->get($workingType)->get('logs')" />
                             @endif
                         </div>
                     </div>
