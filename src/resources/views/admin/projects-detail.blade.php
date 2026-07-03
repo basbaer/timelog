@@ -11,7 +11,6 @@
     <div class="container px-0 mt-3" id="projectItem">
         <h2>{{ $project->get('title') }}</h2>
         <div class="accordion mx-0 my-3 p-0" id="accordionProject">
-
             @foreach ($project->get('working_types') as $workingType)
                 <div class="accordion-item">
                     <h2 class="accordion-header">
@@ -36,6 +35,9 @@
                         <div class="accordion-body p-1">
                             @if ($workingType == 'harvester')
                                 <x-project-detail-harvester-table :logs="$project->get($workingType)->get('logs')" />
+                            @elseif ($workingType == 'rueckezug')
+                                <x-project-detail-rueckezug-table :logs="$project->get($workingType)->get('logs')" />
+
                             @endif
                         </div>
                     </div>
