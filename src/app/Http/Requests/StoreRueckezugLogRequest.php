@@ -116,14 +116,17 @@ class StoreRueckezugLogRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         $projectFields = ['start', 'end', 'sum', 'pause', 'bs_start', 'bs_end', 'bs_diff', 'loadings', 'average_distance'];
+        $decimalFields = ['bs_start', 'bs_end', 'loadings', 'average_distance'];
 
         $workLogs = collect((array) $this->input('work_logs', []))
-            ->map(function (array $workLog) use ($projectFields) {
+            ->map(function (array $workLog) use ($projectFields, $decimalFields) {
                 $filteredWorkLog = [];
 
                 foreach ($projectFields as $field) {
                     if (isset($workLog[$field]) && trim((string) $workLog[$field]) !== '') {
-                        $filteredWorkLog[$field] = $workLog[$field];
+                        $filteredWorkLog[$field] = in_array($field, $decimalFields, true)
+                            ? str_replace(',', '.', (string) $workLog[$field])
+                            : $workLog[$field];
                     }
                 }
 

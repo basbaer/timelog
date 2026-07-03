@@ -85,7 +85,7 @@
                                         <label for="bs_start-{{ $loop->index }}"
                                             class="form-label">{{ __('form.from') }}</label>
                                         <input type="number" id="bs_start-{{ $loop->index }}" class="form-control"
-                                            name="work_logs[{{ $project->id }}][bs_start]"
+                                            name="work_logs[{{ $project->id }}][bs_start]" step="0.01" inputmode="decimal"
                                             value="{{ old("work_logs.$project->id.bs_start") }}"
                                             placeholder="Stand: {{ $projects[$project->id]['last_bs'] }}">
                                     </div>
@@ -94,7 +94,7 @@
                                         <label for="bs_end-{{ $loop->index }}"
                                             class="form-label">{{ __('form.to') }}</label>
                                         <input type="number" id="bs_end-{{ $loop->index }}" class="form-control"
-                                            name="work_logs[{{ $project->id }}][bs_end]"
+                                            name="work_logs[{{ $project->id }}][bs_end]" step="0.01" inputmode="decimal"
                                             value="{{ old("work_logs.$project->id.bs_end") }}">
                                     </div>
 
@@ -121,6 +121,7 @@
                                         <label for="average_distance-{{ $loop->index }}" class="form-label">durchschnittliche Distanz (km)</label>
                                         <input type="number" id="average_distance-{{ $loop->index }}" class="form-control"
                                             name="work_logs[{{ $project->id }}][average_distance]" data-fm-before="{{ $projects[$project->id]['last_average_distance'] }}"
+                                            step="0.01" inputmode="decimal"
                                             value="{{ old("work_logs.$project->id.average_distance") }}"
                                             placeholder="Stand: {{ $projects[$project->id]['last_average_distance'] }}">
                                     </div>

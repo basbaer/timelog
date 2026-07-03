@@ -71,11 +71,11 @@ class HarvesterLogController extends BaseLogController
                     'end' => $workLog['end'] ?? null,
                     'sum' => $workLog['sum'] ?? null,
                     'pause' => isset($workLog['pause']) ? (int) $workLog['pause'] : 0,
-                    'bs_start' => isset($workLog['bs_start']) ? (int) $workLog['bs_start'] : null,
-                    'bs_end' => isset($workLog['bs_end']) ? (int) $workLog['bs_end'] : null,
+                    'bs_start' => isset($workLog['bs_start']) ? (float) $workLog['bs_start'] : null,
+                    'bs_end' => isset($workLog['bs_end']) ? (float) $workLog['bs_end'] : null,
                     'bs_diff' => $workLog['bs_diff'] ?? null,
-                    'stueckzahl' => isset($workLog['stueckzahl']) ? (int) $workLog['stueckzahl'] : null,
-                    'fm_gesamt' => isset($workLog['fm_gesamt']) ? $workLog['fm_gesamt'] : null,
+                    'stueckzahl' => isset($workLog['stueckzahl']) ? (float) $workLog['stueckzahl'] : null,
+                    'fm_gesamt' => isset($workLog['fm_gesamt']) ? (float) $workLog['fm_gesamt'] : null,
                     'fm_day' => $workLog['fm_day'] ?? null,
                     'forstwirt_work_entries' => collect($workLog['entries'] ?? [])
                         ->map(fn(array $entry) => [

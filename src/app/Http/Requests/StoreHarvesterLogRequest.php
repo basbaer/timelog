@@ -25,10 +25,10 @@ class StoreHarvesterLogRequest extends FormRequest
             'work_logs.*.end' => ['nullable','date_format:H:i', 'required_with:work_logs.*.start'],
             'work_logs.*.sum' => ['nullable', 'date_format:H:i'],
             'work_logs.*.pause' => ['nullable', 'integer', 'min:0'],
-            'work_logs.*.bs_start' => ['nullable', 'integer', 'min:0', 'required_with:work_logs.*.bs_end'],
-            'work_logs.*.bs_end' => ['nullable', 'integer', 'min:0', 'required_with:work_logs.*.bs_start'],
+            'work_logs.*.bs_start' => ['nullable', 'numeric', 'min:0', 'required_with:work_logs.*.bs_end'],
+            'work_logs.*.bs_end' => ['nullable', 'numeric', 'min:0', 'required_with:work_logs.*.bs_start'],
             'work_logs.*.bs_diff' => ['nullable', 'string'],
-            'work_logs.*.stueckzahl' => ['nullable', 'integer', 'min:0', 'required_with:work_logs.*.fm_gesamt'],
+            'work_logs.*.stueckzahl' => ['nullable', 'numeric', 'min:0', 'required_with:work_logs.*.fm_gesamt'],
             'work_logs.*.fm_gesamt' => ['nullable', 'numeric', 'min:0', 'required_with:work_logs.*.stueckzahl'],
             'work_logs.*.fm_day' => ['nullable', 'string'],
             'work_logs.*.entries' => ['array'],
@@ -126,14 +126,17 @@ class StoreHarvesterLogRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         $projectFields = ['start', 'end', 'sum', 'pause', 'bs_start', 'bs_end', 'bs_diff', 'stueckzahl', 'fm_gesamt', 'fm_day'];
+        $decimalFields = ['bs_start', 'bs_end', 'fm_gesamt'];
 
         $workLogs = collect((array) $this->input('work_logs', []))
-            ->map(function (array $workLog) use ($projectFields) {
+            ->map(function (array $workLog) use ($projectFields, $decimalFields) {
                 $filteredWorkLog = [];
 
                 foreach ($projectFields as $field) {
                     if (isset($workLog[$field]) && trim((string) $workLog[$field]) !== '') {
-                        $filteredWorkLog[$field] = $workLog[$field];
+                        $filteredWorkLog[$field] = in_array($field, $decimalFields, true)
+                            ? str_replace(',', '.', (string) $workLog[$field])
+                            : $workLog[$field];
                     }
                 }
 
