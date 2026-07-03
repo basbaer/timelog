@@ -13,8 +13,10 @@ class AddProjectController extends Controller
     {
         // get all roles except admin role
         $roles = Role::worker()->get();
-        return view('admin/projects-add', compact('roles'));
+        $project = null; // No project is being edited, so set it to null
+        return view('admin/projects-add', compact('roles', 'project'));
     }
+
     public function store(Request $request)
     {
         // Validate the incoming request data
@@ -38,5 +40,19 @@ class AddProjectController extends Controller
 
         // Redirect back to the projects overview page with a success message
         return redirect()->route('admin.projects.overview')->with('success', 'Projekt erfolgreich angelegt!');
+    }
+
+    public function edit(int $projectId)
+    {
+        // Find the project by ID
+        $project = Project::findOrFail($projectId);
+
+        // Get all roles except admin role
+        $roles = Role::worker()->get();
+
+        // Get the IDs of the roles currently assigned to the project
+        $assignedRoleIds = $project->roles()->pluck('id')->toArray();
+
+        return view('admin/projects-add', compact('project', 'roles', 'assignedRoleIds'));
     }
 }

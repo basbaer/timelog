@@ -28,6 +28,7 @@ class ProjectDetailController extends Controller
 
         $projectForView = collect([
             'title' => $project->get('project')->get('title'),
+            'id' => $project->get('project')->get('id'),
             'working_types' => $workingTypes,
         ]);
 

@@ -56,7 +56,7 @@
                     Projekt abgeschlossen
                 </label>
             </div>
-            <a href="dash-bau-overview.html" class="btn btn-primary col-4">Projekt bearbeiten</a>
+            <a href="{{ route('admin.projects.edit', $project->get('id')) }}" class="btn btn-primary col-4">Projekt bearbeiten</a>
         </div>
     </div>
     <div class="container my-4">
