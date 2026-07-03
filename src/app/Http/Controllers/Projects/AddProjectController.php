@@ -3,31 +3,26 @@
 namespace App\Http\Controllers\Projects;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Http\Requests\ProjectUpdateRequest;
 use App\Models\Project;
 use App\Models\Role;
+use App\Models\User;
+use Illuminate\Support\Collection;
 
 class AddProjectController extends Controller
 {
     public function show()
     {
         // get all roles except admin role
-        $roles = Role::worker()->get();
+        $roles = Role::worker()->with('users:id,first_name,last_name,role_id')->get();
         $project = null;
         
         return view('admin/projects-add', compact('roles', 'project'));
     }
 
-    public function store(Request $request)
+    public function store(ProjectUpdateRequest $request)
     {
-        // Validate the incoming request data
-        $validatedData = $request->validate([
-            'location' => 'required|string|max:255',
-            'date' => 'required|date',
-            'client' => 'required|string|max:255',
-            'roles' => 'required|array|min:1',
-            'roles.*' => 'integer|exists:roles,id',
-        ]);
+        $validatedData = $request->validated();
 
         // Create a new project using the validated data
         $project = new Project();
@@ -36,8 +31,11 @@ class AddProjectController extends Controller
         $project->client = $validatedData['client'];
         $project->save();
 
-        // Attach selected roles to the project.
-        $project->roles()->sync($validatedData['roles']);
+        $this->syncProjectAssignments(
+            $project,
+            $validatedData['roles'],
+            $validatedData['workers'] ?? []
+        );
 
         // Redirect back to the projects overview page with a success message
         return redirect()->route('admin.projects.overview')->with('success', 'Projekt erfolgreich angelegt!');
@@ -49,24 +47,23 @@ class AddProjectController extends Controller
         $project = Project::findOrFail($projectId);
 
         // Get all roles except admin role
-        $roles = Role::worker()->get();
+        $roles = Role::worker()->with('users:id,first_name,last_name,role_id')->get();
 
-        // Get the IDs of the roles currently assigned to the project
-        $assignedRoleIds = $project->roles()->pluck('id')->toArray();
+        // Infer selected roles from assigned workers.
+        $assignedRoleIds = $project->users()
+            ->pluck('users.role_id')
+            ->map(fn ($roleId) => (int) $roleId)
+            ->unique()
+            ->values()
+            ->all();
+        $assignedUserIds = $project->users()->pluck('id')->toArray();
 
-        return view('admin/projects-add', compact('project', 'roles', 'assignedRoleIds'));
+        return view('admin/projects-add', compact('project', 'roles', 'assignedRoleIds', 'assignedUserIds'));
     }
 
-    public function update(Request $request, int $projectId)
+    public function update(ProjectUpdateRequest $request, int $projectId)
     {
-        // Validate the incoming request data
-        $validatedData = $request->validate([
-            'location' => 'required|string|max:255',
-            'date' => 'required|date',
-            'client' => 'required|string|max:255',
-            'roles' => 'required|array|min:1',
-            'roles.*' => 'integer|exists:roles,id',
-        ]);
+        $validatedData = $request->validated();
 
         // Find the project by ID
         $project = Project::findOrFail($projectId);
@@ -77,10 +74,48 @@ class AddProjectController extends Controller
         $project->client = $validatedData['client'];
         $project->save();
 
-        // Sync the selected roles with the project.
-        $project->roles()->sync($validatedData['roles']);
+        $this->syncProjectAssignments(
+            $project,
+            $validatedData['roles'],
+            $validatedData['workers'] ?? []
+        );
 
         // Redirect back to the projects overview page with a success message
         return redirect()->route('admin.project.detail', ['id' => $project->id])->with('success', 'Projekt erfolgreich aktualisiert!');
+    }
+
+    private function syncProjectAssignments(Project $project, array $roleIds, array $selectedWorkerIds): void
+    {
+        $roleIds = array_values(array_unique(array_map('intval', $roleIds)));
+        $selectedWorkerIds = array_values(array_unique(array_map('intval', $selectedWorkerIds)));
+
+        /** @var Collection<int, \App\Models\User> $workersInSelectedRoles */
+        $workersInSelectedRoles = User::query()
+            ->whereIn('role_id', $roleIds)
+            ->get(['id', 'role_id']);
+
+        $workersByRole = $workersInSelectedRoles->groupBy('role_id');
+        $selectedLookup = array_flip($selectedWorkerIds);
+
+        $resolvedWorkerIds = [];
+
+        foreach ($roleIds as $roleId) {
+            $workersOfRole = $workersByRole->get($roleId, collect());
+
+            $selectedWorkersOfRole = $workersOfRole
+                ->pluck('id')
+                ->filter(fn (int $id) => isset($selectedLookup[$id]))
+                ->values()
+                ->all();
+
+            if (! empty($selectedWorkersOfRole)) {
+                $resolvedWorkerIds = array_merge($resolvedWorkerIds, $selectedWorkersOfRole);
+                continue;
+            }
+
+            $resolvedWorkerIds = array_merge($resolvedWorkerIds, $workersOfRole->pluck('id')->all());
+        }
+
+        $project->users()->sync(array_values(array_unique($resolvedWorkerIds)));
     }
 }

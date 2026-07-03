@@ -21,11 +21,11 @@ class Project extends Model
     }
 
     /**
-     * Get the roles assigned to this project.
+     * Get the workers assigned to this project.
      */
-    public function roles(): BelongsToMany
+    public function users(): BelongsToMany
     {
-        return $this->belongsToMany(Role::class);
+        return $this->belongsToMany(User::class);
     }
     
     /**

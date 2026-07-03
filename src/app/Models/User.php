@@ -9,6 +9,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class User extends Authenticatable
@@ -45,6 +46,14 @@ class User extends Authenticatable
     public function role(): BelongsTo
     {
         return $this->belongsTo(Role::class);
+    }
+
+    /**
+     * Get the projects assigned to the user.
+     */
+    public function projects(): BelongsToMany
+    {
+        return $this->belongsToMany(Project::class);
     }
 
     public function log(): HasMany
@@ -116,8 +125,8 @@ class User extends Authenticatable
     {
         return Project::query()
             ->openProjects()
-            ->whereHas('roles', function (Builder $query) {
-                $query->whereKey($this->role_id);
+            ->whereHas('users', function (Builder $query) {
+                $query->whereKey($this->id);
             });
     }
 }
