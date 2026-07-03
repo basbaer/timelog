@@ -25,11 +25,11 @@ class ProjectService
         $project->put('title', $projectTitle);
         
         // Create a collection to hold the project details and logs
-        $projectDetailed = collect([
+        $projectDetailed = collect(array_filter([
             'project' => $project,
             'harvester' => $harvester,
             'rueckezug' => $rueckezug
-        ]);
+        ]));
 
         foreach ($forstwirt as $roleDetails) {
             $projectDetailed->put($roleDetails['working_type'], collect([
@@ -41,9 +41,14 @@ class ProjectService
         return $projectDetailed;
     }
 
-    private function getHarvesterDetails(Project $project): Collection
+    private function getHarvesterDetails(Project $project): ?Collection
     {
         $harvesterLogs = $project->harvesterLogs()->with('user')->get();
+
+        if ($harvesterLogs->isEmpty()){
+            return null;
+        }
+
         $harvesterSum = $harvesterLogs->sum(function ($log) {
             return $this->timeToNumber($log->sum);
         });
@@ -55,9 +60,14 @@ class ProjectService
     
     }
 
-    private function getRueckezugDetails(Project $project): Collection
+    private function getRueckezugDetails(Project $project): ?Collection
     {
         $rueckezugLogs = $project->rueckezugLogs()->with('user')->get();
+
+        if ($rueckezugLogs->isEmpty()){
+            return null;
+        }
+
         $rueckezugSum = $rueckezugLogs->sum(function ($log) {
             return $this->timeToNumber($log->sum);
         });
