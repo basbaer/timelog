@@ -64,7 +64,7 @@
     </div>
 
     <div class="container d-flex justify-content-center">
-        <a href="dash-bau-overview.html" class="btn btn-primary">Zurück zur Übersicht</a>
+        <a href="{{ route('admin.projects.overview') }}" class="btn btn-primary">Zurück zur Übersicht</a>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
