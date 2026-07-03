@@ -84,6 +84,8 @@ Route::middleware(Admin::class)->prefix('admin')->group(function () {
     Route::post('/projects/add/request', [AddProjectController::class, 'store'])->name('admin.projects.store');
 
     Route::get('/projects/{id}/edit', [AddProjectController::class, 'edit'])->name('admin.projects.edit');
+
+    Route::put('/projects/{id}/update', [AddProjectController::class, 'update'])->name('admin.projects.update');
     
     // ---- Workers --------------
     Route::get('/workers', [WorkersOverviewController::class, 'show'])->name('admin.workers.overview');

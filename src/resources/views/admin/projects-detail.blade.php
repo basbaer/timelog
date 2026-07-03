@@ -6,6 +6,12 @@
 <body>
     @include('partials.admin_navbar', ['active' => 'projects'])
 
+    @if (session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
 
     <!-- Project Item -->
     <div class="container px-0 mt-3" id="projectItem">
@@ -20,8 +26,9 @@
                             <div class="container p-0 m-0">
                                 <div class="row p-0 m-0">
                                     <h5 class="col-8 p-0 m-0">{{ __('form.' . $workingType) }}</h5>
-                                    <h5 class="col-4 text-end" id="{{ $workingType }}_sum">{{ $project->get($workingType)->get('sum') }} h</h5>
-                                    <!-- Display the sum of hours and fm for harvester 
+                                    <h5 class="col-4 text-end" id="{{ $workingType }}_sum">
+                                        {{ $project->get($workingType)->get('sum') }} h</h5>
+                                    <!-- Display the sum of hours and fm for harvester
                                     <h5 class="col-2 text-end border-end py-0 m-0" id="{{ $workingType }}_hours">18h
                                     </h5>
                                     <h5 class="col-2 text-start py-0 m-0" id="{{ $workingType }}_hours">12fm</h5>
@@ -43,7 +50,6 @@
                         </div>
                     </div>
                 </div>
-
             @endforeach
         </div>
     </div>
@@ -56,7 +62,8 @@
                     Projekt abgeschlossen
                 </label>
             </div>
-            <a href="{{ route('admin.projects.edit', $project->get('id')) }}" class="btn btn-primary col-4">Projekt bearbeiten</a>
+            <a href="{{ route('admin.projects.edit', $project->get('id')) }}" class="btn btn-primary col-4">Projekt
+                bearbeiten</a>
         </div>
     </div>
     <div class="container my-4">

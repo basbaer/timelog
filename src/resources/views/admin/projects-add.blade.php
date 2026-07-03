@@ -12,12 +12,15 @@
         @else
             <h2>Neues Projekt anlegen</h2>
         @endif
-        <form action="{{ route('admin.projects.store') }}" method="POST">
+        <form action="{{ $project ? route('admin.projects.update', $project->id) : route('admin.projects.store') }}" method="POST">
             @csrf
+            @if ($project)
+                @method('PUT')
+            @endif
             <div class="mb-3">
                 <label for="location" class="form-label">Ort</label>
                 <input type="text" class="form-control @error('location') is-invalid @enderror" id="location"
-                    name="location" value="{{ old('location') }}" placeholder="Geben Sie den Ort ein">
+                    name="location" value="{{ old('location', $project ? $project->location : null) }}" placeholder="Geben Sie den Ort ein">
                 @error('location')
                     <div class="invalid-feedback">Ort ist erforderlich</div>
                 @enderror
@@ -25,7 +28,7 @@
             <div class="mb-3">
                 <label for="date" class="form-label">Startdatum</label>
                 <input type="date" class="form-control @error('date') is-invalid @enderror" id="date"
-                    name="date" value="{{ old('date') }}" placeholder="Geben Sie das Datum ein">
+                    name="date" value="{{ old('date', $project ? $project->date->format('Y-m-d') : null) }}" placeholder="Geben Sie das Datum ein">
                 @error('date')
                     <div class="invalid-feedback">Datum ist erforderlich</div>
                 @enderror
@@ -33,7 +36,7 @@
             <div class="mb-3">
                 <label for="client" class="form-label">Förster/Waldbesitzer</label>
                 <input type="text" class="form-control @error('client') is-invalid @enderror" id="client"
-                    name="client" value="{{ old('client') }}" placeholder="Geben Sie den Auftraggeber ein">
+                    name="client" value="{{ old('client', $project ? $project->client : null) }}" placeholder="Geben Sie den Auftraggeber ein">
                 @error('client')
                     <div class="invalid-feedback">Auftraggeber ist erforderlich</div>
                 @enderror

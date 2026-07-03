@@ -13,7 +13,8 @@ class AddProjectController extends Controller
     {
         // get all roles except admin role
         $roles = Role::worker()->get();
-        $project = null; // No project is being edited, so set it to null
+        $project = null;
+        
         return view('admin/projects-add', compact('roles', 'project'));
     }
 
@@ -54,5 +55,32 @@ class AddProjectController extends Controller
         $assignedRoleIds = $project->roles()->pluck('id')->toArray();
 
         return view('admin/projects-add', compact('project', 'roles', 'assignedRoleIds'));
+    }
+
+    public function update(Request $request, int $projectId)
+    {
+        // Validate the incoming request data
+        $validatedData = $request->validate([
+            'location' => 'required|string|max:255',
+            'date' => 'required|date',
+            'client' => 'required|string|max:255',
+            'roles' => 'required|array|min:1',
+            'roles.*' => 'integer|exists:roles,id',
+        ]);
+
+        // Find the project by ID
+        $project = Project::findOrFail($projectId);
+
+        // Update the project with the validated data
+        $project->location = $validatedData['location'];
+        $project->date = $validatedData['date'];
+        $project->client = $validatedData['client'];
+        $project->save();
+
+        // Sync the selected roles with the project.
+        $project->roles()->sync($validatedData['roles']);
+
+        // Redirect back to the projects overview page with a success message
+        return redirect()->route('admin.project.detail', ['id' => $project->id])->with('success', 'Projekt erfolgreich aktualisiert!');
     }
 }
