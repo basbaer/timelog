@@ -7,6 +7,7 @@ use App\Http\Requests\StoreRueckezugLogRequest;
 use App\Models\ForstwirtWorkingType;
 use App\Models\RueckezugLog;
 use App\Models\User;
+use App\Services\ForstwirtLogService;
 use App\Services\WorkerLogService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Collection;
@@ -14,7 +15,9 @@ use Illuminate\Support\Facades\Auth;
 
 class RueckezugLogController extends BaseLogController
 {
-    public function __construct(WorkerLogService $workerLogService)
+    public function __construct(
+        WorkerLogService $workerLogService,
+        private readonly ForstwirtLogService $forstwirtLogService,)
     {
         parent::__construct($workerLogService);
     }
@@ -65,6 +68,7 @@ class RueckezugLogController extends BaseLogController
                 return [
                     'project_id' => (int) $projectId,
                     'date' => $logDate,
+                    'has_rueckezug_payload' => $this->hasRueckezugPayload($workLog),
                     'start' => $workLog['start'] ?? null,
                     'end' => $workLog['end'] ?? null,
                     'sum' => $workLog['sum'] ?? null,
@@ -98,7 +102,19 @@ class RueckezugLogController extends BaseLogController
         $validated = $request->validated();
         $mappedLogs = $this->mapValidatedToLogs($validated);
         $user = User::findOrFail((int) $request->input('user_id'));
-        $lastLog = $this->workerLogService->saveLogs($user, $mappedLogs);
+       
+        $lastLog = null;
+
+        foreach ($mappedLogs as $logData) {
+            if ($logData['has_rueckezug_payload']) {
+                $lastLog = $this->workerLogService->saveLogs($user, [$logData]) ?? $lastLog;
+            }
+
+            if (!empty($logData['forstwirt_work_entries'])) {
+                $forstwirtLastLog = $this->forstwirtLogService->saveLogs($logData['forstwirt_work_entries'], $user->id);
+                $lastLog = $forstwirtLastLog ?? $lastLog;
+            }
+        }
 
         /** @var \App\Models\User $user */
         $user = Auth::user();
@@ -109,6 +125,15 @@ class RueckezugLogController extends BaseLogController
         return redirect()->route($this->route() . '.success', ['worker_id' => (int) $lastLog->user_id]);
     }
 
+        private function hasRueckezugPayload(array $workLog): bool
+    {
+        foreach (['start', 'end', 'sum', 'pause', 'bs_start', 'bs_end', 'bs_diff', 'loadings', 'average_distance'] as $field) {
+            if (array_key_exists($field, $workLog) && trim((string) ($workLog[$field] ?? '')) !== '') {
+                return true;
+            }
+        }
 
+        return false;
+    }
     
 }
