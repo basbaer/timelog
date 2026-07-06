@@ -97,9 +97,8 @@ abstract class BaseLogController extends Controller
             return redirect()->route($this->route())->with('error', 'Log entry not found.');
         }
 
-        $log_id = $log->id;
-
-        $log = $this->logModel()::with(['project'])->findOrFail($log_id);
+        $logClass = get_class($log);
+        $log = $logClass::with(['project'])->findOrFail($log->id);
         $user_id = $log->user_id;
         $log_user = User::findOrFail($user_id);
         $name = $log_user->first_name . ' ' . $log_user->last_name;
@@ -116,6 +115,7 @@ abstract class BaseLogController extends Controller
             $deleteRouteName = $this->route() . '.delete';
 
             $logDate = Carbon::parse($log->date)->format('d.m.Y');
+            $log_id = $log->id;
             return view('log-forms/log-success', compact('name', 'user_id', 'log_id', 'logOverview', 'logDate', 'deleteRouteName'));
         }
     }

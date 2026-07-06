@@ -6,6 +6,7 @@ use App\Http\Requests\StoreHarvesterLogRequest;
 use App\Models\ForstwirtWorkingType;
 use App\Models\HarvesterLog;
 use App\Models\User;
+use App\Services\ForstwirtLogService;
 use App\Services\WorkerLogService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Collection;
@@ -13,8 +14,10 @@ use Illuminate\Support\Facades\Auth;
 
 class HarvesterLogController extends BaseLogController
 {
-    public function __construct(WorkerLogService $workerLogService)
-    {
+    public function __construct(
+        WorkerLogService $workerLogService,
+        private readonly ForstwirtLogService $forstwirtLogService,
+    ) {
         parent::__construct($workerLogService);
     }
 
@@ -33,7 +36,6 @@ class HarvesterLogController extends BaseLogController
         return 'log.harvester';
     }
 
-
     public function viewPrefix(): string
     {
         return 'log-harvester';
@@ -41,20 +43,18 @@ class HarvesterLogController extends BaseLogController
 
     protected function addPreviousData(int $user_id, Collection $projects): Collection
     {
-
         foreach ($projects as $project) {
-
             $lastLog = $this->logModel()::where('user_id', $user_id)
                 ->where('project_id', $project->id)
                 ->latest()
                 ->first();
 
-            // Add last fm_total to the project collection for use in the form
             $project->last_fm_total = $lastLog ? $lastLog->fm_total : 0;
             $project->last_bs = $lastLog ? $lastLog->bs_to : 0;
 
             $projects[$project->id] = $project;
         }
+
         return $projects;
     }
 
@@ -67,6 +67,7 @@ class HarvesterLogController extends BaseLogController
                 return [
                     'project_id' => (int) $projectId,
                     'date' => $logDate,
+                    'has_harvester_payload' => $this->hasHarvesterPayload($workLog),
                     'start' => $workLog['start'] ?? null,
                     'end' => $workLog['end'] ?? null,
                     'sum' => $workLog['sum'] ?? null,
@@ -101,7 +102,19 @@ class HarvesterLogController extends BaseLogController
         $validated = $request->validated();
         $mappedLogs = $this->mapValidatedToLogs($validated);
         $user = User::findOrFail((int) $request->input('user_id'));
-        $lastLog = $this->workerLogService->saveLogs($user, $mappedLogs);
+
+        $lastLog = null;
+
+        foreach ($mappedLogs as $logData) {
+            if ($logData['has_harvester_payload']) {
+                $lastLog = $this->workerLogService->saveLogs($user, [$logData]) ?? $lastLog;
+            }
+
+            if (!empty($logData['forstwirt_work_entries'])) {
+                $forstwirtLastLog = $this->forstwirtLogService->saveLogs($logData['forstwirt_work_entries'], $user->id);
+                $lastLog = $forstwirtLastLog ?? $lastLog;
+            }
+        }
 
         /** @var \App\Models\User $user */
         $user = Auth::user();
@@ -110,5 +123,16 @@ class HarvesterLogController extends BaseLogController
         }
 
         return redirect()->route($this->route() . '.success', ['worker_id' => (int) $lastLog->user_id]);
+    }
+
+    private function hasHarvesterPayload(array $workLog): bool
+    {
+        foreach (['start', 'end', 'sum', 'pause', 'bs_start', 'bs_end', 'bs_diff', 'stueckzahl', 'fm_gesamt', 'fm_day'] as $field) {
+            if (array_key_exists($field, $workLog) && trim((string) ($workLog[$field] ?? '')) !== '') {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
