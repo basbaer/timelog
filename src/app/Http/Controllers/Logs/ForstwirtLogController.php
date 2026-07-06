@@ -10,6 +10,7 @@ use App\Services\ForstwirtLogService;
 use App\Services\WorkerLogService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 
 class ForstwirtLogController extends BaseLogController
 {
@@ -77,6 +78,12 @@ class ForstwirtLogController extends BaseLogController
 
         $lastLog = $this->forstwirtLogService->saveLogs($mappedLogs, $request->input('user_id'));
 
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        if($user->isAdmin()){
+            return redirect()->route('admin.worker.show', ['worker_id' => (int) $lastLog->user_id]);
+        }
+        
         return redirect()->route($this->route() . '.success', ['worker_id' => (int) $lastLog->user_id]);
     }
 
