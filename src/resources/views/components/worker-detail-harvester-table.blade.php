@@ -1,4 +1,4 @@
-@props(['log_entries'])
+@props(['log_entries', 'worker_id'])
 
 <div class="container-fluid justify-content-center d-flex">
     <div class="mx-auto">BS = Betriebsstunden, FM = Festmeter</div>
@@ -11,7 +11,7 @@
                 @if ($lastTableHeadIsHarvester === null || !$lastTableHeadIsHarvester)
                     @php($show_partial_headers = $lastTableHeadIsHarvester === null)
                     @php($lastTableHeadIsHarvester = true)
-                    <div class="row mt-2">
+                    <div class="row mt-0">
                         <div class="col-1"><strong>
                                 @if ($show_partial_headers)
                                     Datum
@@ -81,5 +81,13 @@
                 @endif
             @endif
         @endforeach
+        <div class="container-fluid justify-content-end d-flex p-0">
+            <form action="{{ route('log.harvester.delete', ['worker_id' => $worker_id]) }}" method="POST" class="mt-1">
+                @csrf
+                @method('DELETE')
+                <input type="hidden" name="delete_log_date" value="{{ $dayEntries->first()->date_raw }}">
+                <button type="submit" class="btn btn-danger btn-sm">Löschen</button>
+            </form>
+        </div>
     </x-worker-detail-day-card>
 @endforeach

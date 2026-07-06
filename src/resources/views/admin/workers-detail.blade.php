@@ -15,16 +15,16 @@
     ])
 
     @if ($role === 'forstwirt')
-        <div class=" m-3">
-            <x-worker-detail-forstwirt-table :log_entries="$log_entries" />
+        <div class="m-3">
+            <x-worker-detail-forstwirt-table :log_entries="$log_entries" :worker_id="$worker_id" />
         </div>
     @elseif ($role === 'harvester')
-        <div class=" m-3">
-            <x-worker-detail-harvester-table :log_entries="$log_entries" />
+        <div class="m-3">
+            <x-worker-detail-harvester-table :log_entries="$log_entries" :worker_id="$worker_id" />
         </div>
     @elseif ($role === 'rueckezug')
-        <div class=" m-3">
-            <x-worker-detail-rueckezug-table :log_entries="$log_entries" />
+        <div class="mx-3">
+            <x-worker-detail-rueckezug-table :log_entries="$log_entries" :worker_id="$worker_id" />
         </div>
     @endif
     <div class="container-fluid px-3">

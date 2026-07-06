@@ -1,7 +1,7 @@
 @props(['log_entries', 'show_partial_headers' => true, 'show_header_row' => true])
 
 @if ($show_header_row)
-    <div class="row mt-2">
+    <div class="row">
         <div class="col-1"><strong>
                 @if ($show_partial_headers)
                     Datum

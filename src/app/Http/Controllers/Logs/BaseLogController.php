@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Logs;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use App\Services\WorkerLogService;
@@ -135,15 +136,22 @@ abstract class BaseLogController extends Controller
             ->values();
     }
 
-    public function deleteLog(int $worker_id)
+    public function deleteLog(Request $request, int $worker_id)
     {
-        $date = session()->get('delete_log_date');
-        
-        if (!$date) {
-            $date = Carbon::today()->toDateString();
+        if ($request->filled('delete_log_date')) {
+            session()->put('delete_log_date', $request->input('delete_log_date'));
         }
 
+        $date = session()->get('delete_log_date', Carbon::today()->toDateString());
+
         $this->deleteLogsOfDate($worker_id, $date);
+
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        if ($user->isAdmin()) {
+            return redirect()->route('admin.worker.show', ['worker_id' => $worker_id])
+                ->with('success', 'Eintrag erfolgreich gelöscht.');
+        }
 
         return redirect()->route($this->route())->with('success', 'Eintrag erfolgreich gelöscht.');
 
