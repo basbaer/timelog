@@ -111,14 +111,14 @@ Route::middleware(Admin::class)->prefix('admin')->group(function () {
     // Deletet Worker
     Route::post('/workers/{worker_id}/delete', [DeleteWorkerController::class, 'deleteWorker'])->name('admin.worker.delete');
 
-    Route::get('/workers/{worker_id}/log/create', [ForstwirtLogController::class, 'show'])->name('admin.worker.log.create');
+    Route::get('/workers/{worker_id}/log/create', [WorkerDetailController::class, 'addWorkLog'])->name('admin.worker.log.create');
 });
 
 
 //====================================================================================
 
 // ==== Forstwirt Route ====
-Route::get('/log-forstwirt', [ForstwirtLogController::class, 'show'])
+Route::get('/log-forstwirt/{user_id?}', [ForstwirtLogController::class, 'show'])
     ->name('log.forstwirt')
     ->middleware([Forstwirt::class]);
 
@@ -138,7 +138,7 @@ Route::delete('/log-forstwirt/{worker_id}/delete', [ForstwirtLogController::clas
 
 // ==== Harvester Route ====
 Route::middleware(Harvester::class)->group(function () {
-    Route::get('/log-harvester', [HarvesterLogController::class, 'show'])->name('log.harvester');
+    Route::get('/log-harvester/{user_id?}', [HarvesterLogController::class, 'show'])->name('log.harvester');
 
     Route::post('/log-harvester', [HarvesterLogController::class, 'store'])->name('log.harvester.store');
 
@@ -151,7 +151,7 @@ Route::middleware(Harvester::class)->group(function () {
 
 // ==== Rueckezug Route ====
 Route::middleware(Rueckezug::class)->group(function () {
-    Route::get('/log-rueckezug', [RueckezugLogController::class, 'show'])->name('log.rueckezug');
+    Route::get('/log-rueckezug/{user_id?}', [RueckezugLogController::class, 'show'])->name('log.rueckezug');
 
     Route::post('/log-rueckezug', [RueckezugLogController::class, 'store'])->name('log.rueckezug.store');
 

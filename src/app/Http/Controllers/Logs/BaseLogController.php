@@ -57,7 +57,7 @@ abstract class BaseLogController extends Controller
      * Note: $id is optional and only used when an admin wants to view the log form for a specific user.
      *       Regular users will not provide an id and will see their own log form (when they try to add an id, the middelware handels the restriction).
      */
-    public function show($user_id = null)
+    public function show(?int $user_id = null)
     {
         // After this call, $user is definetly set
         $data = $this->getUserAndProjects($user_id);
