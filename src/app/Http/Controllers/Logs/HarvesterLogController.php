@@ -6,9 +6,10 @@ use App\Http\Requests\StoreHarvesterLogRequest;
 use App\Models\ForstwirtWorkingType;
 use App\Models\HarvesterLog;
 use App\Models\User;
-use Illuminate\Support\Collection;
-use Illuminate\Http\RedirectResponse;
 use App\Services\WorkerLogService;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 
 class HarvesterLogController extends BaseLogController
 {
@@ -16,7 +17,7 @@ class HarvesterLogController extends BaseLogController
     {
         parent::__construct($workerLogService);
     }
-    
+
     public function logModel(): string
     {
         return HarvesterLog::class;
@@ -40,7 +41,7 @@ class HarvesterLogController extends BaseLogController
 
     protected function addPreviousData(int $user_id, Collection $projects): Collection
     {
- 
+
         foreach ($projects as $project) {
 
             $lastLog = $this->logModel()::where('user_id', $user_id)
@@ -53,7 +54,6 @@ class HarvesterLogController extends BaseLogController
             $project->last_bs = $lastLog ? $lastLog->bs_to : 0;
 
             $projects[$project->id] = $project;
-
         }
         return $projects;
     }
@@ -103,8 +103,12 @@ class HarvesterLogController extends BaseLogController
         $user = User::findOrFail((int) $request->input('user_id'));
         $lastLog = $this->workerLogService->saveLogs($user, $mappedLogs);
 
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        if ($user->isAdmin()) {
+            return redirect()->route('admin.worker.show', ['worker_id' => (int) $lastLog->user_id]);
+        }
+
         return redirect()->route($this->route() . '.success', ['worker_id' => (int) $lastLog->user_id]);
     }
-
-    
 }

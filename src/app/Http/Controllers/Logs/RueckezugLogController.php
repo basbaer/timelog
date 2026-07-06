@@ -99,6 +99,12 @@ class RueckezugLogController extends BaseLogController
         $user = User::findOrFail((int) $request->input('user_id'));
         $lastLog = $this->workerLogService->saveLogs($user, $mappedLogs);
 
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        if($user->isAdmin()){
+            return redirect()->route('admin.worker.show', ['worker_id' => (int) $lastLog->user_id]);
+        }
+
         return redirect()->route($this->route() . '.success', ['worker_id' => (int) $lastLog->user_id]);
     }
 
