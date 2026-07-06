@@ -27,7 +27,7 @@
             <x-worker-detail-rueckezug-table :log_entries="$log_entries" :worker_id="$worker_id" />
         </div>
     @endif
-    <div class="container-fluid px-3">
+    <div class="container-fluid px-3 mb-3">
         <div class="position-relative d-flex align-items-center w-100">
             <a href="{{ route('admin.worker.log.create', ['worker_id' => $worker_id]) }}" role="button"
                 class="btn btn-primary position-absolute start-50 translate-middle-x">Eintrag hinzufügen</a>

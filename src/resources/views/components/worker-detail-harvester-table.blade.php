@@ -74,10 +74,10 @@
 
             @if ($entry->working_type_name !== 'harvester')
                 @if ($lastTableHeadIsHarvester === null || $lastTableHeadIsHarvester)
-                    <x-worker-detail-forstwirt-table :log_entries="[$entry]" :show_partial_headers="$lastTableHeadIsHarvester === null" :show_header_row="true" />
+                    <x-worker-detail-forstwirt-table :log_entries="[$entry]" :worker_id="$worker_id" :isInsideOtherLog="true" :show_partial_headers="$lastTableHeadIsHarvester === null" :show_header_row="true" />
                     @php($lastTableHeadIsHarvester = false)
                 @else
-                    <x-worker-detail-forstwirt-table :log_entries="[$entry]" :show_header_row="false" />
+                    <x-worker-detail-forstwirt-table :log_entries="[$entry]" :worker_id="$worker_id" :isInsideOtherLog="true" :show_header_row="false" />
                 @endif
             @endif
         @endforeach
