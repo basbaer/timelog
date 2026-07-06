@@ -23,7 +23,7 @@
             <x-worker-detail-harvester-table :log_entries="$log_entries" :worker_id="$worker_id" />
         </div>
     @elseif ($role === 'rueckezug')
-        <div class="mx-3">
+        <div class="m-3">
             <x-worker-detail-rueckezug-table :log_entries="$log_entries" :worker_id="$worker_id" />
         </div>
     @endif

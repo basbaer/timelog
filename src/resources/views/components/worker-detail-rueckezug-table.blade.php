@@ -1,4 +1,4 @@
-@props(['log_entries'])
+@props(['log_entries', 'worker_id'])
 
 <div class="container-fluid justify-content-center d-flex">
     <div class="mx-auto">BS = Betriebsstunden, FM = Festmeter</div>
@@ -79,5 +79,14 @@
                 @endif
             @endif
         @endforeach
+        <div class="container-fluid justify-content-end d-flex p-0">
+            <form action="{{ route('log.rueckezug.delete', ['worker_id' => $worker_id]) }}" method="POST"
+                class="mt-1">
+                @csrf
+                @method('DELETE')
+                <input type="hidden" name="delete_log_date" value="{{ $dayEntries->first()->date_raw }}">
+                <button type="submit" class="btn btn-danger btn-sm">Löschen</button>
+            </form>
+        </div>
     </x-worker-detail-day-card>
 @endforeach
