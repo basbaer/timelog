@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Services\WorkerLogService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 
 class RueckezugLogController extends BaseLogController
 {
