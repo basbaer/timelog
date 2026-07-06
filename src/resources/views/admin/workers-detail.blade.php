@@ -16,21 +16,24 @@
 
     @if ($role === 'forstwirt')
         <div class=" m-3">
-                <x-worker-detail-forstwirt-table :log_entries="$log_entries" />
+            <x-worker-detail-forstwirt-table :log_entries="$log_entries" />
         </div>
     @elseif ($role === 'harvester')
         <div class=" m-3">
-                <x-worker-detail-harvester-table :log_entries="$log_entries" />
+            <x-worker-detail-harvester-table :log_entries="$log_entries" />
         </div>
     @elseif ($role === 'rueckezug')
         <div class=" m-3">
-                <x-worker-detail-rueckezug-table :log_entries="$log_entries" />
+            <x-worker-detail-rueckezug-table :log_entries="$log_entries" />
         </div>
     @endif
-    <div class="container my-3 d-flex justify-content-center">
-        <a href="{{ route('admin.worker.log.create', ['worker_id' => $worker_id]) }}" role="button"
-            class="btn btn-primary">Eintrag
-            hinzufügen</a>
+    <div class="container-fluid px-3">
+        <div class="position-relative d-flex align-items-center w-100">
+            <a href="{{ route('admin.worker.log.create', ['worker_id' => $worker_id]) }}" role="button"
+                class="btn btn-primary position-absolute start-50 translate-middle-x">Eintrag hinzufügen</a>
+            <a href="{{ route('admin.workers.overview') }}" role="button" class="btn btn-secondary ms-auto">
+                Zurück zur Übersicht</a>
+        </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
