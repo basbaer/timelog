@@ -56,11 +56,16 @@
 
     <div class="container mt-4">
         <div class="row d-flex justify-content-between gap-3">
+            @if (! $project->get('isClosed'))
             <form class="col-2 p-0" action="{{ route('admin.projects.close', $project->get('id')) }}" method="POST">
                 @csrf
                 @method('PUT')
                 <button type="submit" class="btn btn-success">Projekt abschließen</button>
             </form>
+            @else
+            <div class="col">Projekt abgeschlossen, um Projekt erneut zu öffnen, klicke auf 'Projekt bearbeiten'</div>
+            @endif
+
             <a href="{{ route('admin.projects.edit', $project->get('id')) }}" class="btn btn-primary col-4">Projekt
                 bearbeiten</a>
         </div>

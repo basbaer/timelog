@@ -31,6 +31,7 @@ class ProjectDetailController extends Controller
         $projectForView = collect([
             'title' => $project->get('project')->get('title'),
             'id' => $project->get('project')->get('id'),
+            'isClosed' => $project->get('project')->get('end_date'),
             'working_types' => $workingTypes,
         ]);
 
