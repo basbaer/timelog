@@ -56,12 +56,11 @@
 
     <div class="container mt-4">
         <div class="row d-flex justify-content-between gap-3">
-            <div class="form-check col-6">
-                <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
-                <label class="form-check-label" for="defaultCheck1">
-                    Projekt abgeschlossen
-                </label>
-            </div>
+            <form class="col-2 p-0" action="{{ route('admin.projects.close', $project->get('id')) }}" method="POST">
+                @csrf
+                @method('PUT')
+                <button type="submit" class="btn btn-success">Projekt abschließen</button>
+            </form>
             <a href="{{ route('admin.projects.edit', $project->get('id')) }}" class="btn btn-primary col-4">Projekt
                 bearbeiten</a>
         </div>

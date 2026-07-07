@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Projects;
 
 use App\Http\Controllers\Controller;
+use App\Models\Project;
 use App\Services\ProjectService;
+use Carbon\Carbon;
 use Illuminate\Support\Collection;
 
 class ProjectDetailController extends Controller
@@ -40,5 +42,15 @@ class ProjectDetailController extends Controller
         }
 
         return $projectForView;
+    }
+
+    public function close(int $id){
+        $project = Project::findOrfail($id);
+
+        $project->end_date = Carbon::today();
+        
+        $project->save();
+
+        return redirect()->route('admin.project.detail', $id);
     }
 }

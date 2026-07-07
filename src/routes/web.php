@@ -86,6 +86,8 @@ Route::middleware(Admin::class)->prefix('admin')->group(function () {
     Route::get('/projects/{id}/edit', [AddProjectController::class, 'edit'])->name('admin.projects.edit');
 
     Route::put('/projects/{id}/update', [AddProjectController::class, 'update'])->name('admin.projects.update');
+
+    Route::put('/projects/{id}/close', [ProjectDetailController::class, 'close'])->name('admin.projects.close');
     
     // ---- Workers --------------
     Route::get('/workers', [WorkersOverviewController::class, 'show'])->name('admin.workers.overview');
