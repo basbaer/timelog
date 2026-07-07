@@ -53,4 +53,9 @@ class Project extends Model
     {
         return $query->whereNull('end_date');
     }
+
+    public function scopeClosedProjects($query)
+    {
+        return $query->whereNotNull('end_date');
+    }
 }

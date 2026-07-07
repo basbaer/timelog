@@ -16,7 +16,11 @@
     @endif
     
     <div class="container my-4">
+        @if (! $closed)
         <h2>Übersicht Projekte</h2>
+        @else
+        <h2>Übersicht abgeschlossene Projekte</h2>    
+        @endif
         <div class="list-group">
             @foreach ($projects as $project)
                 <a href="{{ route('admin.project.detail', $project->id) }}" class="list-group-item list-group-item-action">
@@ -32,7 +36,11 @@
     <div class="container">
         <div class="row ">
             <div class="col d-flex justify-content-start">
-                <a href="#" class="btn btn-primary">Abgeschlossene Projekte</a>
+                @if (! $closed)
+                <a href="{{ route('admin.projects.closed') }}" class="btn btn-primary">Abgeschlossene Projekte</a>
+                @else
+                <a href="{{ route('admin.projects.overview') }}" class="btn btn-primary">Übersicht offene Projekte</a>
+                @endif
             </div>
             <div class="col d-flex justify-content-end">
                 <a href="{{ route('admin.projects.add') }}" class="btn btn-success">Neues Projekt anlegen</a>

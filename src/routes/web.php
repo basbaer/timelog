@@ -79,7 +79,11 @@ Route::middleware(Admin::class)->prefix('admin')->group(function () {
 
     Route::get('/projects/add', [AddProjectController::class, 'show'])->name('admin.projects.add');
 
-    Route::get('/projects/{id}', [ProjectDetailController::class, 'show'])->name('admin.project.detail');
+    Route::get('/projects/closed', [OverviewProjectController::class, 'showClosed'])->name('admin.projects.closed');
+
+    Route::get('/projects/{id}', [ProjectDetailController::class, 'show'])
+        ->whereNumber('id')
+        ->name('admin.project.detail');
 
     Route::post('/projects/add/request', [AddProjectController::class, 'store'])->name('admin.projects.store');
 
