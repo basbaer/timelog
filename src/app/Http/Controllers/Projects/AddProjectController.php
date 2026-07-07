@@ -72,6 +72,8 @@ class AddProjectController extends Controller
         $project->location = $validatedData['location'];
         $project->date = $validatedData['date'];
         $project->client = $validatedData['client'];
+        // Every time the project is edit, it is opended again
+        $project->end_date = null;
         $project->save();
 
         $this->syncProjectAssignments(
