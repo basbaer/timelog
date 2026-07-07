@@ -58,4 +58,9 @@ class Project extends Model
     {
         return $query->whereNotNull('end_date');
     }
+
+    public function scopeOpenActiveProjects($query)
+    {
+        return $this->scopeOpenProjects($query)->where('date', '<=', today());
+    }
 }

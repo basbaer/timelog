@@ -42,7 +42,7 @@ abstract class BaseLogController extends Controller
         $user_id = $user->id;
         $name = $user->first_name . ' ' . $user->last_name;
         // Get all open projects for the user's role
-        $projects = $user->openProjects()->get();
+        $projects = $user->openActiveProjects()->get();
 
         // Change $projects keys to id's
         $projects = $projects->keyBy('id');

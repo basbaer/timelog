@@ -48,6 +48,7 @@ class Role extends Model
     {
         return static::where('slug', $slug)->first();
     }
+
 }
 
 

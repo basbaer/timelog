@@ -129,4 +129,13 @@ class User extends Authenticatable
                 $query->whereKey($this->id);
             });
     }
+
+    public function openActiveProjects(): Builder
+    {
+        return Project::query()
+        ->openActiveProjects()
+        ->whereHas('users', function (Builder $query) {
+            $query->whereKey($this->id);
+        });
+    }
 }
