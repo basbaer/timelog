@@ -76,6 +76,10 @@ class ProjectService
             return $this->timeToNumber($log->sum);
         });
 
+        $rueckezugLogs->map(function ($log){
+            $log->date = Carbon::parse($log->date)->format('d.m.Y');
+        });
+
         return collect([
             'logs' => $rueckezugLogs,
             'sum' => $rueckezugSum,
@@ -87,6 +91,10 @@ class ProjectService
 
         //Get the logs for each role associated with the project
         $forstwirtLogs = $project->forstwirtLogs()->with('user')->get();
+
+        $forstwirtLogs->map(function ($log){
+            $log->date = Carbon::parse($log->date)->format('d.m.Y');
+        });
 
         $forstwirtRolesSum = $forstwirtLogs->groupBy('working_type_id')->map(function ($logs, $roleId) {
             return [
