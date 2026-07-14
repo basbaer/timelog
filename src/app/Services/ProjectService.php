@@ -53,6 +53,10 @@ class ProjectService
             return $this->timeToNumber($log->sum);
         });
 
+        $harvesterLogs->map(function ($log){
+            $log->date = Carbon::parse($log->date)->format('d.m.Y');
+        });
+
         return collect([
             'logs' => $harvesterLogs,
             'sum' => $harvesterSum,
