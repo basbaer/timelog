@@ -16,7 +16,7 @@
     @endif
 
     <!-- Project Item -->
-    <div class="container px-0 mt-3" id="projectItem">
+    <div class="container-fluid px-5 mt-3" id="projectItem">
         <h2>{{ $project->get('title') }}</h2>
         <div class="accordion mx-0 my-3 p-0" id="accordionProject">
             @foreach ($project->get('working_types') as $workingType)
@@ -25,7 +25,7 @@
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                             data-bs-target="#collapse{{ $workingType }}" aria-expanded="false"
                             aria-controls="collapseOne">
-                            <div class="container p-0 m-0">
+                            <div class="container-fluid p-0 m-0">
                                 <div class="row p-0 m-0">
                                     <h5 class="col-8 p-0 m-0">{{ __('form.' . $workingType) }}</h5>
                                     <h5 class="col-4 text-end" id="{{ $workingType }}_sum">
