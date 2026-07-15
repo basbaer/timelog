@@ -56,8 +56,8 @@
         </div>
     </div>
 
-    <div class="container mt-4">
-        <div class="row d-flex justify-content-between gap-3">
+    <div class="container-fluid px-5 mt-4">
+        <div class="row d-flex justify-content-between gap-3 px-3">
             @if (!$project->get('isClosed'))
                 <form class="col-2 p-0" action="{{ route('admin.projects.close', $project->get('id')) }}"
                     method="POST">
@@ -74,7 +74,7 @@
                 bearbeiten</a>
         </div>
     </div>
-    <div class="container my-4">
+    <div class="container-fluid px-5 my-4">
         <hr>
     </div>
 
