@@ -136,6 +136,11 @@ class ProjectService
             })
             ->get();
 
+        // Add project title to each project
+        $projects->map(function ($project) {
+            $project->title = $this->getTitle($project);
+        });
+
         return $projects;
     }
 }

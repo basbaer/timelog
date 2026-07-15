@@ -14,8 +14,8 @@
         'nextMonth' => $nextMonth,
     ])
 
-    <div class="d-flex justify-content-center bg-danger">
-        
+    <div class="row m-3">
+        <x-select-project :openProjects="$openProjects"/>
     </div>
 
     @if ($role === 'forstwirt')

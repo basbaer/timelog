@@ -35,5 +35,6 @@ return [
     'success_message' => 'Intrare a fost salvat cu succes.',
     'entry_already_exists' => 'A fost deja salvată o înregistrare.',
     'edit_entry' => 'Ștergeți înregistrarea și creați una nouă',
+    'all' => 'Toate',
 
 ];
