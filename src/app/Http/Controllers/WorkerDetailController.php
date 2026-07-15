@@ -4,13 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Services\WorkerLogService;
+use App\Services\ProjectService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Carbon;
 
 class WorkerDetailController extends Controller
 {
     public function __construct(
-        private readonly WorkerLogService $workerLogService
+        private readonly WorkerLogService $workerLogService,
+        private readonly ProjectService $projectService
     ) {}
 
     public function show(int $worker_id)
@@ -39,6 +41,8 @@ class WorkerDetailController extends Controller
                 $last_of_current_month
             );
 
+            $openProjects = $this->projectService->getOpenProjects($worker->id, $first_of_current_month, $last_of_current_month);
+
             $month = $currentMonth->translatedFormat('F Y');
             $previousMonth = $currentMonth->copy()->subMonth()->format('Y-m');
             $nextMonth = $currentMonth->copy()->addMonth()->format('Y-m');
@@ -48,6 +52,7 @@ class WorkerDetailController extends Controller
                 'worker_id' => $worker->id,
                 'role' => $worker->role->slug,
                 'log_entries' => $log_entries,
+                'openProjects' => $openProjects,
                 'month' => $month,
                 'previousMonth' => $previousMonth,
                 'nextMonth' => $nextMonth,

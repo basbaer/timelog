@@ -121,4 +121,21 @@ class ProjectService
     {
         return $project->location . ' | ' . $project->date->format('m/Y') . ' | ' . $project->client;
     }
+
+    public function getOpenProjects(int $workerId, string $from, string $to): Collection
+    {
+        $projects = Project::where('date', '<=', $to)
+            ->where(function ($query) use ($from) {
+                $query->where('end_date', '>=', $from)
+                    ->orWhereNull('end_date');
+            })
+            ->where(function ($query) use ($workerId) {
+                $query->whereHas('users', function ($q) use ($workerId) {
+                    $q->where('user_id', $workerId);
+                });
+            })
+            ->get();
+
+        return $projects;
+    }
 }

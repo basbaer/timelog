@@ -14,6 +14,10 @@
         'nextMonth' => $nextMonth,
     ])
 
+    <div class="d-flex justify-content-center bg-danger">
+        
+    </div>
+
     @if ($role === 'forstwirt')
         <div class="m-3">
             <x-worker-detail-forstwirt-table :log_entries="$log_entries" :worker_id="$worker_id" />
