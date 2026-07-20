@@ -1,7 +1,6 @@
 @props([
     'log_entries',
     'worker_id',
-    'isInsideOtherLog' => false,
     'show_partial_headers' => true,
     'show_header_row' => true,
 ])
