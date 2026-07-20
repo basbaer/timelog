@@ -45,9 +45,17 @@
                         <div class="col-1"><strong>BS von</strong></div>
                         <div class="col-1"><strong>BS bis</strong></div>
                         <div class="col-1"><strong>Fuhren</strong></div>
-                        <div class="col-2"><strong>Ø Distanz</strong></div>
+                        <div class="col-1"><strong>Ø Distanz</strong></div>
                     </div>
-                    <hr class="my-0" />
+                    @if ($entry->show_date)
+                        <hr class="my-0" />
+                    @else
+                        <div class="row">
+                            <div class="col-11 offset-1">
+                                <hr class="my-0" />
+                            </div>
+                        </div>
+                    @endif
                 @endif
 
                 <div class="row">
@@ -65,28 +73,33 @@
                     <div class="col-1">{{ $entry->bs_from }}</div>
                     <div class="col-1">{{ $entry->bs_to }}</div>
                     <div class="col-1">{{ $entry->loadings }}</div>
-                    <div class="col-2">{{ $entry->average_distance }}</div>
+                    <div class="col-1">{{ $entry->average_distance }}</div>
+                    <div class="col-1 d-flex justify-content-center align-items-center ">
+                        <form
+                            action="{{ route('admin.worker.log.delete', ['worker_id' => $worker_id, 'log_id' => $entry->id]) }}"
+                            method="POST" class="my-auto">
+                            @csrf
+                            @method('DELETE')
+                            <input type="hidden" name="delete_type" value="rueckezug">
+                            <button type="submit" class="btn btn-danger btn-sm p-0">Löschen</button>
+                        </form>
+                    </div>
                 </div>
-                <hr class="my-0" />
+                <div class="row">
+                    <div class="col-11 offset-1">
+                        <hr class="my-0" />
+                    </div>
+                </div>
             @endif
 
             @if ($entry->working_type_name !== 'rueckezug')
                 @if ($lastTableHeadIsRueckezug === null || $lastTableHeadIsRueckezug)
-                    <x-worker-detail-forstwirt-table :log_entries="[$entry]" :worker_id="$worker_id" :isInsideOtherLog="true" :show_partial_headers="$lastTableHeadIsRueckezug === null" :show_header_row="true" />
+                    <x-worker-detail-forstwirt-table :log_entries="[$entry]" :worker_id="$worker_id" :show_partial_headers="$lastTableHeadIsRueckezug === null" :show_header_row="true" />
                     @php($lastTableHeadIsRueckezug = false)
                 @else
-                    <x-worker-detail-forstwirt-table :log_entries="[$entry]" :worker_id="$worker_id" :isInsideOtherLog="true" :show_header_row="false" />
+                    <x-worker-detail-forstwirt-table :log_entries="[$entry]" :worker_id="$worker_id" :show_header_row="false" />
                 @endif
             @endif
         @endforeach
-        <div class="container-fluid justify-content-end d-flex p-0">
-            <form action="{{ route('log.rueckezug.delete', ['worker_id' => $worker_id]) }}" method="POST"
-                class="mt-1">
-                @csrf
-                @method('DELETE')
-                <input type="hidden" name="delete_log_date" value="{{ $dayEntries->first()->date_raw }}">
-                <button type="submit" class="btn btn-danger btn-sm">Löschen</button>
-            </form>
-        </div>
     </x-worker-detail-day-card>
 @endforeach
