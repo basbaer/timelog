@@ -4,19 +4,11 @@
 @include('partials.head', ['title' => 'Dashboard', 'withBootstrapIcons' => true])
 
 <body>
-    @include('partials.admin_navbar', ['active' => 'workers'])
-
-    @include('partials.admin-worker-detail-top', [
-        'name' => $name,
-        'worker_id' => $worker_id,
-        'month' => $month,
-        'previousMonth' => $previousMonth,
-        'nextMonth' => $nextMonth,
-    ])
 
     <div class="row m-3">
-        <x-select-project :openProjects="$openProjects" :selectedProject="$selectedProject" />
+         {{ $selectedProject }}
     </div>
+
 
     @if ($role === 'forstwirt')
         <div class="m-3">
@@ -31,6 +23,7 @@
             <x-worker-detail-rueckezug-table :log_entries="$logEntries" :worker_id="$worker_id" />
         </div>
     @endif
+
     <div class="container-fluid px-3 mb-3 ms-2">
         <div class="position-relative d-flex row w-100">
             <a href="{{ route('admin.workers.overview') }}" role="button" class="btn btn-secondary col-auto me-auto">

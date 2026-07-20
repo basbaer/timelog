@@ -95,4 +95,22 @@ class WorkerDetailController extends Controller
             return redirect()->route('admin.workers.overview')->with('error', 'Worker not found.');
         }
     }
+
+    public function print(int $worker_id, string $project)
+    {
+        $worker = User::findOrFail($worker_id);
+        $selectedProject = request()->query('project', 'all');
+        if ($project !== 'all') {
+            $logEntries = $this->workerLogService->getLogsForProject($worker_id, $project);
+        }else{
+            $logEntries = $this->workerLogService->getLogsFor($worker_id);
+        }
+
+        return view('admin/workers-detail-print', [
+            'worker_id' => $worker_id,
+            'role' => $worker->role?->slug,
+            'selectedProject' => $selectedProject,
+            'logEntries' => $logEntries,
+        ]);
+    }
 }

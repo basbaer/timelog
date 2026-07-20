@@ -111,6 +111,9 @@ Route::middleware(Admin::class)->prefix('admin')->group(function () {
     // Show worker details
     Route::get('/workers/{worker_id}', [WorkerDetailController::class, 'show'])->name('admin.worker.show');
 
+    // Show worker details for printing
+    Route::get('/workers/{worker_id}/print/{project}', [WorkerDetailController::class, 'print'])->name('workers.print');
+
     // Show worker card
     Route::get('/workers/{worker_id}/card', [WorkerCardController::class, 'show'])->name('admin.worker.card');
 
@@ -118,6 +121,7 @@ Route::middleware(Admin::class)->prefix('admin')->group(function () {
     Route::post('/workers/{worker_id}/delete', [DeleteWorkerController::class, 'deleteWorker'])->name('admin.worker.delete');
 
     Route::get('/workers/{worker_id}/log/create', [WorkerDetailController::class, 'addWorkLog'])->name('admin.worker.log.create');
+
 });
 
 
