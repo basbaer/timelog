@@ -24,21 +24,24 @@ abstract class BaseLogService
     /**
      * Delete all logs for a given user and date.
      */
-    public function getLogsFromTo(int $workerId, string $startDate, string $endDate): Collection
+    public function getLogsFromTo(int $workerId, string $startDate, string $endDate, ?int $projectId = null): Collection
     {
        return $this->getModel()::with($this->getRelations())
             ->where('user_id', $workerId)
             ->whereBetween('date', [$startDate, $endDate])
+            ->when($projectId !== null, function ($query) use ($projectId) {
+                $query->where('project_id', $projectId);
+            })
             ->orderBy('date', 'asc')
             ->orderBy('start', 'asc')
             ->get();
     }
 
-    public function getLogsForWorker(int $workerId, string $startDate, string $endDate): Collection
+    public function getLogsForWorker(int $workerId, string $startDate, string $endDate, ?int $projectId = null): Collection
     {
         $lastDate = null;
 
-        return $this->getLogsFromTo($workerId, $startDate, $endDate)
+        return $this->getLogsFromTo($workerId, $startDate, $endDate, $projectId)
             ->sortBy(function (Model $entry) {
                 return sprintf('%s|%s|%s', $entry->date ?? '', $entry->start ?? '', $entry->created_at ?? '');
             })

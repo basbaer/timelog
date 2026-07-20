@@ -17,7 +17,7 @@ class WorkerDetailController extends Controller
 
     public function show(int $worker_id)
     {
-        try{
+        try {
             // Get worker details from the database using the $id
             $worker = User::findOrFail($worker_id);
 
@@ -34,35 +34,43 @@ class WorkerDetailController extends Controller
 
             $first_of_current_month = $currentMonth->copy()->startOfMonth()->toDateString();
             $last_of_current_month = $currentMonth->copy()->endOfMonth()->toDateString();
-
-            $log_entries = $this->workerLogService->getLogsFor(
+            $logEntries = $this->workerLogService->getLogsFor(
                 $worker,
                 $first_of_current_month,
                 $last_of_current_month
             );
 
-            $openProjects = $this->projectService->getOpenProjects($worker->id, $first_of_current_month, $last_of_current_month);
-
             $month = $currentMonth->translatedFormat('F Y');
             $previousMonth = $currentMonth->copy()->subMonth()->format('Y-m');
             $nextMonth = $currentMonth->copy()->addMonth()->format('Y-m');
-            
+
+            $openProjects = $this->projectService->getOpenProjects($worker->id, $first_of_current_month, $last_of_current_month);
+            $selectedProject = request()->query('project', 'all');
+
+
+            if ($selectedProject !== 'all') {
+                // Get the log entries only for the specific project and worker
+                $logEntries = $this->workerLogService->getLogsFor($worker, $first_of_current_month, $last_of_current_month, (int) $selectedProject);
+            } else {
+                // Get all log entries for this worker
+                $logEntries = $this->workerLogService->getLogsFor($worker, $first_of_current_month, $last_of_current_month);
+            }
+
+
             return view('admin/workers-detail', [
                 'name' => $worker->first_name . ' ' . $worker->last_name,
                 'worker_id' => $worker->id,
                 'role' => $worker->role->slug,
-                'log_entries' => $log_entries,
+                'logEntries' => $logEntries,
                 'openProjects' => $openProjects,
                 'month' => $month,
                 'previousMonth' => $previousMonth,
                 'nextMonth' => $nextMonth,
             ]);
-            
-        }catch (ModelNotFoundException $e) {
+        } catch (ModelNotFoundException $e) {
             // Handle the case where the worker is not found
             return redirect()->route('admin.workers.overview')->with('error', 'Worker not found.');
         }
-        
     }
 
     public function addWorkLog(int $worker_id)
@@ -81,7 +89,6 @@ class WorkerDetailController extends Controller
             } else {
                 return redirect()->route('admin.workers.overview')->with('error', 'Invalid worker role.');
             }
-
         } catch (ModelNotFoundException $e) {
             // Handle the case where the worker is not found
             return redirect()->route('admin.workers.overview')->with('error', 'Worker not found.');

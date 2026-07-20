@@ -119,6 +119,9 @@ class ProjectService
 
     private function getTitle(Project $project): string
     {
+        if ( $project->end_date){
+            return $project->location . ' | ' . $project->date->format('m/Y') . ' - ' . $project->end_date->format('m/Y') . ' | ' . $project->client;
+        }
         return $project->location . ' | ' . $project->date->format('m/Y') . ' | ' . $project->client;
     }
 
