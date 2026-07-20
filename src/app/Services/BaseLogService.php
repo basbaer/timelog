@@ -24,8 +24,19 @@ abstract class BaseLogService
     /**
      * Delete all logs for a given user and date.
      */
-    public function getLogsFromTo(int $workerId, string $startDate, string $endDate, ?int $projectId = null): Collection
+    public function getLogsFromTo(int $workerId, ?string $startDate, ?string $endDate, ?int $projectId = null): Collection
     {
+        if ($startDate === null || $endDate === null) {
+            return $this->getModel()::with($this->getRelations())
+            ->where('user_id', $workerId)
+            ->when($projectId !== null, function ($query) use ($projectId) {
+                $query->where('project_id', $projectId);
+            })
+            ->orderBy('date', 'asc')
+            ->orderBy('start', 'asc')
+            ->get();
+        }
+
        return $this->getModel()::with($this->getRelations())
             ->where('user_id', $workerId)
             ->whereBetween('date', [$startDate, $endDate])
@@ -37,7 +48,7 @@ abstract class BaseLogService
             ->get();
     }
 
-    public function getLogsForWorker(int $workerId, string $startDate, string $endDate, ?int $projectId = null): Collection
+    public function getLogsForWorker(int $workerId, ?string $startDate, ?string $endDate, ?int $projectId = null): Collection
     {
         $lastDate = null;
 
@@ -61,6 +72,8 @@ abstract class BaseLogService
                 $entry->project_location = $entry->project?->location;
                 $entry->working_type_name = $entry->workingType?->name ?? $entry->user?->role?->slug;
 
+                // Add entry_label if getEntryLabel() returns a non-null value
+                // This allows subclasses to specify a label for the log entries they handle.
                 if ($this->getEntryLabel() !== null) {
                     $entry->entry_label = $this->getEntryLabel();
                 }

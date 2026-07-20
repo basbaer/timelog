@@ -99,17 +99,22 @@ class WorkerDetailController extends Controller
     public function print(int $worker_id, string $project)
     {
         $worker = User::findOrFail($worker_id);
-        $selectedProject = request()->query('project', 'all');
         if ($project !== 'all') {
             $logEntries = $this->workerLogService->getLogsForProject($worker_id, $project);
         }else{
             $logEntries = $this->workerLogService->getLogsFor($worker_id);
         }
 
+        // Get project name for the selected project
+        if ($project !== 'all') {
+            $project = $this->projectService->getProjectById($project);
+        }
+
         return view('admin/workers-detail-print', [
             'worker_id' => $worker_id,
+            'name' => $worker->first_name . ' ' . $worker->last_name,
             'role' => $worker->role?->slug,
-            'selectedProject' => $selectedProject,
+            'project' => $project,
             'logEntries' => $logEntries,
         ]);
     }

@@ -77,7 +77,7 @@ class WorkerLogService
         return null;
     }
 
-    public function getLogsFor(User|int $worker, string $startDate, string $endDate, ?int $projectId = null): Collection
+    public function getLogsFor(User|int $worker, ?string $startDate = null, ?string $endDate = null, ?int $projectId = null): Collection
     {
         if (is_int($worker)) {
             $worker = User::findOrFail($worker);
@@ -104,6 +104,18 @@ class WorkerLogService
 
             return $log;
         });
+    }
+
+    public function getLogsForProject(User|int $worker, int $projectId): Collection
+    {
+        if (is_int($worker)) {
+            $worker = User::findOrFail($worker);
+        }
+
+        return $this->getServiceFor($worker)
+            ->flatMap(fn($service) => $service->getLogsForWorker($worker->id, $startDate = null, $endDate = null, $projectId = $projectId))
+            ->sortBy(fn($log) => sprintf('%s|%s|%s', $log->date_raw ?? '', $log->start_raw ?? '', $log->created_at ?? ''))
+            ->values();
     }
 
     private function getServiceFor(User|int $worker): Collection

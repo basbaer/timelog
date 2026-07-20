@@ -146,4 +146,13 @@ class ProjectService
 
         return $projects;
     }
+
+    public function getProjectById(int $projectId): Project
+    {
+        // Get the project details from the database
+        // findorFail will throw a ModelNotFoundException if the project does not exist
+        $project =  Project::findOrFail($projectId);
+        $project->title = $this->getTitle($project);
+        return $project;
+    }
 }
