@@ -15,7 +15,7 @@
     ])
 
     <div class="row m-3">
-        <x-select-project :openProjects="$openProjects"/>
+        <x-select-project :openProjects="$openProjects" :selectedProject="$selectedProject" />
     </div>
 
     @if ($role === 'forstwirt')

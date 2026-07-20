@@ -62,6 +62,7 @@ class WorkerDetailController extends Controller
                 'worker_id' => $worker->id,
                 'role' => $worker->role->slug,
                 'logEntries' => $logEntries,
+                'selectedProject' => $selectedProject,
                 'openProjects' => $openProjects,
                 'month' => $month,
                 'previousMonth' => $previousMonth,
