@@ -7,6 +7,7 @@ use App\Services\WorkerLogService;
 use App\Services\ProjectService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Carbon;
+use Illuminate\Http\Request;
 
 class WorkerDetailController extends Controller
 {
@@ -55,7 +56,6 @@ class WorkerDetailController extends Controller
                 // Get all log entries for this worker
                 $logEntries = $this->workerLogService->getLogsFor($worker, $first_of_current_month, $last_of_current_month);
             }
-
 
             return view('admin/workers-detail', [
                 'name' => $worker->first_name . ' ' . $worker->last_name,
@@ -117,5 +117,16 @@ class WorkerDetailController extends Controller
             'project' => $project,
             'logEntries' => $logEntries,
         ]);
+    }
+
+    public function deleteLog(Request $request, int $worker_id, int $log_id)
+    {
+        $slug = $request->input('delete_type');
+        try {
+            $this->workerLogService->deleteLog($log_id, $slug);
+            return redirect()->route('admin.worker.show', ['worker_id' => $worker_id])->with('success', 'Log entry deleted successfully.');
+        } catch (\Exception $e) {
+            return redirect()->route('admin.worker.show', ['worker_id' => $worker_id])->with('error', 'Failed to delete log entry.');
+        }
     }
 }

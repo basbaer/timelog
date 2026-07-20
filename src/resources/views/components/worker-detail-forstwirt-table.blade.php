@@ -43,11 +43,11 @@
     </div>
 @endif
 @foreach ($log_entries as $row)
-    @if ($row->show_date || $isInsideOtherLog)
+    @if ($row->show_date)
         <hr class="my-0" />
     @else
-        <div class="row g-0">
-            <div class="col-10 offset-1">
+        <div class="row">
+            <div class="col-11 offset-1">
                 <hr class="my-0" />
             </div>
         </div>
@@ -65,21 +65,18 @@
         <div class="col-1">{{ $row->sum }}</div>
         <div class="col-2">{{ $row->project_client }} ({{ $row->project_location }})</div>
         <div class="col-1">{{ $row->working_type_name }}</div>
-        @if ($isInsideOtherLog)
-            <div class="col-4">{{ $row->comment }}</div>
-        @else
-            <div class="col-3">{{ $row->comment }}</div>
-            @if ($row->show_date)
-                <div class="col-1 d-flex justify-content-center align-items-center ">
-                    <form action="{{ route('log.harvester.delete', ['worker_id' => $worker_id]) }}" method="POST"
-                        class="my-auto">
-                        @csrf
-                        @method('DELETE')
-                        <input type="hidden" name="delete_log_date" value="{{ $log_entries->first()->date_raw }}">
-                        <button type="submit" class="btn btn-danger btn-sm p-0">Löschen</button>
-                    </form>
-                </div>
-            @endif
-        @endif
+
+        <div class="col-3">{{ $row->comment }}</div>
+
+        <div class="col-1 d-flex justify-content-center align-items-center ">
+            <form action="{{ route('admin.worker.log.delete', ['worker_id' => $worker_id, 'log_id' => $row->id]) }}" method="POST"
+                class="my-auto">
+                @csrf
+                @method('DELETE')
+                <input type="hidden" name="delete_type" value="forstwirt">
+                <button type="submit" class="btn btn-danger btn-sm p-0">Löschen</button>
+            </form>
+        </div>
+
     </div>
 @endforeach

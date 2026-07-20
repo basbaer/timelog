@@ -131,4 +131,18 @@ class WorkerLogService
             default => throw new \InvalidArgumentException("Unbekannte Rolle: {$worker->role?->slug}"),
         };
     }
+
+    public function deleteLog(int $logId, ?string $slug = null): void
+    {
+        if ($slug) {
+            $service = match ($slug) {
+                Role::FORSTWIRT => $this->forstwirtLogService,
+                Role::HARVESTER => $this->harvesterLogService,
+                Role::RUECKEZUG => $this->rueckezugLogService,
+                default => throw new \InvalidArgumentException("Unbekannte Rolle: {$slug}"),
+            };
+
+            $service->deleteLog($logId);
+        }
+    }
 }

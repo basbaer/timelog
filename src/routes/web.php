@@ -111,6 +111,9 @@ Route::middleware(Admin::class)->prefix('admin')->group(function () {
     // Show worker details
     Route::get('/workers/{worker_id}', [WorkerDetailController::class, 'show'])->name('admin.worker.show');
 
+    // Delete log entry for worker
+    Route::delete('/workers/{worker_id}/log/{log_id}/delete', [WorkerDetailController::class, 'deleteLog'])->name('admin.worker.log.delete');
+
     // Show worker details for printing
     Route::get('/workers/{worker_id}/print/{project}', [WorkerDetailController::class, 'print'])->name('workers.print');
 

@@ -101,6 +101,15 @@ abstract class BaseLogService
         }
     }
 
+    /**
+     * Delete a specific log entry by its ID.
+     */
+    public function deleteLog(int $log_id): void
+    {
+        $log = $this->getModel()::findOrFail($log_id);
+        $log->delete();
+    }
+
     protected function formatTime(mixed $value): ?string
     {
         if ($value === null || $value === '') {
