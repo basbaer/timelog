@@ -38,5 +38,8 @@ return [
     'entry_already_exists' => 'Es wurde bereits ein Eintrag gespeichert.',
     'edit_entry' => 'Eintrag löschen und neu erstellen',
     'all' => 'Alle',
+    'project' => 'Projekt',
+    'print_view' => 'Druckansicht',
+    'print_prepare' => 'Druckansicht vorbereiten',
     
 ];

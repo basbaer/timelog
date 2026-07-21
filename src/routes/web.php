@@ -8,6 +8,7 @@ use App\Http\Controllers\LogoutController;
 use App\Http\Controllers\Logs\ForstwirtLogController;
 use App\Http\Controllers\Logs\HarvesterLogController;
 use App\Http\Controllers\Logs\RueckezugLogController;
+use App\Http\Controllers\PrintController;
 use App\Http\Controllers\Projects\AddProjectController;
 use App\Http\Controllers\Projects\OverviewProjectController;
 use App\Http\Controllers\Projects\ProjectDetailController;
@@ -92,7 +93,7 @@ Route::middleware(Admin::class)->prefix('admin')->group(function () {
     Route::put('/projects/{id}/update', [AddProjectController::class, 'update'])->name('admin.projects.update');
 
     Route::put('/projects/{id}/close', [ProjectDetailController::class, 'close'])->name('admin.projects.close');
-    
+
     // ---- Workers --------------
     Route::get('/workers', [WorkersOverviewController::class, 'show'])->name('admin.workers.overview');
 
@@ -124,11 +125,21 @@ Route::middleware(Admin::class)->prefix('admin')->group(function () {
     Route::post('/workers/{worker_id}/delete', [DeleteWorkerController::class, 'deleteWorker'])->name('admin.worker.delete');
 
     Route::get('/workers/{worker_id}/log/create', [WorkerDetailController::class, 'addWorkLog'])->name('admin.worker.log.create');
-
 });
 
-
 //====================================================================================
+
+// ==== Worker and Admin Routes ======================================================
+// Prepare print for Forstwirt
+Route::get('/workers/{worker_id}/preparePrint', [PrintController::class, 'preparePrint'])
+    ->name('workers.preparePrint')
+    ->middleware(Forstwirt::class);
+
+Route::post('/workers/{worker_id}/preparePrint', [PrintController::class, 'loadPrint'])
+    ->name('workers.preparePrint.post')
+    ->middleware(Forstwirt::class);
+
+// =================================================================================
 
 // ==== Forstwirt Route ====
 Route::get('/log-forstwirt/{user_id?}', [ForstwirtLogController::class, 'show'])

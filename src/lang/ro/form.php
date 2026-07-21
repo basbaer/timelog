@@ -36,5 +36,8 @@ return [
     'entry_already_exists' => 'A fost deja salvată o înregistrare.',
     'edit_entry' => 'Ștergeți înregistrarea și creați una nouă',
     'all' => 'Toate',
+    'project' => 'Proiect',
+    'print_view' => 'Vizualizare tipărire',
+    'print_prepare' => 'Pregătire vizualizare tipărire',
 
 ];
