@@ -20,9 +20,12 @@ class PrintController extends Controller
         
         $projects = $this->projectService->getOpenProjects($worker_id, now()->startOfMonth()->toDateString(), now()->endOfMonth()->toDateString());
 
+        $hasClosedProjects = $this->projectService->hasClosedProjects($worker_id);
+
         return view('print/preparePrintForm', [
             'worker' => $worker,
             'projects' => $projects,
+            'hasClosedProjects' => $hasClosedProjects,
         ]);
     }
 

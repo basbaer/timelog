@@ -155,4 +155,12 @@ class ProjectService
         $project->title = $this->getTitle($project);
         return $project;
     }
+
+    public function hasClosedProjects(int $workerId): bool
+    {
+        return Project::whereHas('users', function ($query) use ($workerId) {
+            $query->where('user_id', $workerId);
+        })->closedProjects()->exists();
+
+    }
 }

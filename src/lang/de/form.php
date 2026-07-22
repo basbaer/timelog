@@ -41,5 +41,6 @@ return [
     'project' => 'Projekt',
     'print_view' => 'Druckansicht',
     'print_prepare' => 'Druckansicht vorbereiten',
+    'load_older_projects' => 'Ältere Projekte laden',
     
 ];
