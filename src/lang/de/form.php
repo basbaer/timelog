@@ -43,5 +43,9 @@ return [
     'print_prepare' => 'Druckansicht vorbereiten',
     'load_older_projects' => 'Ältere Projekte laden',
     'loading' => 'Lädt...',
-    
+    'timeframe' => 'Zeitraum',
+    'whole_project' => 'Gesamtes Projekt',
+    'specific_month' => 'Bestimmter Monat',
+    'forstwirt' => 'Forstwirt',
+    'work_types' => 'Arbeitsarten',
 ];

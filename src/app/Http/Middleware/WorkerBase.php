@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Auth;
 use \App\Models\User;
 
-abstract class Worker
+abstract class WorkerBase
 {
     abstract protected function isRole(User $user): bool;
     /**

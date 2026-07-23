@@ -4,7 +4,7 @@ namespace App\Http\Middleware;
 
 use \App\Models\User;
 
-class Rueckezug extends Worker
+class Rueckezug extends WorkerBase
 {
     protected function isRole(User $user): bool
     {

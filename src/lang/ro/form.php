@@ -41,5 +41,8 @@ return [
     'print_prepare' => 'Pregătire vizualizare tipărire',
     'load_older_projects' => 'Încarcă proiecte mai vechi',
     'loading' => 'Se încarcă...',
+    'timeframe' => 'Interval de timp',
+    'whole_project' => 'Întregul proiect',
+    'specific_month' => 'Lună specifică'
 
 ];

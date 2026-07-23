@@ -19,6 +19,7 @@ use App\Http\Middleware\Admin;
 use App\Http\Middleware\Forstwirt;
 use App\Http\Middleware\Harvester;
 use App\Http\Middleware\Rueckezug;
+use App\Http\Middleware\IsLoggedIn;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Route;
 
@@ -130,18 +131,16 @@ Route::middleware(Admin::class)->prefix('admin')->group(function () {
 //====================================================================================
 
 // ==== Worker and Admin Routes ======================================================
-// Prepare print for Forstwirt
-Route::get('/workers/{worker_id}/preparePrint', [PrintController::class, 'preparePrint'])
-    ->name('workers.preparePrint')
-    ->middleware(Forstwirt::class);
+Route::middleware([IsLoggedIn::class])->group(function () {
+    Route::get('/workers/{worker_id}/preparePrint', [PrintController::class, 'preparePrint'])
+        ->name('workers.preparePrint');
 
-Route::post('/workers/{worker_id}/preparePrint', [PrintController::class, 'loadPrint'])
-    ->name('workers.preparePrint.post')
-    ->middleware(Forstwirt::class);
+    Route::post('/workers/{worker_id}/preparePrint', [PrintController::class, 'loadPrint'])
+        ->name('workers.preparePrint.post');
 
-Route::get('/workers/{worker_id}/preparePrint/loadClosedProjects', [PrintController::class, 'loadClosedProjects'])
-    ->name('workers.preparePrint.loadClosedProjects')
-    ->middleware(Forstwirt::class);
+    Route::get('/workers/{worker_id}/preparePrint/loadClosedProjects', [PrintController::class, 'loadClosedProjects'])
+        ->name('workers.preparePrint.loadClosedProjects');
+});
 
 // =================================================================================
 
