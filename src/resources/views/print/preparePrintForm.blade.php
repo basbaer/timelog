@@ -75,14 +75,14 @@
                 <p id="work-type-warning" class="text-danger d-none">{{ __('form.work_type_warning') }}</p>
                 <div class="form-check">
                     @php $role = $worker->role->slug @endphp
-                    <input class="form-check-input" type="checkbox" name="{{ $role }}" id="work-type-{{ $role }}"
+                    <input class="form-check-input" type="checkbox" name="work-type-{{ $role }}" id="work-type-{{ $role }}"
                         value="true" checked>
                     <label class="form-check-label" for="work-type-{{ $role }}">
                         {{ __('form.' . $role) }}
                     </label>
                 </div>
                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" name="forstwirt" id="work-type-forstwirt" value="true" checked>
+                    <input class="form-check-input" type="checkbox" name="work-type-forstwirt" id="work-type-forstwirt" value="true" checked>
                     <label class="form-check-label" for="work-type-forstwirt">
                         {{ __('form.forstwirt') }}
                     </label>

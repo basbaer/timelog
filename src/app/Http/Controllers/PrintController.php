@@ -35,11 +35,21 @@ class PrintController extends Controller
     {
         $worker = User::findOrFail($worker_id);
         $project = $request->input('project');
+        $timeframe = $request->input('timeframe');
+        $month = $request->input('month');
+        $role = $worker->role->slug;
+        $workTypeForstwirt = $request->input('work-type-forstwirt');
+        $workTypeOther = $request->input('work-type-' . $role);
 
-        return view('print/print', [
-            'worker_id' => $worker->id,
-            'project' => $project,
-        ]);
+        return redirect()->route('print.show', ['worker_id' => $worker->id, 
+        'project' => $project, 
+        'timeframe' => $timeframe, 
+        'month' => $month,
+        'work-type-forstwirt' => $workTypeForstwirt,
+        'work-type-' . $role => $workTypeOther
+    ]);
+
+        
     }
 
     public function loadClosedProjects(Request $request, int $worker_id)
@@ -51,6 +61,17 @@ class PrintController extends Controller
 
         return response()->json([
             'closedProjects' => $closedProjects,
+        ]);
+    }
+
+    public function print(int $worker_id){
+        
+        
+        $worker = User::findOrFail($worker_id);
+        $projectId = request()->query('project');
+
+        return view('print/print', [
+            'worker' => $worker,
         ]);
     }
 }

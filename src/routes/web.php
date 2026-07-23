@@ -140,6 +140,10 @@ Route::middleware([IsLoggedIn::class])->group(function () {
 
     Route::get('/workers/{worker_id}/preparePrint/loadClosedProjects', [PrintController::class, 'loadClosedProjects'])
         ->name('workers.preparePrint.loadClosedProjects');
+
+    
+    Route::get('/workers/{worker_id}/print/', [PrintController::class, 'print'])
+        ->name('print.show');
 });
 
 // =================================================================================
