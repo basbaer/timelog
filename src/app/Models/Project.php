@@ -17,6 +17,7 @@ class Project extends Model
     {
         return [
             'date' => 'date',
+            'end_date' => 'date',
         ];
     }
 
@@ -62,5 +63,15 @@ class Project extends Model
     public function scopeOpenActiveProjects($query)
     {
         return $this->scopeOpenProjects($query)->where('date', '<=', today());
+    }
+
+    public function scopeClosedBefore($query, $beforeDate)
+    {
+        return $query->whereNotNull('end_date')->where('end_date', '<', $beforeDate);
+    }
+
+    public function scopeClosedAfter($query, $afterDate)
+    {
+        return $query->whereNotNull('end_date')->where('end_date', '>', $afterDate);
     }
 }

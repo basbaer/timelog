@@ -156,11 +156,40 @@ class ProjectService
         return $project;
     }
 
-    public function hasClosedProjects(int $workerId): bool
+    public function hasClosedProjects(int $workerId, ?string $from, ?string $to): bool
     {
+        if ($to !== null) {
+            $to = Carbon::parse($to)->endOfDay()->toDateString();
+        } else {
+            $to = Carbon::now()->endOfDay()->toDateString();
+        }
+
+        if($from !== null) {
+            $from = Carbon::parse($from)->startOfDay()->toDateString();
+        } else {
+            $from = Carbon::parse('1900-01-01')->startOfDay()->toDateString();
+        }
+
         return Project::whereHas('users', function ($query) use ($workerId) {
             $query->where('user_id', $workerId);
-        })->closedProjects()->exists();
+        })->closedBefore($to)->closedAfter($from)->exists();
 
     }
+
+    public function getClosedProjects(int $workerId): Collection
+    {
+        $before = Carbon::now()->startOfMonth()->toDateString();
+
+        $closedProjects = Project::whereHas('users', function ($query) use ($workerId) {
+            $query->where('user_id', $workerId);
+        })->closedBefore($before)->limit(20)->get();
+
+        // Add project title to each project
+        $closedProjects->map(function ($project) {
+            $project->title = $this->getTitle($project);
+        });
+
+        return $closedProjects;
+    }
+
 }

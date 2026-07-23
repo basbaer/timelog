@@ -139,6 +139,10 @@ Route::post('/workers/{worker_id}/preparePrint', [PrintController::class, 'loadP
     ->name('workers.preparePrint.post')
     ->middleware(Forstwirt::class);
 
+Route::get('/workers/{worker_id}/preparePrint/loadClosedProjects', [PrintController::class, 'loadClosedProjects'])
+    ->name('workers.preparePrint.loadClosedProjects')
+    ->middleware(Forstwirt::class);
+
 // =================================================================================
 
 // ==== Forstwirt Route ====

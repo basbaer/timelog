@@ -40,5 +40,6 @@ return [
     'print_view' => 'Vizualizare tipărire',
     'print_prepare' => 'Pregătire vizualizare tipărire',
     'load_older_projects' => 'Încarcă proiecte mai vechi',
+    'loading' => 'Se încarcă...',
 
 ];

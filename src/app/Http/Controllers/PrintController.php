@@ -18,9 +18,11 @@ class PrintController extends Controller
     {
         $worker = User::findOrFail($worker_id);
         
+        // loads all the project that were open at some point in the current month
         $projects = $this->projectService->getOpenProjects($worker_id, now()->startOfMonth()->toDateString(), now()->endOfMonth()->toDateString());
 
-        $hasClosedProjects = $this->projectService->hasClosedProjects($worker_id);
+        // check if the worker has any closed projects before the current month
+        $hasClosedProjects = $this->projectService->hasClosedProjects($worker_id, null, now()->startOfMonth()->toDateString());
 
         return view('print/preparePrintForm', [
             'worker' => $worker,
@@ -37,6 +39,18 @@ class PrintController extends Controller
         return view('print/print', [
             'worker_id' => $worker->id,
             'project' => $project,
+        ]);
+    }
+
+    public function loadClosedProjects(Request $request, int $worker_id)
+    {
+        $worker = User::findOrFail($worker_id);
+        
+        // loads all the closed projects for the worker
+        $closedProjects = $this->projectService->getClosedProjects($worker->id);
+
+        return response()->json([
+            'closedProjects' => $closedProjects,
         ]);
     }
 }

@@ -63,7 +63,7 @@
                 loadClosedBtn.disabled = true;
                 loadClosedBtn.textContent = '{{ __('form.loading') }}';
 
-                fetch(`{{ route('worker.projects.load-closed') }}?worker_id=${workerId}`, {
+                fetch(`{{ route('workers.preparePrint.loadClosedProjects', ['worker_id' => $worker->id]) }}`, {
                         headers: {
                             'X-Requested-With': 'XMLHttpRequest'
                         }
@@ -72,14 +72,14 @@
                     .then(data => {
                         const list = document.getElementById('project-radio-list');
 
-                        data.projects.forEach(project => {
+                        data.closedProjects.forEach(project => {
                             const wrapper = document.createElement('div');
                             wrapper.className = 'form-check';
                             wrapper.innerHTML = `
                                     <input class="form-check-input" type="radio" name="project"
                                         id="project-${project.id}" value="${project.id}">
                                     <label class="form-check-label" for="project-${project.id}">
-                                        ${project.name}
+                                        ${project.title}
                                     </label>
                                 `;
                             list.appendChild(wrapper);
