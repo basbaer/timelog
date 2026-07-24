@@ -22,6 +22,20 @@ class ForstwirtLogService extends BaseLogService
         return 'forstwirt';
     }
 
+    public function getPrintTableHeaders(): array
+    {
+        return [
+            'date' => __('form.date'),
+            'from' => __('form.from'),
+            'to' => __('form.to'),
+            'pause' => __('form.pause'),
+            'working_time' => __('form.working_time'),
+            'project' => __('form.project'),
+            'working_type' => __('form.working_type'),
+            'comment' => __('form.comment'),
+        ];
+    }
+
     /**
      * Persist entries in the same shape used by Forstwirt logs.
      */

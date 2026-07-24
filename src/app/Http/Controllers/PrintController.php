@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Services\WorkerLogService;
 use App\Services\ProjectService;
+use Illuminate\Support\Collection;
 
 class PrintController extends Controller
 {
@@ -101,10 +102,13 @@ class PrintController extends Controller
             $hasMultipleLogTypes = true;
         }
 
+        $tableHeaders = $this->getTableHeaders($logTypes, $projectId);
+
         return view('print/print', [
             'worker' => $worker,
             'project' => $project,
             'logEntries' => $logs,
+            'tableHeaders' => $tableHeaders,
             'hasMultipleLogTypes' => $hasMultipleLogTypes,
             'timeframe' => $timeframe,
         ]);
@@ -146,6 +150,19 @@ class PrintController extends Controller
             return now()->endOfMonth()->toDateString(); // Arbitrary late date for "whole" timeframe
         }
         return null;
+    }
+
+    private function getTableHeaders(Collection $logTypes, ?int $projectId): Collection
+    {
+        $headers = collect();
+        foreach ($logTypes as $logType) {
+            $headers->put($logType, $this->workerLogService->getPrintTableHeadersFor($logType));
+
+            if ($projectId === null) {
+                unset($headers->get($logType)['project']);
+            }
+        }
+        return $headers;
     }
 }
 

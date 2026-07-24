@@ -20,6 +20,23 @@ class RueckezugLogService extends BaseLogService
         return 'rueckezug';
     }
 
+    public function getPrintTableHeaders(): array
+    {
+        return [
+            'date' => __('form.date'),
+            'from' => __('form.from'),
+            'to' => __('form.to'),
+            'pause' => __('form.pause'),
+            'working_time' => __('form.working_time'),
+            'project' => __('form.project'),
+            'bs_from' => "BS von",
+            'bs_to' => "BS bis",
+            'bs_diff' => "BS Differenz",
+            'loadings' => "Ladungen",
+            'average_distance' => "Durchschnittliche Entfernung",
+        ];
+    }
+
     public function saveLogs(array $mappedLogs, int $userId)
     {
         $lastLog = null;

@@ -8,6 +8,7 @@ use Illuminate\Support\Collection;
 
 abstract class BaseLogService
 {
+    abstract public function getPrintTableHeaders(): array;
     abstract protected function getModel(): string;
 
     protected function getRelations(): array

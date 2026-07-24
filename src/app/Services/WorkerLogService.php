@@ -15,16 +15,28 @@ class WorkerLogService
         private readonly RueckezugLogService $rueckezugLogService
     ) {}
 
-  public function deleteLogsFrom(User|int $worker, string $date): void
-{
-    if (is_int($worker)) {
-        $worker = User::findOrFail($worker);
+    public function getPrintTableHeadersFor(string $role): array
+    {
+        $service = match ($role) {
+            Role::FORSTWIRT => $this->forstwirtLogService,
+            Role::HARVESTER => $this->harvesterLogService,
+            Role::RUECKEZUG => $this->rueckezugLogService,
+            default => throw new \InvalidArgumentException("Unbekannte Rolle: {$role}"),
+        };
+
+        return $service->getPrintTableHeaders();
     }
 
-    $this->getServiceFor($worker)->each(function ($service) use ($worker, $date) {
-        $service->deleteLogsFrom($worker->id, $date);
-    });
-}
+    public function deleteLogsFrom(User|int $worker, string $date): void
+    {
+        if (is_int($worker)) {
+            $worker = User::findOrFail($worker);
+        }
+
+        $this->getServiceFor($worker)->each(function ($service) use ($worker, $date) {
+            $service->deleteLogsFrom($worker->id, $date);
+        });
+    }
 
     public function saveLogs(User|int $worker, array $mappedLogs)
     {

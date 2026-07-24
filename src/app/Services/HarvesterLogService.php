@@ -16,6 +16,25 @@ class HarvesterLogService extends BaseLogService
     {
         return 'harvester';
     }
+
+    public function getPrintTableHeaders(): array
+    {
+        return [
+            'date' => __('form.date'),
+            'from' => __('form.from'),
+            'to' => __('form.to'),
+            'pause' => __('form.pause'),
+            'working_time' => __('form.working_time'),
+            'project' => __('form.project'),
+            'bs_from' => "BS von",
+            'bs_to' => "BS bis",
+            'bs_diff' => "BS Differenz",
+            'fm_amount' => "FM Menge",
+            'fm_total' => "FM Gesamt",
+            'fm_day' => "FM Tag",
+        ];
+    }
+
     public function saveLogs(array $mappedLogs, int $userId)
     {
         $lastLog = null;
@@ -56,5 +75,4 @@ class HarvesterLogService extends BaseLogService
             return sprintf('%s|%s|%s', $log->project_id, $log->start ?? '', $log->created_at ?? '');
         })->values();
     }
-
 }
