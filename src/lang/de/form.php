@@ -48,4 +48,5 @@ return [
     'specific_month' => 'Bestimmter Monat',
     'forstwirt' => 'Forstwirt',
     'work_types' => 'Arbeitsarten',
+    'work_type_warning' => 'Bitte wähle mindestens eine Arbeitsart aus.',
 ];

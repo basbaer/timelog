@@ -66,12 +66,78 @@ class PrintController extends Controller
 
     public function print(int $worker_id){
         
-        
         $worker = User::findOrFail($worker_id);
-        $projectId = request()->query('project');
+
+        $project = request()->query('project');
+        $projectId = $this->getProjectId($project);
+
+        $timeframe = request()->query('timeframe');
+        $month = request()->query('month');
+        $fromDate = $this->getFromDate($timeframe, $month);
+        $toDate = $this->getToDate($timeframe, $month);
+
+        $role = $worker->role->slug;
+        $workTypeForstwirt = request()->query('work-type-forstwirt');
+        $workTypeOther = request()->query('work-type-' . $role);
+
+        $logTypes = collect();
+        if ($role === 'forstwirt' || $workTypeForstwirt) {
+            $logTypes->push('forstwirt');
+        }
+
+        if ($workTypeOther) {
+            $logTypes->push($role);
+        }
+
+        $logs = $this->workerLogService->getLogsFor($worker, $fromDate, $toDate, $projectId)
+            ->filter(function ($log) use ($logTypes) {
+                return $logTypes->contains($log->entry_label);
+            });
+
+            
 
         return view('print/print', [
             'worker' => $worker,
+            'logs' => $logs,
         ]);
     }
+
+    private function getProjectId(string $project): ?int
+    {
+        if (!is_numeric($project)) {
+            $projectId = null; // Set to null to indicate all projects
+        }else{
+            $projectId = (int) $project;
+        }
+        return $projectId;
+    }
+
+    private function getFromDate(string $timeframe, ?string $month): ?string
+    {
+        if ($timeframe === 'month' && $month) {
+            //Extract month and year from month string (format: mm/yy)
+            $monthYear = explode('/', $month);
+            $month = (int) $monthYear[0];
+            $year = (int) ("20" . $monthYear[1]);
+            return now()->year($year)->month($month)->startOfMonth()->toDateString();
+        } elseif ($timeframe === 'whole') {
+            return now()->year(2000)->month(1)->startOfMonth()->toDateString(); // Arbitrary early date for "whole" timeframe
+        }
+        return null;
+    }
+
+    private function getToDate(string $timeframe, ?string $month): ?string
+    {
+        if ($timeframe === 'month' && $month) {
+            //Extract month and year from month string (format: mm/yy)
+            $monthYear = explode('/', $month);
+            $month = (int) $monthYear[0];
+            $year = (int) ("20" . $monthYear[1]);
+            return now()->year($year)->month($month)->endOfMonth()->toDateString();
+        } elseif ($timeframe === 'whole') {
+            return now()->endOfMonth()->toDateString(); // Arbitrary late date for "whole" timeframe
+        }
+        return null;
+    }
 }
+

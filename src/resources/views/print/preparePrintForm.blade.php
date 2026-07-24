@@ -75,14 +75,14 @@
                 <p id="work-type-warning" class="text-danger d-none">{{ __('form.work_type_warning') }}</p>
                 <div class="form-check">
                     @php $role = $worker->role->slug @endphp
-                    <input class="form-check-input" type="checkbox" name="work-type-{{ $role }}" id="work-type-{{ $role }}"
+                    <input class="form-check-input work-type-checkbox" type="checkbox" name="work-type-{{ $role }}" id="work-type-{{ $role }}"
                         value="true" checked>
                     <label class="form-check-label" for="work-type-{{ $role }}">
                         {{ __('form.' . $role) }}
                     </label>
                 </div>
                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" name="work-type-forstwirt" id="work-type-forstwirt" value="true" checked>
+                    <input class="form-check-input work-type-checkbox" type="checkbox" name="work-type-forstwirt" id="work-type-forstwirt" value="true" checked>
                     <label class="form-check-label" for="work-type-forstwirt">
                         {{ __('form.forstwirt') }}
                     </label>
@@ -153,6 +153,10 @@
                 });
             }
 
+            const form = document.getElementById('prepare-print-form');
+            const workTypeCheckboxes = document.querySelectorAll('.work-type-checkbox');
+            const warning = document.getElementById('work-type-warning');
+
             // ---- Normalize month value to YYYY-MM before submit ----
             // Chrome/Edge (native month picker) already submit "YYYY-MM".
             // Firefox/Safari (plain text fallback, constrained by the
@@ -188,10 +192,6 @@
 
 
             // ---- Prevent submitting with zero work-type checkboxes selected ----
-            const workTypeCheckboxes = document.querySelectorAll('.work-type-checkbox');
-            const warning = document.getElementById('work-type-warning');
-            const form = document.getElementById('prepare-print-form');
-
             if (workTypeCheckboxes.length) {
                 form.addEventListener('submit', function(e) {
                     const anyChecked = Array.from(workTypeCheckboxes).some(cb => cb.checked);
