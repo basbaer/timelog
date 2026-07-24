@@ -24,11 +24,11 @@ class RueckezugLogService extends BaseLogService
     {
         return [
             'date' => __('form.date'),
-            'from' => __('form.from'),
-            'to' => __('form.to'),
+            'start' => __('form.from'),
+            'end' => __('form.to'),
             'pause' => __('form.pause'),
-            'working_time' => __('form.working_time'),
-            'project' => __('form.project'),
+            'sum' => __('form.working_time'),
+            'title' => __('form.project'),
             'bs_from' => "BS von",
             'bs_to' => "BS bis",
             'bs_diff' => "BS Differenz",

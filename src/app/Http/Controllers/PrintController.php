@@ -71,6 +71,7 @@ class PrintController extends Controller
 
         $project = request()->query('project');
         $projectId = $this->getProjectId($project);
+        $project = $projectId ? $this->projectService->getProjectById($projectId) : null;
 
         $timeframe = request()->query('timeframe');
         $month = request()->query('month');
@@ -95,6 +96,7 @@ class PrintController extends Controller
             ->filter(function ($log) use ($logTypes) {
                 return $logTypes->contains($log->entry_label);
             });
+        
 
         $hasMultipleLogTypes = false;
         //check if the collection has more than one entry
@@ -107,7 +109,7 @@ class PrintController extends Controller
         return view('print/print', [
             'worker' => $worker,
             'project' => $project,
-            'logEntries' => $logs,
+            'logs' => $logs,
             'tableHeaders' => $tableHeaders,
             'hasMultipleLogTypes' => $hasMultipleLogTypes,
             'timeframe' => $timeframe,
@@ -156,10 +158,11 @@ class PrintController extends Controller
     {
         $headers = collect();
         foreach ($logTypes as $logType) {
-            $headers->put($logType, $this->workerLogService->getPrintTableHeadersFor($logType));
+            $headers->put($logType, collect($this->workerLogService->getPrintTableHeadersFor($logType)));
 
-            if ($projectId === null) {
-                unset($headers->get($logType)['project']);
+            if ($projectId !== null) {
+                // Remove the 'title' header if a specific project is selected
+                $headers->get($logType)->forget('title');
             }
         }
         return $headers;

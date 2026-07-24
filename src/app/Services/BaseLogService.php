@@ -69,6 +69,7 @@ abstract class BaseLogService
                 $entry->end = $this->formatTime($entry->end);
                 $entry->pause = $this->formatPause($entry->pause ?? null);
                 $entry->sum = $this->formatTime($entry->sum ?? null);
+                $entry->title = $entry->project?->location . " | " . $entry->project?->client;
                 $entry->project_client = $entry->project?->client;
                 $entry->project_location = $entry->project?->location;
                 $entry->working_type_name = $entry->workingType?->name ?? $entry->user?->role?->slug;

@@ -91,7 +91,9 @@
         <button type="button" onclick="window.print()" class="btn btn-primary">
             {{ __('form.print') }}
         </button>
-        <button type="button" onclick="window.location.href = '{{ route('workers.preparePrint', ['worker_id' => $worker->id]) }}'" class="btn btn-secondary">
+        <button type="button"
+            onclick="window.location.href = '{{ route('workers.preparePrint', ['worker_id' => $worker->id]) }}'"
+            class="btn btn-secondary">
             {{ __('form.back') }}
         </button>
     </div>
@@ -117,20 +119,32 @@
         $role = $worker->role->slug;
         $worker_id = $worker->id;
     @endphp
-    @if ($role === 'forstwirt')
-        <div class="m-3">
-            <x-worker-detail-forstwirt-table :log_entries="$logEntries" :worker_id="$worker_id" />
-        </div>
-    @elseif ($role === 'harvester')
-        <div class="m-3">
 
-            <x-worker-detail-harvester-table :log_entries="$logEntries" :worker_id="$worker_id" />
-        </div>
-    @elseif ($role === 'rueckezug')
-        <div class="m-3">
-            <x-worker-detail-rueckezug-table :log_entries="$logEntries" :worker_id="$worker_id" />
-        </div>
+    @if (!$hasMultipleLogTypes)
+        <table>
+            <thead>
+                <tr>
+                    @foreach ($tableHeaders->get($role) as $header)
+                        <th>{{ $header }}</th>
+                    @endforeach
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach ($logs as $log)
+                <tr>
+                    @foreach ($tableHeaders->get($role) as $header => $headerLabel)
+                        <td>{{ $log->$header }}</td>
+                    @endforeach
+                    </tr>
+                @endforeach
+            </tbody>
+
+        </table>
+
+
     @endif
+
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
