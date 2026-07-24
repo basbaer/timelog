@@ -45,5 +45,7 @@ return [
     'whole_project' => 'Întregul proiect',
     'specific_month' => 'Lună specifică',
     'work_type_warning' => 'Te rugăm să alegi cel puțin un tip de activitate.',
+    'print' => 'Tipărește',
+    'worker' => 'Muncitor',
 
 ];

@@ -75,6 +75,7 @@ class PrintController extends Controller
         $month = request()->query('month');
         $fromDate = $this->getFromDate($timeframe, $month);
         $toDate = $this->getToDate($timeframe, $month);
+        
 
         $role = $worker->role->slug;
         $workTypeForstwirt = request()->query('work-type-forstwirt');
@@ -94,11 +95,18 @@ class PrintController extends Controller
                 return $logTypes->contains($log->entry_label);
             });
 
-            
+        $hasMultipleLogTypes = false;
+        //check if the collection has more than one entry
+        if ($logTypes->count() > 1) {
+            $hasMultipleLogTypes = true;
+        }
 
         return view('print/print', [
             'worker' => $worker,
-            'logs' => $logs,
+            'project' => $project,
+            'logEntries' => $logs,
+            'hasMultipleLogTypes' => $hasMultipleLogTypes,
+            'timeframe' => $timeframe,
         ]);
     }
 

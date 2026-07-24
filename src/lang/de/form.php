@@ -49,4 +49,6 @@ return [
     'forstwirt' => 'Forstwirt',
     'work_types' => 'Arbeitsarten',
     'work_type_warning' => 'Bitte wähle mindestens eine Arbeitsart aus.',
+    'print' => 'Drucken',
+    'worker' => 'Arbeiter',
 ];
