@@ -116,7 +116,7 @@
     </div>
 
     @php
-        $role = $worker->role->slug;
+        $role = $logTypes->first();
         $worker_id = $worker->id;
     @endphp
 

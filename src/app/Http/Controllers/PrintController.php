@@ -71,7 +71,7 @@ class PrintController extends Controller
 
         $project = request()->query('project');
         $projectId = $this->getProjectId($project);
-        $project = $projectId ? $this->projectService->getProjectById($projectId) : null;
+        $project = $projectId ? $this->projectService->getProjectById($projectId) : 'all';
 
         $timeframe = request()->query('timeframe');
         $month = request()->query('month');
@@ -110,6 +110,7 @@ class PrintController extends Controller
             'worker' => $worker,
             'project' => $project,
             'logs' => $logs,
+            'logTypes' => $logTypes,
             'tableHeaders' => $tableHeaders,
             'hasMultipleLogTypes' => $hasMultipleLogTypes,
             'timeframe' => $timeframe,

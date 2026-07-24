@@ -31,7 +31,7 @@ class ForstwirtLogService extends BaseLogService
             'pause' => __('form.pause'),
             'sum' => __('form.working_time'),
             'title' => __('form.project'),
-            'working_type' => __('form.working_type'),
+            'working_type_name' => __('form.working_type'),
             'comment' => __('form.comment'),
         ];
     }
