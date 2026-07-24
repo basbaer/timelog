@@ -87,9 +87,12 @@
 </head>
 
 <body>
-    <div class="no-print">
+    <div class="no-print d-flex justify-content-between align-items-center gap-3 mx-3">
         <button type="button" onclick="window.print()" class="btn btn-primary">
             {{ __('form.print') }}
+        </button>
+        <button type="button" onclick="window.location.href = '{{ route('workers.preparePrint', ['worker_id' => $worker->id]) }}'" class="btn btn-secondary">
+            {{ __('form.back') }}
         </button>
     </div>
 

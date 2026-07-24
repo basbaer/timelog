@@ -51,4 +51,5 @@ return [
     'work_type_warning' => 'Bitte wähle mindestens eine Arbeitsart aus.',
     'print' => 'Drucken',
     'worker' => 'Arbeiter',
+    'back' => 'Zurück',
 ];

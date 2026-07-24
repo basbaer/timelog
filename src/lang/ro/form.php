@@ -47,5 +47,6 @@ return [
     'work_type_warning' => 'Te rugăm să alegi cel puțin un tip de activitate.',
     'print' => 'Tipărește',
     'worker' => 'Muncitor',
+    'back' => 'Înapoi',
 
 ];
