@@ -131,9 +131,9 @@ class PrintController extends Controller
     {
         if ($timeframe === 'month' && $month) {
             //Extract month and year from month string (format: mm/yy)
-            $monthYear = explode('/', $month);
-            $month = (int) $monthYear[0];
-            $year = (int) ("20" . $monthYear[1]);
+            $monthYear = explode('-', $month);
+            $year = (int) $monthYear[0];
+            $month = (int) $monthYear[1];
             return now()->year($year)->month($month)->startOfMonth()->toDateString();
         } elseif ($timeframe === 'whole') {
             return now()->year(2000)->month(1)->startOfMonth()->toDateString(); // Arbitrary early date for "whole" timeframe
@@ -145,9 +145,9 @@ class PrintController extends Controller
     {
         if ($timeframe === 'month' && $month) {
             //Extract month and year from month string (format: mm/yy)
-            $monthYear = explode('/', $month);
-            $month = (int) $monthYear[0];
-            $year = (int) ("20" . $monthYear[1]);
+            $monthYear = explode('-', $month);
+            $year = (int) $monthYear[0];
+            $month = (int) $monthYear[1];
             return now()->year($year)->month($month)->endOfMonth()->toDateString();
         } elseif ($timeframe === 'whole') {
             return now()->endOfMonth()->toDateString(); // Arbitrary late date for "whole" timeframe
