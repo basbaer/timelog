@@ -4,7 +4,7 @@
 @include('partials.head', ['title' => 'Log'])
 
 <body>
-    @include('partials.log_header', ['name' => $name])
+    @include('partials.log_header', ['name' => $name, 'worker_id' => $user_id])
 
     @include('partials.log_form_errors', ['errors' => $errors])
 
