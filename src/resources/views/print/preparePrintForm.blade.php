@@ -112,6 +112,37 @@
 
             timeframeRadios.forEach(radio => radio.addEventListener('change', syncMonthInput));
 
+            // ---- "Gesamtes Projekt" only makes sense for a single, specific project ----
+            const projectRadioList = document.getElementById('project-radio-list');
+            const timeframeWholeRadio = document.getElementById('timeframe-whole');
+            const timeframeMonthRadio = document.getElementById('timeframe-month');
+
+            function syncProjectTimeframeConstraint() {
+                const selectedProject = document.querySelector('input[name="project"]:checked');
+                const allProjectsSelected = !selectedProject || selectedProject.value === 'all';
+
+                timeframeWholeRadio.disabled = allProjectsSelected;
+
+                if (allProjectsSelected && timeframeWholeRadio.checked) {
+                    timeframeWholeRadio.checked = false;
+                    timeframeMonthRadio.checked = true;
+                }
+
+                syncMonthInput();
+            }
+
+            // Delegate on the container: closed-project radios are added
+            // dynamically via AJAX, so they don't exist yet at page load.
+            projectRadioList.addEventListener('change', function(e) {
+                if (e.target.name === 'project') {
+                    syncProjectTimeframeConstraint();
+                }
+            });
+
+            // Apply immediately: the default state (project "all" +
+            // timeframe "whole") already violates the constraint.
+            syncProjectTimeframeConstraint();
+
             // ---- Load closed projects (one-shot AJAX reveal, no pagination) ----
             const loadClosedBtn = document.getElementById('load-closed-projects');
             if (loadClosedBtn) {
