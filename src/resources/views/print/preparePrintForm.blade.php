@@ -97,6 +97,10 @@
         </div>
     </form>
 
+    <div class="d-flex justify-content-center m-3">
+        <a href="{{ route('admin.worker.show', [$worker->id]) }}" class="btn btn-secondary">{{ __('form.back') }}</a>
+    </div>
+
     <script>
         (function() {
             const monthInput = document.getElementById('month-input');
