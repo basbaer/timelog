@@ -4,13 +4,7 @@
 @include('partials.head', ['title' => 'Log'])
 
 <body>
-    <div class="container d-flex justify-content-between align-items-center">
-        <h1 class="mt-2">{{ $name }}</h1>
-        <!-- Logout Button -->
-        <div class="d-flex justify-content-end">
-            <a href="/logout" class="btn btn-outline-danger">Logout</a>
-        </div>
-    </div>
+    @include('partials.log_header', ['name' => $name, 'worker_id' => $user_id])
 
     <div id="form-errors" class="container mt-3 success-message">
         <div class="alert alert-success" role="alert">

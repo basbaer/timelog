@@ -39,7 +39,7 @@ return [
     'edit_entry' => 'Eintrag löschen und neu erstellen',
     'all' => 'Alle',
     'project' => 'Projekt',
-    'print_view' => 'Druckansicht',
+    'print_view' => 'Anzeigen',
     'print_prepare' => 'Druckansicht vorbereiten',
     'load_older_projects' => 'Ältere Projekte laden',
     'loading' => 'Lädt...',
@@ -52,4 +52,5 @@ return [
     'print' => 'Drucken',
     'worker' => 'Arbeiter',
     'back' => 'Zurück',
+    'overview_hours' => 'Stundenübersicht',
 ];

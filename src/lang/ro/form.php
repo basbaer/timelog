@@ -37,7 +37,7 @@ return [
     'edit_entry' => 'Ștergeți înregistrarea și creați una nouă',
     'all' => 'Toate',
     'project' => 'Proiect',
-    'print_view' => 'Vizualizare tipărire',
+    'print_view' => 'Vizualizare',
     'print_prepare' => 'Pregătire vizualizare tipărire',
     'load_older_projects' => 'Încarcă proiecte mai vechi',
     'loading' => 'Se încarcă...',
@@ -48,5 +48,5 @@ return [
     'print' => 'Tipărește',
     'worker' => 'Muncitor',
     'back' => 'Înapoi',
-
+    'overview_hours' => 'Prezentare generală a orelor de lucru', 
 ];
