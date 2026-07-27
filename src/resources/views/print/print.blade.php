@@ -110,7 +110,7 @@
         </div>
         @if ($timeframe !== 'whole')
             <div>
-                {{ __('form.timeframe') }}: {{ $timeframe }}
+                {{ __('form.timeframe') }}: {{ $month }}
             </div>
         @endif
     </div>

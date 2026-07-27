@@ -77,7 +77,13 @@ class PrintController extends Controller
         $month = request()->query('month');
         $fromDate = $this->getFromDate($timeframe, $month);
         $toDate = $this->getToDate($timeframe, $month);
-        
+        // Convert month into format "mm/yy" for display
+        if ($timeframe === 'month' && $month) {
+            $monthYear = explode('-', $month);
+            $year = $monthYear[0];
+            $month = $monthYear[1];
+            $month = sprintf('%02d/%02d', $month, $year % 100); // Format as "mm/yy"
+        }
 
         $role = $worker->role->slug;
         $workTypeForstwirt = request()->query('work-type-forstwirt');
@@ -114,6 +120,7 @@ class PrintController extends Controller
             'tableHeaders' => $tableHeaders,
             'hasMultipleLogTypes' => $hasMultipleLogTypes,
             'timeframe' => $timeframe,
+            'month' => $month,
         ]);
     }
 
