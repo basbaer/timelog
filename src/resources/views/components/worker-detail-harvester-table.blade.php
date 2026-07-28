@@ -1,4 +1,4 @@
-@props(['log_entries', 'worker_id'])
+@props(['log_entries', 'worker_id', 'isAdmin' => true])
 
 <div class="container-fluid justify-content-center d-flex">
     <div class="mx-auto">BS = Betriebsstunden, FM = Festmeter</div>
@@ -76,16 +76,18 @@
                     <div class="col-1">{{ $entry->fm_amount }}</div>
                     <div class="col-1">{{ $entry->fm_total }}</div>
                     <div class="col-1">{{ $entry->fm_day }}</div>
-                    <div class="col-1 d-flex justify-content-center align-items-center ">
-                        <form
-                            action="{{ route('admin.worker.log.delete', ['worker_id' => $worker_id, 'log_id' => $entry->id]) }}"
-                            method="POST" class="my-auto">
-                            @csrf
-                            @method('DELETE')
-                            <input type="hidden" name="delete_type" value="harvester">
-                            <button type="submit" class="btn btn-danger btn-sm p-0">Löschen</button>
-                        </form>
-                    </div>
+                    @if ($isAdmin)
+                        <div class="col-1 d-flex justify-content-center align-items-center ">
+                            <form
+                                action="{{ route('admin.worker.log.delete', ['worker_id' => $worker_id, 'log_id' => $entry->id]) }}"
+                                method="POST" class="my-auto">
+                                @csrf
+                                @method('DELETE')
+                                <input type="hidden" name="delete_type" value="harvester">
+                                <button type="submit" class="btn btn-danger btn-sm p-0">Löschen</button>
+                            </form>
+                        </div>
+                    @endif
                 </div>
 
                 <div class="row">
@@ -98,10 +100,10 @@
             @if ($entry->working_type_name !== 'harvester')
                 @if ($lastTableHeadIsHarvester === null || $lastTableHeadIsHarvester)
                     <x-worker-detail-forstwirt-table :log_entries="[$entry]" :worker_id="$worker_id" :show_partial_headers="$lastTableHeadIsHarvester === null"
-                        :show_header_row="true" />
+                        :show_header_row="true" :isAdmin="$isAdmin"/>
                     @php($lastTableHeadIsHarvester = false)
                 @else
-                    <x-worker-detail-forstwirt-table :log_entries="[$entry]" :worker_id="$worker_id" :show_header_row="false" />
+                    <x-worker-detail-forstwirt-table :log_entries="[$entry]" :worker_id="$worker_id" :show_header_row="false" :isAdmin="$isAdmin"/>
                 @endif
             @endif
         @endforeach

@@ -1,9 +1,4 @@
-@props([
-    'log_entries',
-    'worker_id',
-    'show_partial_headers' => true,
-    'show_header_row' => true,
-])
+@props(['log_entries', 'worker_id', 'show_partial_headers' => true, 'show_header_row' => true, 'isAdmin' => true])
 
 @if ($show_header_row)
     <div class="row">
@@ -65,17 +60,20 @@
         <div class="col-2">{{ $row->project_client }} ({{ $row->project_location }})</div>
         <div class="col-1">{{ $row->working_type_name }}</div>
 
-        <div class="col-3">{{ $row->comment }}</div>
+        <div class="col">{{ $row->comment }}</div>
 
-        <div class="col-1 d-flex justify-content-center align-items-center ">
-            <form action="{{ route('admin.worker.log.delete', ['worker_id' => $worker_id, 'log_id' => $row->id]) }}" method="POST"
-                class="my-auto">
-                @csrf
-                @method('DELETE')
-                <input type="hidden" name="delete_type" value="forstwirt">
-                <button type="submit" class="btn btn-danger btn-sm p-0">Löschen</button>
-            </form>
-        </div>
+        @if ($isAdmin)
+            <div class="col-1 d-flex justify-content-center align-items-center ">
+                <form
+                    action="{{ route('admin.worker.log.delete', ['worker_id' => $worker_id, 'log_id' => $row->id]) }}"
+                    method="POST" class="my-auto">
+                    @csrf
+                    @method('DELETE')
+                    <input type="hidden" name="delete_type" value="forstwirt">
+                    <button type="submit" class="btn btn-danger btn-sm p-0">Löschen</button>
+                </form>
+            </div>
+        @endif
 
     </div>
 @endforeach
