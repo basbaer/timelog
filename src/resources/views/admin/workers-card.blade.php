@@ -43,7 +43,7 @@
         </div>
     </div>
     <div class="container mt-3 d-flex justify-content-center">
-        <a href="{{ route('admin.worker.show', ['worker_id' => $worker_id]) }}" type="button" class="btn btn-primary">Zurück zur
+        <a href="{{ route('worker.show', ['worker_id' => $worker_id]) }}" type="button" class="btn btn-primary">Zurück zur
             Stundenübersicht</a>
     </div>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>

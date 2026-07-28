@@ -4,7 +4,6 @@
 @include('partials.head', ['title' => 'Dashboard', 'withBootstrapIcons' => true])
 
 <body>
-    @include('partials.admin_navbar', ['active' => 'workers'])
 
     @include('partials.worker-detail-top', [
         'name' => $name,
@@ -34,13 +33,10 @@
     @endif
     <div class="container-fluid px-3 mb-3 ms-2">
         <div class="position-relative d-flex row w-100">
-            <a href="{{ route('admin.workers.overview') }}" role="button" class="btn btn-secondary col-auto me-auto">
-                Zurück zur Übersicht</a>
+            <a href="{{ route('login') }}" role="button" class="btn btn-secondary col-auto me-auto">
+                {{ __('form.back') }}</a>
             <a href="{{ route('workers.preparePrint', ['worker_id' => $worker_id, 'project' => $selectedProject]) }}" role="button" class="btn btn-success col-auto me-auto">
                 Drucken</a>
-            <a href="{{ route('admin.worker.log.create', ['worker_id' => $worker_id]) }}" role="button"
-                class="btn btn-primary col-auto">Eintrag hinzufügen</a>
-            
         </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>

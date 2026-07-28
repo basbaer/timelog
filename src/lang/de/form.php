@@ -53,4 +53,5 @@ return [
     'worker' => 'Arbeiter',
     'back' => 'Zurück',
     'overview_hours' => 'Stundenübersicht',
+    'settings' => 'Einstellungen',
 ];

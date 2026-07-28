@@ -49,4 +49,5 @@ return [
     'worker' => 'Muncitor',
     'back' => 'Înapoi',
     'overview_hours' => 'Prezentare generală a orelor de lucru', 
+    'settings' => 'Setări',
 ];

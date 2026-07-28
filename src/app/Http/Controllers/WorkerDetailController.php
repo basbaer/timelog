@@ -8,6 +8,7 @@ use App\Services\ProjectService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class WorkerDetailController extends Controller
 {
@@ -57,7 +58,12 @@ class WorkerDetailController extends Controller
                 $logEntries = $this->workerLogService->getLogsFor($worker, $first_of_current_month, $last_of_current_month);
             }
 
-            return view('admin/workers-detail', [
+             /** @var \App\Models\User $user */
+            $user = Auth::user();
+            $isAdmin = $user->isAdmin();
+            $view = $isAdmin ? 'admin/workers-detail' : 'workers-detail';
+
+            return view($view, [
                 'name' => $worker->first_name . ' ' . $worker->last_name,
                 'worker_id' => $worker->id,
                 'role' => $worker->role->slug,
@@ -67,6 +73,7 @@ class WorkerDetailController extends Controller
                 'month' => $month,
                 'previousMonth' => $previousMonth,
                 'nextMonth' => $nextMonth,
+                'isAdmin' => $isAdmin,
             ]);
         } catch (ModelNotFoundException $e) {
             // Handle the case where the worker is not found

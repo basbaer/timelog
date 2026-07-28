@@ -14,6 +14,7 @@ use App\Http\Controllers\Projects\OverviewProjectController;
 use App\Http\Controllers\Projects\ProjectDetailController;
 use App\Http\Controllers\WorkerCardController;
 use App\Http\Controllers\WorkerDetailController;
+use App\Http\Controllers\WorkerSettingsController;
 use App\Http\Controllers\WorkersOverviewController;
 use App\Http\Middleware\Admin;
 use App\Http\Middleware\Forstwirt;
@@ -143,6 +144,8 @@ Route::middleware([IsLoggedIn::class])->group(function () {
 
     // Show working hours overview for a specific worker
     Route::get('/workers/{worker_id}', [WorkerDetailController::class, 'show'])->name('worker.show');
+
+    Route::get('/workers/{worker_id}/settings', [WorkerSettingsController::class, 'show'])->name('worker.settings');
 });
 
 // =================================================================================
