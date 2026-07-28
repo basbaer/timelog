@@ -50,4 +50,5 @@ return [
     'back' => 'Înapoi',
     'overview_hours' => 'Prezentare generală a orelor de lucru', 
     'settings' => 'Setări',
+    'save_entry' => 'Salvează intrarea'
 ];

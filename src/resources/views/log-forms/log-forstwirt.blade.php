@@ -68,7 +68,7 @@
         </div>
 
         <div class="container d-flex justify-content-center">
-            <button class="btn btn-success my-3" type="submit">Eintrag speichern</button>
+            <button class="btn btn-success my-3" type="submit">{{ __('form.save_entry') }}</button>
         </div>
     </form>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>

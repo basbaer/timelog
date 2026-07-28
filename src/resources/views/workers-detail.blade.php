@@ -36,7 +36,7 @@
             <a href="{{ route('login') }}" role="button" class="btn btn-secondary col-auto me-auto">
                 {{ __('form.back') }}</a>
             <a href="{{ route('workers.preparePrint', ['worker_id' => $worker_id, 'project' => $selectedProject]) }}" role="button" class="btn btn-success col-auto me-auto">
-                Drucken</a>
+                {{ __('form.print') }}</a>
         </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>

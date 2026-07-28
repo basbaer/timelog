@@ -54,4 +54,5 @@ return [
     'back' => 'Zurück',
     'overview_hours' => 'Stundenübersicht',
     'settings' => 'Einstellungen',
+    'save_entry' => 'Eintrag speichern'
 ];
