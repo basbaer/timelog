@@ -48,7 +48,7 @@
         {{-- ================= ZEITRAUM-AUSWAHL ================= --}}
 
         <div class="container my-3 px-0">
-            <label class="form-label d-block">{{ __('form.timeframe') }}</label>
+            <h5 class="form-label d-block">{{ __('form.timeframe') }}</h5>
 
             <div class="form-check">
                 <input class="form-check-input" type="radio" name="timeframe" id="timeframe-whole" value="whole"
@@ -75,14 +75,14 @@
                 <p id="work-type-warning" class="text-danger d-none">{{ __('form.work_type_warning') }}</p>
                 <div class="form-check">
                     @php $role = $worker->role->slug @endphp
-                    <input class="form-check-input work-type-checkbox" type="checkbox" name="work-type-{{ $role }}" id="work-type-{{ $role }}"
-                        value="true" checked>
+                    <input class="form-check-input work-type-checkbox" type="radio" name="work-type" id="work-type-{{ $role }}"
+                        value="{{ $role }}" checked>
                     <label class="form-check-label" for="work-type-{{ $role }}">
                         {{ __('form.' . $role) }}
                     </label>
                 </div>
                 <div class="form-check">
-                    <input class="form-check-input work-type-checkbox" type="checkbox" name="work-type-forstwirt" id="work-type-forstwirt" value="true" checked>
+                    <input class="form-check-input work-type-checkbox" type="radio" name="work-type" id="work-type-forstwirt" value="forstwirt">
                     <label class="form-check-label" for="work-type-forstwirt">
                         {{ __('form.forstwirt') }}
                     </label>
@@ -98,7 +98,7 @@
     </form>
 
     <div class="d-flex justify-content-center m-3">
-        <a href="{{ route('admin.worker.show', [$worker->id]) }}" class="btn btn-secondary">{{ __('form.back') }}</a>
+        <a href="{{ route('worker.show', [$worker->id]) }}" class="btn btn-secondary">{{ __('form.back') }}</a>
     </div>
 
     <script>

@@ -116,35 +116,31 @@
     </div>
 
     @php
-        $role = $logTypes->first();
+        $role = $logType;
         $worker_id = $worker->id;
     @endphp
 
-    @if (!$hasMultipleLogTypes)
-        <table>
-            <thead>
-                <tr>
-                    @foreach ($tableHeaders->get($role) as $header)
-                        <th>{{ $header }}</th>
-                    @endforeach
-                </tr>
-            </thead>
 
-            <tbody>
-                @foreach ($logs as $log)
+    <table>
+        <thead>
+            <tr>
+                @foreach ($tableHeaders->get($role) as $header)
+                    <th>{{ $header }}</th>
+                @endforeach
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach ($logs as $log)
                 <tr>
                     @foreach ($tableHeaders->get($role) as $header => $headerLabel)
                         <td>{{ $log->$header }}</td>
                     @endforeach
-                    </tr>
-                @endforeach
-            </tbody>
+                </tr>
+            @endforeach
+        </tbody>
 
-        </table>
-
-
-    @endif
-
+    </table>
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"

@@ -18,7 +18,7 @@ class PrintController extends Controller
     public function preparePrint(int $worker_id)
     {
         $worker = User::findOrFail($worker_id);
-        
+
         // loads all the project that were open at some point in the current month
         $projects = $this->projectService->getOpenProjects($worker_id, now()->startOfMonth()->toDateString(), now()->endOfMonth()->toDateString());
 
@@ -38,25 +38,24 @@ class PrintController extends Controller
         $project = $request->input('project');
         $timeframe = $request->input('timeframe');
         $month = $request->input('month');
-        $role = $worker->role->slug;
-        $workTypeForstwirt = $request->input('work-type-forstwirt');
-        $workTypeOther = $request->input('work-type-' . $role);
+        $workType = $request->input('work-type');
+        if (!$workType) {
+            $workType = 'forstwirt'; // Default to 'forstwirt' if no work type is selected
+        }
 
-        return redirect()->route('print.show', ['worker_id' => $worker->id, 
-        'project' => $project, 
-        'timeframe' => $timeframe, 
-        'month' => $month,
-        'work-type-forstwirt' => $workTypeForstwirt,
-        'work-type-' . $role => $workTypeOther
-    ]);
-
-        
+        return redirect()->route('print.show', [
+            'worker_id' => $worker->id,
+            'project' => $project,
+            'timeframe' => $timeframe,
+            'month' => $month,
+            'work-type' => $workType,
+        ]);
     }
 
     public function loadClosedProjects(Request $request, int $worker_id)
     {
         $worker = User::findOrFail($worker_id);
-        
+
         // loads all the closed projects for the worker
         $closedProjects = $this->projectService->getClosedProjects($worker->id);
 
@@ -65,8 +64,9 @@ class PrintController extends Controller
         ]);
     }
 
-    public function print(int $worker_id){
-        
+    public function print(int $worker_id)
+    {
+
         $worker = User::findOrFail($worker_id);
 
         $project = request()->query('project');
@@ -86,39 +86,24 @@ class PrintController extends Controller
         }
 
         $role = $worker->role->slug;
-        $workTypeForstwirt = request()->query('work-type-forstwirt');
-        $workTypeOther = request()->query('work-type-' . $role);
+        $workType = request()->query('work-type');
 
-        $logTypes = collect();
-        if ($role === 'forstwirt' || $workTypeForstwirt) {
-            $logTypes->push('forstwirt');
-        }
 
-        if ($workTypeOther) {
-            $logTypes->push($role);
-        }
+        $logTypes = collect([$workType]);
 
         $logs = $this->workerLogService->getLogsFor($worker, $fromDate, $toDate, $projectId)
             ->filter(function ($log) use ($logTypes) {
                 return $logTypes->contains($log->entry_label);
             });
-        
 
-        $hasMultipleLogTypes = false;
-        //check if the collection has more than one entry
-        if ($logTypes->count() > 1) {
-            $hasMultipleLogTypes = true;
-        }
-
-        $tableHeaders = $this->getTableHeaders($logTypes, $projectId);
+        $tableHeaders = $this->getTableHeaders($workType, $projectId);
 
         return view('print/print', [
             'worker' => $worker,
             'project' => $project,
             'logs' => $logs,
-            'logTypes' => $logTypes,
+            'logType' => $workType,
             'tableHeaders' => $tableHeaders,
-            'hasMultipleLogTypes' => $hasMultipleLogTypes,
             'timeframe' => $timeframe,
             'month' => $month,
         ]);
@@ -128,7 +113,7 @@ class PrintController extends Controller
     {
         if (!is_numeric($project)) {
             $projectId = null; // Set to null to indicate all projects
-        }else{
+        } else {
             $projectId = (int) $project;
         }
         return $projectId;
@@ -162,18 +147,17 @@ class PrintController extends Controller
         return null;
     }
 
-    private function getTableHeaders(Collection $logTypes, ?int $projectId): Collection
+    private function getTableHeaders(string $logType, ?int $projectId): Collection
     {
         $headers = collect();
-        foreach ($logTypes as $logType) {
-            $headers->put($logType, collect($this->workerLogService->getPrintTableHeadersFor($logType)));
 
-            if ($projectId !== null) {
-                // Remove the 'title' header if a specific project is selected
-                $headers->get($logType)->forget('title');
-            }
+        $headers->put($logType, collect($this->workerLogService->getPrintTableHeadersFor($logType)));
+
+        if ($projectId !== null) {
+            // Remove the 'title' header if a specific project is selected
+            $headers->get($logType)->forget('title');
         }
+
         return $headers;
     }
 }
-

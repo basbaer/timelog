@@ -47,7 +47,7 @@ return [
     'whole_project' => 'Gesamtes Projekt',
     'specific_month' => 'Bestimmter Monat',
     'forstwirt' => 'Forstwirt',
-    'work_types' => 'Arbeitsarten',
+    'work_types' => 'Arbeitsart',
     'work_type_warning' => 'Bitte wähle mindestens eine Arbeitsart aus.',
     'print' => 'Drucken',
     'worker' => 'Arbeiter',
