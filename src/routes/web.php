@@ -110,9 +110,6 @@ Route::middleware(Admin::class)->prefix('admin')->group(function () {
         return view('admin/auth/workers-add-success');
     });
 
-    // Show worker details
-    Route::get('/workers/{worker_id}', [WorkerDetailController::class, 'show'])->name('admin.worker.show');
-
     // Delete log entry for worker
     Route::delete('/workers/{worker_id}/log/{log_id}/delete', [WorkerDetailController::class, 'deleteLog'])->name('admin.worker.log.delete');
 
@@ -143,6 +140,9 @@ Route::middleware([IsLoggedIn::class])->group(function () {
     
     Route::get('/workers/{worker_id}/print/', [PrintController::class, 'print'])
         ->name('print.show');
+
+    // Show working hours overview for a specific worker
+    Route::get('/workers/{worker_id}', [WorkerDetailController::class, 'show'])->name('worker.show');
 });
 
 // =================================================================================
