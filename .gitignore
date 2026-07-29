@@ -4,3 +4,4 @@ node_modules/
 dbdata/
 src/public/media/
 .vscode/
+docker/php/
