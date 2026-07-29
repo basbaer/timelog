@@ -6,3 +6,4 @@ src/public/media/
 .vscode/
 docker/php/
 docker-compose.yaml
+cgi-bin/
