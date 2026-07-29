@@ -5,3 +5,4 @@ dbdata/
 src/public/media/
 .vscode/
 docker/php/
+docker-compose.yaml
