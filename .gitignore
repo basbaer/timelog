@@ -6,6 +6,7 @@ src/public/media/
 .vscode/
 docker/php/
 docker-compose.yaml
+cgi-bin/
 *.log
 .DS_Store
 .env.backup
