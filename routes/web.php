@@ -24,12 +24,6 @@ use App\Http\Middleware\IsLoggedIn;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/play', function () {
-    return session()->all();
-});
-
-
-
 //==== Locale Settings ================================================
 
 Route::get('/language/{locale?}', function ($locale) {
@@ -64,11 +58,12 @@ Route::get('/activate', [ActivationController::class, 'show'])->name('activate')
 // Handle activation form submission
 Route::post('/activate', [ActivationController::class, 'activate']);
 
+Route::get('/password-reset', [ActivationController::class, 'showPasswordResetForm'])->name('password-reset');
 //================================================================================
 
 
 
-//==== Logout Route =============================================================
+//==== Logout Route ==============================================================
 Route::get('/logout', LogoutController::class)->middleware('auth');
 
 

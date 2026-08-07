@@ -25,5 +25,6 @@ return [
     'hint_activation_code' => 'Geben Sie Ihren Aktivierungscode ein',
     'hint_password_confirmation' => 'Bestätigen Sie Ihr Passwort',
     'link_login_password' => 'Mit Passwort anmelden',
+    'link_password_reset' => 'Passwort zurücksetzen',
 
 ];

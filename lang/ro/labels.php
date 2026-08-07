@@ -25,5 +25,6 @@ return [
     'hint_activation_code' => 'Introduceți codul de activare',
     'hint_password_confirmation' => 'Confirmați parola',
     'link_login_password' => 'Autentificare cu parolă',
+    'link_password_reset' => 'Resetați parola',
 
 ];
