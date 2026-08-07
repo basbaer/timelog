@@ -22,6 +22,12 @@ class AppServiceProvider extends ServiceProvider
     {
         Model::shouldBeStrict(! app()->isProduction());
         Model::unguard();
+
+        $compiledViewPath = config('view.compiled');
+        if (is_string($compiledViewPath) && ! is_dir($compiledViewPath)) {
+            @mkdir($compiledViewPath, 0777, true);
+        }
+
         view()->composer('partials.language_switcher', function ($view) {
         $view->with('current_locale', app()->getLocale());
         $view->with('available_locales', config('app.available_locales'));
