@@ -51,4 +51,9 @@ class ActivationController extends Controller
         }
         
     }
+
+    public function showPasswordResetForm(): View
+    {
+        return view('passwordResetForm');
+    }
 }

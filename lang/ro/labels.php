@@ -26,5 +26,6 @@ return [
     'hint_password_confirmation' => 'Confirmați parola',
     'link_login_password' => 'Autentificare cu parolă',
     'link_password_reset' => 'Resetați parola',
+    'link_password_reset_text'=> 'Dacă faceți clic pe „Trimite”, parola dvs. va fi resetată și se va genera un nou cod de activare. Vă rugăm să îl contactați pe August Schweitzer pentru a-l primi.'
 
 ];

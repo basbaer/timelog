@@ -26,5 +26,6 @@ return [
     'hint_password_confirmation' => 'Bestätigen Sie Ihr Passwort',
     'link_login_password' => 'Mit Passwort anmelden',
     'link_password_reset' => 'Passwort zurücksetzen',
+    'link_password_reset_text' => 'Wenn Sie auf Absenden klicken, wird ihr Passwort zurückgesetzt und ein neuer Aktivierungscode erstellt. Wenden Sie sich an August Schweitzer, um diesen zu erhalten.',
 
 ];
