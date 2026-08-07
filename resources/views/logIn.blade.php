@@ -62,7 +62,7 @@
             </div>
 
             <div class="mt-3 text-center">
-                <a href="/activate" class="text-decoration-none">{{ __('labels.link_activation_code') }}</a>
+                <a href="{{ route('activate') }}" class="text-decoration-none">{{ __('labels.link_activation_code') }}</a>
             </div>
         </form>
         

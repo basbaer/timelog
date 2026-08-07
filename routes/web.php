@@ -46,7 +46,7 @@ Route::get('/language/{locale?}', function ($locale) {
 
 
 //==== Log in / Activation Routes ================================================
-
+// If no user exists in the database, a form is shown to register the admin
 Route::post('/createAdmin/request', [AddWorkerController::class, 'createUser']);
 
 // Show success page after creating new admin
@@ -59,7 +59,7 @@ Route::get('/', [LoginController::class, 'show'])->name('login');
 Route::post('/login', [LoginController::class, 'login']);
 
 // Activation route for users with an activation code
-Route::get('/activate', [ActivationController::class, 'show']);
+Route::get('/activate', [ActivationController::class, 'show'])->name('activate');
 
 // Handle activation form submission
 Route::post('/activate', [ActivationController::class, 'activate']);
