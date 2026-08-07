@@ -20,7 +20,7 @@
 @include('partials.head', ['title' => 'Gustl Schweitzer', 'withBootstrapIcons' => true])
 
 <body>
-    <div class="container d-flex justify-content-center align-items-center" style="height: 100vh; padding-bottom: 150px;">
+    <div class="container d-flex justify-content-center align-items-center" style="height: 90vh; padding-bottom: 150px;">
         <div class="card p-4 m" style="min-width: 300px; max-width: 400px; width: 100%;">
             <h3 class="card-title text-center mb-2">{{ __('labels.login') }}</h3>
             @include('partials/language_switcher')
@@ -96,7 +96,9 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous">
     </script>
-
+    <footer class="mt-4 pt-3 text-center small">
+        <a href="{{ route('impressum') }}" class="text-decoration-none text-secondary">Impressum</a>
+    </footer>
 </body>
 
 </html>

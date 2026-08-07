@@ -68,7 +68,9 @@ Route::post('/password-reset', [ActivationController::class, 'resetPassword'])->
 //==== Logout Route ==============================================================
 Route::get('/logout', LogoutController::class)->middleware('auth')->name('logout');
 
-
+Route::get('/impressum', function () {
+    return view('impressum');
+})->name('impressum');
 
 // ==== Admin Routes =============================================================
 
