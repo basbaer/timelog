@@ -87,7 +87,7 @@
                                         <input type="number" id="bs_start-{{ $loop->index }}" class="form-control"
                                             name="work_logs[{{ $project->id }}][bs_start]" step="0.01" inputmode="decimal"
                                             value="{{ old("work_logs.$project->id.bs_start") }}"
-                                            placeholder="Stand: {{ $projects[$project->id]['last_bs'] }}">
+                                            placeholder="Letzer Stand dieses Projekt: {{ $projects[$project->id]['last_bs'] }}">
                                     </div>
 
                                     <div class="col-5 ps-1">
