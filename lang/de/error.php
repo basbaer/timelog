@@ -6,5 +6,6 @@ return [
     'invalid_activation_code' => 'Ungültiger Aktivierungscode oder Benutzername. Bitte versuche es erneut.',
     'user_not_found' => 'Benutzer nicht gefunden. Bitte überprüfe deinen Benutzernamen und versuche es erneut.',
     'password_reset_success' => 'Dein Passwort wurde erfolgreich zurückgesetzt.',
+    'old_password_incorrect' => 'Das alte Passwort ist nicht korrekt. Bitte versuche es erneut.',
 ];
 ?>

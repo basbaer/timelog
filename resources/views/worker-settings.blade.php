@@ -17,6 +17,11 @@
                     @endforeach
                 </ul>
             </div>
+
+        @elseif (session('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
         @endif
         <form action="{{ route('worker.password.change', ['worker_id' => $worker_id]) }}" method="POST">
             @csrf

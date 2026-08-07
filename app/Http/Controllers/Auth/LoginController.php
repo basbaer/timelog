@@ -51,7 +51,7 @@ class LoginController extends Controller
  
         // If login fails, redirect back with error
         return back()
-            ->withErrors(['invalid_credentials' => 'The provided credentials do not match our records.'])
+            ->withErrors(['invalid_credentials' => __('error.invalid_credentials')])
             ->onlyInput('username');
     }
 
