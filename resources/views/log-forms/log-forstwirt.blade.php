@@ -11,7 +11,15 @@
     <form id="forstwirt-log-form" class="container" method="POST" action="{{ route('log.forstwirt.store') }}">
         @csrf
         <input type="hidden" name="user_id" value="{{ $user_id }}">
+        @if (!empty($editingLogId))
+            <input type="hidden" name="edit_log_id" value="{{ $editingLogId }}">
+        @endif
+        @if (!empty($editingLogDate))
+            <input type="hidden" name="edit_log_date" value="{{ $editingLogDate }}">
+        @endif
         @php
+            $prefill = $prefill ?? [];
+            $editingProjectId = $editingProjectId ?? null;
             $workTypes = [
                 'motorsage' => __('form.motorsage'),
                 'freischneider' => __('form.freischneider'),
@@ -26,28 +34,28 @@
         <div class="container my-3 px-0">
             <label for="date" class="form-label">{{ __('form.date') }}</label>
             <input id="date" name="log_date" class="form-control" type="date" lang="de"
-                value="{{ old('log_date', $today) }}" @unless ($isAdmin) readonly @endunless />
+                value="{{ old('log_date', data_get($prefill, 'log_date', $today)) }}" @unless ($isAdmin) readonly @endunless />
         </div>
 
         <div class="accordion" id="accordionProjects">
             @foreach ($projects as $project)
+                @php($isEditingProject = (int) $editingProjectId === (int) $project->id)
                 <div class="accordion-item">
                     <h2 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                            data-bs-target="#collapse{{ $loop->index }}" aria-expanded="false"
+                        <button class="accordion-button @if (!$isEditingProject) collapsed @endif" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#collapse{{ $loop->index }}" aria-expanded="{{ $isEditingProject ? 'true' : 'false' }}"
                             aria-controls="collapse{{ $loop->index }}">
                             {{ $project->location }} | {{ $project->date->format('m/Y') }} | {{ $project->client }}
                         </button>
                     </h2>
-                    <div id="collapse{{ $loop->index }}" class="accordion-collapse collapse"
+                    <div id="collapse{{ $loop->index }}" class="accordion-collapse collapse @if ($isEditingProject) show @endif"
                         data-bs-parent="#accordionProjects">
-
                         <div class="accordion-body px-2">
                             <div id="work-type-entries-{{ $loop->index }}">
                                 @for ($entryIndex = 0; $entryIndex < $workTypeCount; $entryIndex++)
                                     <x-forstwirt-work-type :project-index="$loop->index" :project-id="$project->id"
                                         :entry-index="$entryIndex" :work-types="$workTypes"
-                                        :hidden="$entryIndex > 0" />
+                                        :hidden="$entryIndex > 0" :prefill="$prefill" />
                                 @endfor
                             </div>
 
@@ -61,7 +69,6 @@
                                 </button>
                             </div>
                         </div>
-
                     </div>
                 </div>
             @endforeach

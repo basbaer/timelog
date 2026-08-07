@@ -64,6 +64,24 @@ class RueckezugLogService extends BaseLogService
         return $lastLog;
     }
 
+    public function updateLog(RueckezugLog $log, array $logData): RueckezugLog
+    {
+        $log->project_id = $logData['project_id'];
+        $log->date = $logData['date'];
+        $log->start = $logData['start'] ?? null;
+        $log->end = $logData['end'] ?? null;
+        $log->sum = $logData['sum'] ?? null;
+        $log->pause = $logData['pause'] ?? 0;
+        $log->bs_from = $logData['bs_start'] ?? null;
+        $log->bs_to = $logData['bs_end'] ?? null;
+        $log->bs_diff = $logData['bs_diff'] ?? null;
+        $log->loadings = $logData['loadings'] ?? null;
+        $log->average_distance = $logData['average_distance'] ?? null;
+        $log->save();
+
+        return $log;
+    }
+
     public function loadSuccessLogs(int $userId, string $date): Collection
     {
         $rueckezugLogs = RueckezugLog::with(['project'])

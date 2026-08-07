@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ForstwirtLog;
+use App\Models\HarvesterLog;
+use App\Models\RueckezugLog;
 use App\Models\User;
 use App\Services\WorkerLogService;
 use App\Services\ProjectService;
@@ -134,6 +137,43 @@ class WorkerDetailController extends Controller
             return redirect()->route('admin.worker.show', ['worker_id' => $worker_id])->with('success', 'Log entry deleted successfully.');
         } catch (\Exception $e) {
             return redirect()->route('admin.worker.show', ['worker_id' => $worker_id])->with('error', 'Failed to delete log entry.');
+        }
+    }
+
+    public function editLog(Request $request, int $worker_id, int $log_id)
+    {
+        try {
+            $worker = User::findOrFail($worker_id);
+
+            $logType = $request->input('log_type');
+
+            $clickedLog = match ($logType) {
+                'harvester' => HarvesterLog::find($log_id),
+                'rueckezug' => RueckezugLog::find($log_id),
+                'forstwirt' => ForstwirtLog::find($log_id),
+                default => HarvesterLog::find($log_id)
+                    ?? RueckezugLog::find($log_id)
+                    ?? ForstwirtLog::find($log_id),
+            };
+
+            if (! $clickedLog || (int) $clickedLog->user_id !== (int) $worker->id) {
+                return redirect()->route('admin.worker.show', ['worker_id' => $worker_id])
+                    ->with('error', 'Log entry not found.');
+            }
+
+            $routeName = match (class_basename($clickedLog)) {
+                'HarvesterLog' => 'log.harvester.edit',
+                'RueckezugLog' => 'log.rueckezug.edit',
+                default => 'log.forstwirt.edit',
+            };
+
+            return redirect()->route($routeName, [
+                'user_id' => $worker_id,
+                'edit_log_id' => $clickedLog->id,
+                'log_id' => $clickedLog->id,
+            ]);
+        } catch (ModelNotFoundException $e) {
+            return redirect()->route('admin.workers.overview')->with('error', 'Worker not found.');
         }
     }
 }

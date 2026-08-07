@@ -111,6 +111,9 @@ Route::middleware(Admin::class)->prefix('admin')->group(function () {
     // Delete log entry for worker
     Route::delete('/workers/{worker_id}/log/{log_id}/delete', [WorkerDetailController::class, 'deleteLog'])->name('admin.worker.log.delete');
 
+    // Open the corresponding log form in edit mode
+    Route::get('/workers/{worker_id}/log/{log_id}/edit', [WorkerDetailController::class, 'editLog'])->name('admin.worker.log.edit');
+
     // Show worker details for printing
     Route::get('/workers/{worker_id}/print/{project}', [WorkerDetailController::class, 'print'])->name('workers.print');
 
@@ -154,8 +157,16 @@ Route::get('/log-forstwirt/{user_id?}', [ForstwirtLogController::class, 'show'])
     ->name('log.forstwirt')
     ->middleware([Forstwirt::class]);
 
+Route::get('/log-forstwirt/{user_id}/edit/{log_id}', [ForstwirtLogController::class, 'edit'])
+    ->name('log.forstwirt.edit')
+    ->middleware([Forstwirt::class]);
+
 Route::post('/log-forstwirt', [ForstwirtLogController::class, 'store'])
     ->name('log.forstwirt.store')
+    ->middleware([Forstwirt::class]);
+
+Route::put('/log-forstwirt/{user_id}/edit/{log_id}', [ForstwirtLogController::class, 'update'])
+    ->name('log.forstwirt.update')
     ->middleware([Forstwirt::class]);
 
 Route::get('/log-forstwirt/{worker_id}/success', [ForstwirtLogController::class, 'success'])
@@ -172,7 +183,11 @@ Route::delete('/log-forstwirt/{worker_id}/delete', [ForstwirtLogController::clas
 Route::middleware(Harvester::class)->group(function () {
     Route::get('/log-harvester/{user_id?}', [HarvesterLogController::class, 'show'])->name('log.harvester');
 
+    Route::get('/log-harvester/{user_id}/edit/{log_id}', [HarvesterLogController::class, 'edit'])->name('log.harvester.edit');
+
     Route::post('/log-harvester', [HarvesterLogController::class, 'store'])->name('log.harvester.store');
+
+    Route::put('/log-harvester/{user_id}/edit/{log_id}', [HarvesterLogController::class, 'update'])->name('log.harvester.update');
 
     Route::get('/log-harvester/{worker_id}/success', [HarvesterLogController::class, 'success'])->name('log.harvester.success');
 
@@ -185,7 +200,11 @@ Route::middleware(Harvester::class)->group(function () {
 Route::middleware(Rueckezug::class)->group(function () {
     Route::get('/log-rueckezug/{user_id?}', [RueckezugLogController::class, 'show'])->name('log.rueckezug');
 
+    Route::get('/log-rueckezug/{user_id}/edit/{log_id}', [RueckezugLogController::class, 'edit'])->name('log.rueckezug.edit');
+
     Route::post('/log-rueckezug', [RueckezugLogController::class, 'store'])->name('log.rueckezug.store');
+
+    Route::put('/log-rueckezug/{user_id}/edit/{log_id}', [RueckezugLogController::class, 'update'])->name('log.rueckezug.update');
 
     Route::get('/log-rueckezug/{worker_id}/success', [RueckezugLogController::class, 'success'])->name('log.rueckezug.success');
 

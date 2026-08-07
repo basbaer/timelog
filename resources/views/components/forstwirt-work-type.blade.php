@@ -4,12 +4,14 @@
     'entryIndex',
     'workTypes' => [],
     'hidden' => false,
+    'prefill' => [],
 ])
 
 @php
     $entryBase = "work-{$projectIndex}-{$entryIndex}";
     $entryClass = 'work-type-entry-container';
     $oldEntry = old("work_logs.$projectId.$entryIndex", []);
+    $prefillEntry = data_get($prefill, "work_logs.$projectId.$entryIndex", []);
     $hasOldEntry = is_array($oldEntry)
         && collect($oldEntry)->contains(fn ($value) => trim((string) $value) !== '');
 
@@ -28,7 +30,7 @@
                 name="work_logs[{{ $projectId }}][{{ $entryIndex }}][type]" data-project-index="{{ $projectIndex }}"
                 data-entry-index="{{ $entryIndex }}">
                 @php
-                    $selectedWorkType = old("work_logs.$projectId.$entryIndex.type", array_key_first($workTypes));
+                    $selectedWorkType = old("work_logs.$projectId.$entryIndex.type", data_get($prefillEntry, 'type', array_key_first($workTypes)));
                 @endphp
                 @foreach ($workTypes as $type => $label)
                     <option value="{{ $type }}" @selected($selectedWorkType === $type)>{{ $label }}</option>
@@ -40,35 +42,35 @@
             <label for="{{ $entryBase }}-start" class="form-label">{{ __('form.from') }}</label>
             <input type="time" id="{{ $entryBase }}-start" class="form-control"
                 name="work_logs[{{ $projectId }}][{{ $entryIndex }}][start]" lang="de-DE" step="900"
-                value="{{ old("work_logs.$projectId.$entryIndex.start") }}">
+                value="{{ old("work_logs.$projectId.$entryIndex.start", data_get($prefillEntry, 'start')) }}">
         </div>
 
         <div class="col-6 col-md-2 mb-2">
             <label for="{{ $entryBase }}-end" class="form-label">{{ __('form.to') }}</label>
             <input type="time" id="{{ $entryBase }}-end" class="form-control"
                 name="work_logs[{{ $projectId }}][{{ $entryIndex }}][end]" lang="de-DE" step="900"
-                value="{{ old("work_logs.$projectId.$entryIndex.end") }}">
+                value="{{ old("work_logs.$projectId.$entryIndex.end", data_get($prefillEntry, 'end')) }}">
         </div>
 
         <div class="col-6 col-md-2 mb-2">
             <label for="{{ $entryBase }}-pause" class="form-label">{{ __('form.pause') }}</label>
             <input type="number" id="{{ $entryBase }}-pause" class="form-control"
                 name="work_logs[{{ $projectId }}][{{ $entryIndex }}][pause]" min="0"
-                value="{{ old("work_logs.$projectId.$entryIndex.pause", 0) }}" step="15">
+                value="{{ old("work_logs.$projectId.$entryIndex.pause", data_get($prefillEntry, 'pause', 0)) }}" step="15">
         </div>
 
         <div class="col-6 col-md-2 mb-2">
             <label for="{{ $entryBase }}-sum" class="form-label">{{ __('form.working_time') }}</label>
             <input type="text" id="{{ $entryBase }}-sum" class="form-control"
                 name="work_logs[{{ $projectId }}][{{ $entryIndex }}][sum]" readonly
-                value="{{ old("work_logs.$projectId.$entryIndex.sum") }}">
+                value="{{ old("work_logs.$projectId.$entryIndex.sum", data_get($prefillEntry, 'sum')) }}">
         </div>
     </div>
 
     <div class="mb-3">
         <label for="{{ $entryBase }}-comment" class="form-label">{{ __('form.comment') }}</label>
         <textarea class="form-control" id="{{ $entryBase }}-comment"
-            name="work_logs[{{ $projectId }}][{{ $entryIndex }}][comment]" rows="3">{{ old("work_logs.$projectId.$entryIndex.comment") }}</textarea>
+            name="work_logs[{{ $projectId }}][{{ $entryIndex }}][comment]" rows="3">{{ old("work_logs.$projectId.$entryIndex.comment", data_get($prefillEntry, 'comment')) }}</textarea>
     </div>
 </div>
 

@@ -25,6 +25,7 @@ abstract class BaseLogController extends Controller
     abstract protected function viewPrefix(): string;     // z.B. 'log-forstwirt'
     abstract protected function mapValidatedToLogs(array $validated): array;
     abstract protected function addPreviousData(int $user_id, Collection $projects): Collection;
+    abstract protected function buildEditPrefill(Collection $logs, string $date): array;
 
     private function getUserAndProjects(?int $user_id): array
     {
@@ -64,6 +65,26 @@ abstract class BaseLogController extends Controller
         $data = $this->getUserAndProjects($user_id);
         extract($data); // Extrahiere Variablen wie $isAdmin, $user, $name, $projects, $user_id
 
+        $editLogId = request()->integer('edit_log_id');
+        $editingLogId = null;
+        $editingProjectId = null;
+        $editingLogDate = null;
+        $prefill = [];
+
+        if ($editLogId) {
+            $logClass = $this->logModel();
+            $editLog = $logClass::with(['project', 'user.role'])
+                ->where('user_id', $user_id)
+                ->findOrFail($editLogId);
+
+            $editingLogDate = Carbon::parse($editLog->date)->toDateString();
+            $editLogs = $this->workerLogService->loadSuccessLogs($user_id, $editingLogDate);
+
+            $prefill = $this->buildEditPrefill($editLogs, $editingLogDate);
+            $editingLogId = $editLog->id;
+            $editingProjectId = $editLog->project_id;
+        }
+
         // Check if today is alreay logged
         $today = now()->toDateString();
         $logClass = $this->logModel();
@@ -78,7 +99,7 @@ abstract class BaseLogController extends Controller
 
         $viewPrefix = $this->viewPrefix();
         // Route like: log-forms/log-forstwirt
-        return view('log-forms/' . $viewPrefix, compact(['projects', 'isAdmin', 'name', 'user_id']));
+        return view('log-forms/' . $viewPrefix, compact(['projects', 'isAdmin', 'name', 'user_id', 'prefill', 'editingLogId', 'editingProjectId', 'editingLogDate']));
     }
 
     /**

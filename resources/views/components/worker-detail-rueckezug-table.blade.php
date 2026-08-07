@@ -76,14 +76,20 @@
                     <div class="col-1">{{ $entry->average_distance }}</div>
 
                     @if ($isAdmin)
-                        <div class="col-1 d-flex justify-content-center align-items-center ">
-                            <form
-                                action="{{ route('admin.worker.log.delete', ['worker_id' => $worker_id, 'log_id' => $entry->id]) }}"
+                        <div class="col-1 d-flex justify-content-center align-items-center gap-1">
+                            <a href="{{ route('admin.worker.log.edit', ['worker_id' => $worker_id, 'log_id' => $entry->id, 'log_type' => 'rueckezug']) }}"
+                                class="btn btn-outline-primary btn-sm p-1" title="Bearbeiten" aria-label="Bearbeiten">
+                                <i class="bi bi-pencil-square"></i>
+                            </a>
+                            <form action="{{ route('admin.worker.log.delete', ['worker_id' => $worker_id, 'log_id' => $entry->id]) }}"
                                 method="POST" class="my-auto">
                                 @csrf
                                 @method('DELETE')
                                 <input type="hidden" name="delete_type" value="rueckezug">
-                                <button type="submit" class="btn btn-danger btn-sm p-0">Löschen</button>
+                                <button type="submit" class="btn btn-outline-danger btn-sm p-1" title="Löschen"
+                                    aria-label="Löschen">
+                                    <i class="bi bi-trash"></i>
+                                </button>
                             </form>
                         </div>
                     @endif

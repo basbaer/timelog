@@ -62,6 +62,21 @@ class ForstwirtLogService extends BaseLogService
         return $lastLog;
     }
 
+    public function updateLog(ForstwirtLog $log, array $logData): ForstwirtLog
+    {
+        $log->project_id = $logData['project_id'];
+        $log->working_type_id = ForstwirtWorkingType::where('slug', $logData['type'])->value('id');
+        $log->date = $logData['date'];
+        $log->start = $logData['start'];
+        $log->end = $logData['end'];
+        $log->pause = $logData['pause'] ?? 0;
+        $log->sum = $logData['sum'] ?? null;
+        $log->comment = $logData['comment'] ?? null;
+        $log->save();
+
+        return $log;
+    }
+
     public function loadSuccessLogs(int $userId, string $date)
     {
         return $this->getModel()::with(['project', 'workingType'])
