@@ -7,7 +7,7 @@
     @include('partials.admin_navbar', ['active' => 'workers'])
 
     <div class="container mt-3 mx-auto d-flex justify-content-center">
-        <div class="card" style="width: 18rem;">
+        <div class="card" style="width: 30rem;">
             <div class="card-body">
                 <h5 class="card-title">{{ $name }}</h5>
                 <h6 class="card-subtitle mb-2 text-body-secondary">{{ $role }}</h6>

@@ -60,7 +60,7 @@ Route::post('/activate', [ActivationController::class, 'activate']);
 
 Route::get('/password-reset', [ActivationController::class, 'showPasswordResetForm'])->name('password-reset');
 
-Route::post('/password-reset', [ActivationController::class, 'activate'])->name('password-reset');
+Route::post('/password-reset', [ActivationController::class, 'resetPassword'])->name('password-reset');
 //================================================================================
 
 
