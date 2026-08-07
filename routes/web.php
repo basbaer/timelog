@@ -66,7 +66,7 @@ Route::post('/password-reset', [ActivationController::class, 'resetPassword'])->
 
 
 //==== Logout Route ==============================================================
-Route::get('/logout', LogoutController::class)->middleware('auth');
+Route::get('/logout', LogoutController::class)->middleware('auth')->name('logout');
 
 
 
@@ -143,6 +143,8 @@ Route::middleware([IsLoggedIn::class])->group(function () {
     Route::get('/workers/{worker_id}', [WorkerDetailController::class, 'show'])->name('worker.show');
 
     Route::get('/workers/{worker_id}/settings', [WorkerSettingsController::class, 'show'])->name('worker.settings');
+
+    Route::post('/workers/{worker_id}/password-change', [WorkerSettingsController::class, 'changePassword'])->name('worker.password.change');
 });
 
 // =================================================================================
