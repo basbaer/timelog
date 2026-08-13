@@ -127,7 +127,7 @@
                                             value="{{ old("work_logs.$project->id.loadings", data_get($prefill, "work_logs.$project->id.loadings")) }}">
                                     </div>
                                     <div class="col-9">
-                                        <label for="average_distance-{{ $loop->index }}" class="form-label">durchschnittliche Distanz (km)</label>
+                                        <label for="average_distance-{{ $loop->index }}" class="form-label">durchschnittliche Distanz (m)</label>
                                         <input type="number" id="average_distance-{{ $loop->index }}" class="form-control"
                                             name="work_logs[{{ $project->id }}][average_distance]" data-fm-before="{{ $projects[$project->id]['last_average_distance'] }}"
                                             step="0.01" inputmode="decimal"

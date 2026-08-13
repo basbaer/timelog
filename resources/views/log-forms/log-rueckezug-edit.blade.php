@@ -84,7 +84,7 @@
 
         <div class="row g-3 mt-0">
             <div class="col-sm-6 col-lg-4">
-                <label for="average_distance" class="form-label">Durchschnittliche Distanz</label>
+                <label for="average_distance" class="form-label">Durchschnittliche Distanz (m)</label>
                 <input id="average_distance" name="average_distance" class="form-control" type="number" min="0" step="0.01" inputmode="decimal"
                     value="{{ old('average_distance', $log->average_distance) }}">
             </div>
