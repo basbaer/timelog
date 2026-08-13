@@ -51,6 +51,37 @@
                     <div id="collapse{{ $loop->index }}" class="accordion-collapse collapse @if ($isEditingProject) show @endif"
                         data-bs-parent="#accordionProjects">
                         <div class="accordion-body px-2">
+                            <!-- Betriebsstunden -->
+                            <div class="mb-2">
+                                <h3>Betriebsstunden</h3>
+
+                                <div class="row mb-3">
+                                    <div class="col-5 pe-2 me-0">
+                                        <label for="bs_start-{{ $loop->index }}"
+                                            class="form-label">{{ __('form.from') }}</label>
+                                        <input type="number" id="bs_start-{{ $loop->index }}" class="form-control"
+                                            name="work_logs[{{ $project->id }}][bs_start]" step="0.01" inputmode="decimal"
+                                            value="{{ old("work_logs.$project->id.bs_start", data_get($prefill, "work_logs.$project->id.bs_start")) }}"
+                                            placeholder="Letzer Stand dieses Projekt: {{ $projects[$project->id]['last_bs'] }}">
+                                    </div>
+
+                                    <div class="col-5 ps-1">
+                                        <label for="bs_end-{{ $loop->index }}"
+                                            class="form-label">{{ __('form.to') }}</label>
+                                        <input type="number" id="bs_end-{{ $loop->index }}" class="form-control"
+                                            name="work_logs[{{ $project->id }}][bs_end]" step="0.01" inputmode="decimal"
+                                            value="{{ old("work_logs.$project->id.bs_end", data_get($prefill, "work_logs.$project->id.bs_end")) }}">
+                                    </div>
+
+                                    <div class="col-2 ps-0">
+                                        <label for="bs_diff-{{ $loop->index }}" class="form-label">Diff.</label>
+                                        <input type="text" id="bs_diff-{{ $loop->index }}" class="form-control"
+                                            readonly name="work_logs[{{ $project->id }}][bs_diff]"
+                                            value="{{ old("work_logs.$project->id.bs_diff", data_get($prefill, "work_logs.$project->id.bs_diff")) }}">
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="mb-2">
                                 <h3>Arbeitszeit Rückezug</h3>
 
@@ -85,37 +116,6 @@
                                         value="{{ old("work_logs.$project->id.sum", data_get($prefill, "work_logs.$project->id.sum")) }}">
                                 </div>
                             </div>
-                            <!-- Betriebsstunden -->
-                            <div class="mb-2">
-                                <h3>Betriebsstunden</h3>
-
-                                <div class="row mb-3">
-                                    <div class="col-5 pe-2 me-0">
-                                        <label for="bs_start-{{ $loop->index }}"
-                                            class="form-label">{{ __('form.from') }}</label>
-                                        <input type="number" id="bs_start-{{ $loop->index }}" class="form-control"
-                                            name="work_logs[{{ $project->id }}][bs_start]" step="0.01" inputmode="decimal"
-                                            value="{{ old("work_logs.$project->id.bs_start", data_get($prefill, "work_logs.$project->id.bs_start")) }}"
-                                            placeholder="Letzer Stand dieses Projekt: {{ $projects[$project->id]['last_bs'] }}">
-                                    </div>
-
-                                    <div class="col-5 ps-1">
-                                        <label for="bs_end-{{ $loop->index }}"
-                                            class="form-label">{{ __('form.to') }}</label>
-                                        <input type="number" id="bs_end-{{ $loop->index }}" class="form-control"
-                                            name="work_logs[{{ $project->id }}][bs_end]" step="0.01" inputmode="decimal"
-                                            value="{{ old("work_logs.$project->id.bs_end", data_get($prefill, "work_logs.$project->id.bs_end")) }}">
-                                    </div>
-
-                                    <div class="col-2 ps-0">
-                                        <label for="bs_diff-{{ $loop->index }}" class="form-label">Diff.</label>
-                                        <input type="text" id="bs_diff-{{ $loop->index }}" class="form-control"
-                                            readonly name="work_logs[{{ $project->id }}][bs_diff]"
-                                            value="{{ old("work_logs.$project->id.bs_diff", data_get($prefill, "work_logs.$project->id.bs_diff")) }}">
-                                    </div>
-                                </div>
-                            </div>
-
                             <div class="mb-2">
                                 <h3 class="mt-2">Ladungen</h3>
                                 <div class="row">
