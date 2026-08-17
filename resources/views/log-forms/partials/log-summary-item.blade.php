@@ -9,14 +9,16 @@
 <div class="border rounded p-3 mb-3">
     <div class="mb-2">
         <h3 class="h5 mb-0">{{ $entryTitle }}</h3>
-        <div class="row g-3">
-            <div class="col">
-                {{ \Carbon\Carbon::parse($savedLog->start)->format('H:i') }} -
-                {{ \Carbon\Carbon::parse($savedLog->end)->format('H:i') }}
-                ({{ __('form.working_time') }}:
-                {{ !empty($savedLog->sum) ? \Carbon\Carbon::parse($savedLog->sum)->format('H:i') : '-' }})
+        @if ($savedLog->entry_label === 'forstwirt')
+            <div class="row g-3">
+                <div class="col">
+                    {{ \Carbon\Carbon::parse($savedLog->start)->format('H:i') }} -
+                    {{ \Carbon\Carbon::parse($savedLog->end)->format('H:i') }}
+                    ({{ __('form.working_time') }}:
+                    {{ !empty($savedLog->sum) ? \Carbon\Carbon::parse($savedLog->sum)->format('H:i') : '-' }})
+                </div>
             </div>
-        </div>
+        @endif
     </div>
 
     @if ($savedLog->entry_label === 'harvester')

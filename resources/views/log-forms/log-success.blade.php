@@ -20,6 +20,9 @@
                 @php
                     $project = $projectGroup['project'];
                     $projectLogs = $projectGroup['logs'];
+                    $totalStart = $projectGroup['totalStart'];
+                    $totalEnd = $projectGroup['totalEnd'];
+                    $totalSum = $projectGroup['totalSum'];
                 @endphp
 
                 <div class="card mb-3">
@@ -28,6 +31,14 @@
                         {{ $project->client }}
                     </div>
                     <div class="card-body">
+                        <div class="h5"> {{ __('form.total_hours') }}</div>
+                        <div class="row g-3 mb-2">
+                            <div class="col">
+                                {{ \Carbon\Carbon::parse($totalStart)->format('H:i') }} -
+                                {{ \Carbon\Carbon::parse($totalEnd)->format('H:i') }}
+                                ({{ __('form.working_time') }}:
+                                {{ !empty($totalSum) ? \Carbon\Carbon::parse($totalSum)->format('H:i') : '-' }})
+                            </div>
                         @foreach ($projectLogs as $savedLog)
                             @include('log-forms.partials.log-summary-item', ['savedLog' => $savedLog])
                         @endforeach

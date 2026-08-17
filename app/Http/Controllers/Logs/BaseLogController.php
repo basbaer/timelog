@@ -149,12 +149,27 @@ abstract class BaseLogController extends Controller
             ->map(function (Collection $logs) {
                 $firstLog = $logs->first();
 
+                $totalStart = $logs->min(fn($log) => strtotime($log->start));
+                $totalStart = date("H:i", $totalStart);
+
+                $totalEnd = $logs->max(fn($log) => strtotime($log->end));
+                $totalEnd = date("H:i", $totalEnd);
+
+                $totalSum = $logs->sum(fn($log) => $log->sum ? strtotime($log->sum) : 0);
+                $totalSum = date("H:i", $totalSum);
+
                 return [
                     'project' => $firstLog->project,
                     'logs' => $logs->values(),
+
+                    //Add total start, end and sum for each project
+                    'totalStart' => $totalStart,
+                    'totalEnd' => $totalEnd,
+                    'totalSum' => $totalSum,
                 ];
             })
             ->values();
+
     }
 
     public function deleteLog(Request $request, int $worker_id)
@@ -175,7 +190,6 @@ abstract class BaseLogController extends Controller
         }
 
         return redirect()->route($this->route())->with('success', 'Eintrag erfolgreich gelöscht.');
-
     }
 
     protected function loadSuccessLogs(int $userId, string $date): Collection
@@ -193,14 +207,14 @@ abstract class BaseLogController extends Controller
         $this->workerLogService->deleteLogsFrom($user_id, $date);
     }
 
-    protected function getSumForRueckezug(array $workLog): ?string
+    protected function getSumForMainLog(array $workLog): ?string
     {
         if (isset($workLog['sum'])) {
             $total = $workLog['sum'];
-        }else{
+        } else {
             return null;
         }
-        
+
         $forstwirtSum = date("H:i", strtotime("00:00"));
 
         if (isset($workLog['entries']) && is_array($workLog['entries'])) {
@@ -213,7 +227,7 @@ abstract class BaseLogController extends Controller
         }
 
         $total = strtotime($total) - strtotime($forstwirtSum);
-        $total = date("H:i", $total);    
+        $total = date("H:i", $total);
 
         return $total;
     }
