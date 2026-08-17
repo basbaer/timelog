@@ -23,8 +23,7 @@ class RueckezugLogController extends BaseLogController
         private readonly ForstwirtLogService $forstwirtLogService,
         private readonly RueckezugLogService $rueckezugLogService,
         private readonly ProjectService $projectService,
-    )
-    {
+    ) {
         parent::__construct($workerLogService);
     }
 
@@ -153,7 +152,7 @@ class RueckezugLogController extends BaseLogController
                     'loadings' => isset($workLog['loadings']) ? (float) $workLog['loadings'] : null,
                     'average_distance' => isset($workLog['average_distance']) ? (float) $workLog['average_distance'] : null,
                     'forstwirt_work_entries' => collect($workLog['entries'] ?? [])
-                        ->map(fn (array $entry) => [
+                        ->map(fn(array $entry) => [
                             'project_id' => (int) $projectId,
                             'date' => $logDate,
                             'type' => $entry['type'],
@@ -182,7 +181,7 @@ class RueckezugLogController extends BaseLogController
             $originalDate = $request->input('edit_log_date', $validated['log_date']);
             $this->workerLogService->deleteLogsFrom($user, $originalDate);
         }
-       
+
         $lastLog = null;
 
         foreach ($mappedLogs as $logData) {
@@ -198,7 +197,7 @@ class RueckezugLogController extends BaseLogController
 
         /** @var \App\Models\User $user */
         $user = Auth::user();
-        if($user->isAdmin()){
+        if ($user->isAdmin()) {
             return redirect()->route('admin.worker.show', ['worker_id' => (int) $lastLog->user_id]);
         }
 
@@ -240,7 +239,7 @@ class RueckezugLogController extends BaseLogController
         return redirect()->route('worker.show', ['worker_id' => $user->id])->with('success', 'Eintrag erfolgreich aktualisiert.');
     }
 
-        private function hasRueckezugPayload(array $workLog): bool
+    private function hasRueckezugPayload(array $workLog): bool
     {
         foreach (['start', 'end', 'sum', 'pause', 'bs_start', 'bs_end', 'bs_diff', 'loadings', 'average_distance'] as $field) {
             if (array_key_exists($field, $workLog) && trim((string) ($workLog[$field] ?? '')) !== '') {
@@ -250,5 +249,4 @@ class RueckezugLogController extends BaseLogController
 
         return false;
     }
-    
 }

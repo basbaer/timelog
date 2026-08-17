@@ -83,7 +83,7 @@
                             </div>
                             <!-- Arbeitszeit -->
                             <div class="mb-2">
-                                <h3>Arbeitszeit Harvester</h3>
+                                <h3>Gesamtarbeitszeit (inkl. Forstwirtarbeiten)</h3>
 
                                 <div class="row d-flex mb-2">
                                     <div class="col-sm-auto col-6">
@@ -107,13 +107,18 @@
                                             class="form-label">{{ __('form.pause') }}</label>
                                         <input type="number" id="pause-{{ $loop->index }}" class="form-control"
                                             name="work_logs[{{ $project->id }}][pause]" min="0" step="15"
-                                            value="{{ old("work_logs.$project->id.pause", data_get($prefill, "work_logs.$project->id.pause", 0)) }}"
+                                            value="{{ old("work_logs.$project->id.pause", data_get($prefill, "work_logs.$project->id.pause")) }}"
                                             placeholder="0">
                                     </div>
 
-                                    <input type="hidden" id="sum-{{ $loop->index }}"
-                                        name="work_logs[{{ $project->id }}][sum]"
-                                        value="{{ old("work_logs.$project->id.sum", data_get($prefill, "work_logs.$project->id.sum")) }}">
+                                    <div class="col-sm-auto col-6">
+                                        <label for="sum-{{ $loop->index }}"
+                                            class="form-label">{{ __('form.working_time') }}</label>
+                                        <input type="text" id="sum-{{ $loop->index }}" class="form-control"
+                                            name="work_logs[{{ $project->id }}][sum]" readonly
+                                            value="{{ old("work_logs.$project->id.sum", data_get($prefill, "work_logs.$project->id.sum")) }}">
+                                    </div>
+
                                 </div>
                             </div>
                             <div class="mb-2">
