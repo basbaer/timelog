@@ -99,7 +99,7 @@ abstract class BaseLogController extends Controller
 
         $viewPrefix = $this->viewPrefix();
         // Route like: log-forms/log-forstwirt
-        return view('log-forms/' . $viewPrefix, compact(['projects', 'isAdmin', 'name', 'user_id', 'prefill', 'editingLogId', 'editingProjectId', 'editingLogDate']));
+        return view('log-forms/' . $viewPrefix . '-new', compact(['projects', 'isAdmin', 'name', 'user_id', 'prefill', 'editingLogId', 'editingProjectId', 'editingLogDate']));
     }
 
     /**
