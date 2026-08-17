@@ -10,7 +10,7 @@
 
     <form id="rueckezug-log-form" class="container" method="POST" action="{{ route('log.rueckezug.store') }}">
         @csrf
-       <input type="hidden" name="user_id" value="{{ $user_id }}">
+        <input type="hidden" name="user_id" value="{{ $user_id }}">
         @if (!empty($editingLogId))
             <input type="hidden" name="edit_log_id" value="{{ $editingLogId }}">
         @endif
@@ -34,7 +34,8 @@
         <!-- Date -->
         <div class="container my-3 px-0">
             <label for="date" class="form-label">Datum</label>
-            <input id="date" name="log_date" class="form-control" type="date" value="{{ old('log_date', data_get($prefill, 'log_date', $today)) }}" />
+            <input id="date" name="log_date" class="form-control" type="date"
+                value="{{ old('log_date', data_get($prefill, 'log_date', $today)) }}" />
         </div>
 
         <div class="accordion" id="accordionProjects">
@@ -42,13 +43,15 @@
                 @php($isEditingProject = (int) $editingProjectId === (int) $project->id)
                 <div class="accordion-item">
                     <h2 class="accordion-header">
-                        <button class="accordion-button @if (!$isEditingProject) collapsed @endif" type="button" data-bs-toggle="collapse"
-                            data-bs-target="#collapse{{ $loop->index }}" aria-expanded="{{ $isEditingProject ? 'true' : 'false' }}"
+                        <button class="accordion-button @if (!$isEditingProject) collapsed @endif"
+                            type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ $loop->index }}"
+                            aria-expanded="{{ $isEditingProject ? 'true' : 'false' }}"
                             aria-controls="collapse{{ $loop->index }}">
                             {{ $project->location }} | {{ $project->date->format('m/Y') }} | {{ $project->client }}
                         </button>
                     </h2>
-                    <div id="collapse{{ $loop->index }}" class="accordion-collapse collapse @if ($isEditingProject) show @endif"
+                    <div id="collapse{{ $loop->index }}"
+                        class="accordion-collapse collapse @if ($isEditingProject) show @endif"
                         data-bs-parent="#accordionProjects">
                         <div class="accordion-body px-2">
                             <!-- Betriebsstunden -->
@@ -60,7 +63,8 @@
                                         <label for="bs_start-{{ $loop->index }}"
                                             class="form-label">{{ __('form.from') }}</label>
                                         <input type="number" id="bs_start-{{ $loop->index }}" class="form-control"
-                                            name="work_logs[{{ $project->id }}][bs_start]" step="0.01" inputmode="decimal"
+                                            name="work_logs[{{ $project->id }}][bs_start]" step="0.01"
+                                            inputmode="decimal"
                                             value="{{ old("work_logs.$project->id.bs_start", data_get($prefill, "work_logs.$project->id.bs_start")) }}"
                                             placeholder="Letzer Stand dieses Projekt: {{ $projects[$project->id]['last_bs'] }}">
                                     </div>
@@ -69,7 +73,8 @@
                                         <label for="bs_end-{{ $loop->index }}"
                                             class="form-label">{{ __('form.to') }}</label>
                                         <input type="number" id="bs_end-{{ $loop->index }}" class="form-control"
-                                            name="work_logs[{{ $project->id }}][bs_end]" step="0.01" inputmode="decimal"
+                                            name="work_logs[{{ $project->id }}][bs_end]" step="0.01"
+                                            inputmode="decimal"
                                             value="{{ old("work_logs.$project->id.bs_end", data_get($prefill, "work_logs.$project->id.bs_end")) }}">
                                     </div>
 
@@ -111,25 +116,33 @@
                                             placeholder="0">
                                     </div>
 
-                                    <input type="hidden" id="sum-{{ $loop->index }}"
-                                        name="work_logs[{{ $project->id }}][sum]"
-                                        value="{{ old("work_logs.$project->id.sum", data_get($prefill, "work_logs.$project->id.sum")) }}">
+                                    <div class="col-sm-auto col-6">
+                                        <label for="sum-{{ $loop->index }}"
+                                            class="form-label">{{ __('form.working_time') }}</label>
+                                        <input type="text" id="sum-{{ $loop->index }}" class="form-control"
+                                            name="work_logs[{{ $project->id }}][sum]" readonly
+                                            value="{{ old("work_logs.$project->id.sum", data_get($prefill, "work_logs.$project->id.sum")) }}">
+                                    </div>
+
+                                    
                                 </div>
                             </div>
                             <div class="mb-2">
                                 <h3 class="mt-2">Ladungen</h3>
                                 <div class="row">
                                     <div class="col-3">
-                                        <label for="loadings-{{ $loop->index }}"
-                                            class="form-label">Fuhren</label>
+                                        <label for="loadings-{{ $loop->index }}" class="form-label">Fuhren</label>
                                         <input type="number" id="loadings-{{ $loop->index }}" class="form-control"
                                             name="work_logs[{{ $project->id }}][loadings]"
                                             value="{{ old("work_logs.$project->id.loadings", data_get($prefill, "work_logs.$project->id.loadings")) }}">
                                     </div>
                                     <div class="col-9">
-                                        <label for="average_distance-{{ $loop->index }}" class="form-label">durchschnittliche Distanz (m)</label>
-                                        <input type="number" id="average_distance-{{ $loop->index }}" class="form-control"
-                                            name="work_logs[{{ $project->id }}][average_distance]" data-fm-before="{{ $projects[$project->id]['last_average_distance'] }}"
+                                        <label for="average_distance-{{ $loop->index }}"
+                                            class="form-label">durchschnittliche Distanz (m)</label>
+                                        <input type="number" id="average_distance-{{ $loop->index }}"
+                                            class="form-control"
+                                            name="work_logs[{{ $project->id }}][average_distance]"
+                                            data-fm-before="{{ $projects[$project->id]['last_average_distance'] }}"
                                             step="0.01" inputmode="decimal"
                                             value="{{ old("work_logs.$project->id.average_distance", data_get($prefill, "work_logs.$project->id.average_distance")) }}"
                                             placeholder="Stand: {{ $projects[$project->id]['last_average_distance'] }}">
@@ -144,9 +157,8 @@
 
                                 <div id="forstwirt-work-entries-{{ $loop->index }}">
                                     @for ($entryIndex = 0; $entryIndex < $workTypeCount; $entryIndex++)
-                                        <x-forstwirt-work-type :project-index="$loop->index" :project-id="$project->id"
-                                            :entry-index="$entryIndex" :work-types="$workTypes"
-                                            :hidden="$entryIndex > 0" :prefill="$prefill" />
+                                        <x-forstwirt-work-type :project-index="$loop->index" :project-id="$project->id" :entry-index="$entryIndex"
+                                            :work-types="$workTypes" :hidden="$entryIndex > 0" :prefill="$prefill" />
                                     @endfor
                                 </div>
 
