@@ -192,4 +192,29 @@ abstract class BaseLogController extends Controller
     {
         $this->workerLogService->deleteLogsFrom($user_id, $date);
     }
+
+    protected function getSumForRueckezug(array $workLog): ?string
+    {
+        if (isset($workLog['sum'])) {
+            $total = $workLog['sum'];
+        }else{
+            return null;
+        }
+        
+        $forstwirtSum = date("H:i", strtotime("00:00"));
+
+        if (isset($workLog['entries']) && is_array($workLog['entries'])) {
+            foreach ($workLog['entries'] as $entry) {
+                if (isset($entry['sum'])) {
+                    $forstwirtSum = strtotime($forstwirtSum) + strtotime($entry['sum']);
+                    $forstwirtSum = date("H:i", $forstwirtSum);
+                }
+            }
+        }
+
+        $total = strtotime($total) - strtotime($forstwirtSum);
+        $total = date("H:i", $total);    
+
+        return $total;
+    }
 }

@@ -144,7 +144,7 @@ class RueckezugLogController extends BaseLogController
                     'has_rueckezug_payload' => $this->hasRueckezugPayload($workLog),
                     'start' => $workLog['start'] ?? null,
                     'end' => $workLog['end'] ?? null,
-                    'sum' => $workLog['sum'] ?? null,
+                    'sum' => $this->getSumForMainLog($workLog),
                     'pause' => isset($workLog['pause']) ? (int) $workLog['pause'] : 0,
                     'bs_start' => isset($workLog['bs_start']) ? (float) $workLog['bs_start'] : null,
                     'bs_end' => isset($workLog['bs_end']) ? (float) $workLog['bs_end'] : null,
