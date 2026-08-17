@@ -34,6 +34,7 @@ return [
     'add_forstwirt' => 'Forstwirt-Arbeit hinzufügen',
     'cancel' => 'x',
     'select_project' => 'Projekt auswählen',
+    'select_work_type' => 'Arbeitsart auswählen',
     'add_work_type' => 'Klicke, um weitere Arbeitsarten hinzuzufügen',
     'submit' => 'Eintrag speichern',
     'error_working_hours' => 'Die angegebenen Stunden stimmen nicht mit der Gesamtzeit überein.',

@@ -32,6 +32,7 @@ return [
     'add_forstwirt' => 'Forstwirt-Arbeit a adăuga',
     'cancel' => 'x',
     'select_project' => 'Alegeți un proiect',
+    'select_work_type' => 'Selectați tipul de lucru',
     'add_work_type' => 'Click pentru a adăuga mai multe tipuri de lucrări',
     'submit' => 'Salvează intrarea',
     'error_working_hours' => 'Orele specificate nu corespund cu timpul total.',

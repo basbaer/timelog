@@ -1,30 +1,30 @@
 @props(['prefill' => ['bs_start' => ''], 'projects'])
 
-<form id="rueckezug-log-form" class="container border rounded-2 mt-2" method="POST" action="{{ route('log.rueckezug.store') }}"
-    data-log-type="rueckezug">
+<form id="rueckezug-log-form" class="container border rounded-2 mt-2" method="POST"
+    action="{{ route('log.rueckezug.store') }}" data-log-type="rueckezug">
     @csrf
 
-
-
     <!-- Projekt Dropdown -->
-        <div class="d-flex flex-row justify-content-between mb-1 mt-2">
-            <label for="project_id" class="h3 form-label">{{ __('form.project') }}</label>
-            <button type="button" class="btn-close" aria-label="{{ __('form.cancel') }}"
-                onclick="cancelLogForm(this)"></button>
+    <div class="d-flex flex-row justify-content-between mb-1 mt-2">
+        <label for="project_id" class="h3 form-label">{{ __('form.project') }}</label>
+        <button type="button" class="btn-close" aria-label="{{ __('form.cancel') }}"
+            onclick="cancelLogForm(this)"></button>
+    </div>
+
+    <div class="row">
+        <div class="col-10 col-md-5 mb-3">
+            <select id="project_id" name="project_id" class="form-select" required>
+                <option value="" selected disabled>{{ __('form.select_project') }}</option>
+                @foreach ($projects as $project)
+                    <option value="{{ $project->id }}"
+                        {{ (string) old('project_id') === (string) $project->id ? 'selected' : '' }}>
+                        {{ $project->location }} | {{ $project->date->format('m/Y') }} | {{ $project->client }}
+                    </option>
+                @endforeach
+            </select>
         </div>
-        <div class="row">
-            <div class="col-10 col-md-5 mb-3">
-                <select id="project_id" name="project_id" class="form-select" required>
-                    <option value="" selected disabled>{{ __('form.select_project') }}</option>
-                    @foreach ($projects as $project)
-                        <option value="{{ $project->id }}"
-                            {{ (string) old('project_id') === (string) $project->id ? 'selected' : '' }}>
-                            {{ $project->location }} | {{ $project->date->format('m/Y') }} | {{ $project->client }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
-        </div>
+    </div>
+
     <!-- Betriebsstunden -->
     <div class="my-2">
         <h3>Betriebsstunden</h3>
@@ -71,3 +71,37 @@
         <button class="btn btn-success my-3 me-3" type="submit">{{ __('form.submit') }}</button>
     </div>
 </form>
+
+<script>
+    function calculateRueckezugDiff(form) {
+        const startInput = form.querySelector('#bs_start');
+        const endInput = form.querySelector('#bs_end');
+        const diffInput = form.querySelector('#bs_diff');
+
+        if (!startInput || !endInput || !diffInput) {
+            return;
+        }
+
+        const start = startInput.value;
+        const end = endInput.value;
+
+        if (!start || !end) {
+            diffInput.value = "";
+            return;
+        }
+
+        const diff = parseFloat(end) - parseFloat(start);
+        diffInput.value = diff.toFixed(2);
+    }
+
+    function initRueckezugForm(form) {
+        ["bs_start", "bs_end"].forEach(field => {
+            const input = form.querySelector(`#${field}`);
+            if (input) {
+                input.addEventListener("input", () => calculateRueckezugDiff(form));
+            }
+        });
+    }
+
+    window.initRueckezugForm = initRueckezugForm;
+</script>
