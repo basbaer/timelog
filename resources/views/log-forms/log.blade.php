@@ -136,6 +136,8 @@
             if (type === 'harvester' && typeof initHarvesterForm === 'function') {
                 initHarvesterForm(form);
             }
+
+            initLogFormSubmit(form);
         }
 
         const rueckezugButton = document.getElementById('btn-add-rueckezug');

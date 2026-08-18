@@ -242,5 +242,51 @@
         form.prepend(alert);
     }
 
+     function initLogForSubmit(form) {
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            clearFormErrors(form);
+
+            const submitButton = form.querySelector('button[type="submit"]');
+            submitButton.disabled = true;
+
+            try {
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
+                    },
+                    body: new FormData(form),
+                });
+
+                if (response.status === 422) {
+                    const data = await response.json();
+                    showFormErrors(form, data.errors);
+                    submitButton.disabled = false;
+                    return;
+                }
+
+                if (!response.ok) {
+                    throw new Error(`Unexpected response: ${response.status}`);
+                }
+
+                const data = await response.json();
+                const type = form.dataset.logType;
+
+                form.outerHTML = data.html;
+                document.getElementById(`btn-add-${type}`).disabled = false;
+            } catch (err) {
+                submitButton.disabled = false;
+                showFormErrors(form, {
+                    general: ['{{ __('form.save_error') }}']
+                });
+                console.error(err);
+            }
+        });
+
+    }
+    
+    window.initLogForSubmit = initLogForSubmit;
     window.initHarvesterForm = initHarvesterForm;
 </script>
