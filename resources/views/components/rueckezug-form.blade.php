@@ -103,5 +103,36 @@
         });
     }
 
+    function clearFormErrors(form) {
+        const existing = form.querySelector('.form-errors-alert');
+        if (existing) {
+            existing.remove();
+        }
+    }
+
+    function showFormErrors(form, errors) {
+        clearFormErrors(form);
+
+        const messages = Object.values(errors || {}).flat();
+        if (!messages.length) {
+            return;
+        }
+
+        const alert = document.createElement('div');
+        alert.className = 'alert alert-danger form-errors-alert mt-2';
+        alert.setAttribute('role', 'alert');
+
+        const list = document.createElement('ul');
+        list.className = 'mb-0 ps-3';
+        messages.forEach(message => {
+            const item = document.createElement('li');
+            item.textContent = message;
+            list.appendChild(item);
+        });
+        alert.appendChild(list);
+
+        form.prepend(alert);
+    }
+
     window.initRueckezugForm = initRueckezugForm;
 </script>

@@ -56,6 +56,7 @@ class HarvesterLogController extends BaseLogController
 
             $project->last_fm_total = $lastLog ? $lastLog->fm_total : 0;
             $project->last_bs = $lastLog ? $lastLog->bs_to : 0;
+            $project->last_fm_amount = $lastLog ? $lastLog->fm_amount : 0;
 
             $projects[$project->id] = $project;
         }

@@ -97,9 +97,9 @@ abstract class BaseLogController extends Controller
             return redirect()->route($this->route() . '.success', ['worker_id' => (int) $user_id]);
         }
 
-        $viewPrefix = $this->viewPrefix();
+        $workerType = $user->role->slug; // e.g. 'forstwirt' or 'harvester'
         // Route like: log-forms/log-forstwirt
-        return view('log-forms/' . $viewPrefix . '-new', compact(['projects', 'isAdmin', 'name', 'user_id', 'prefill', 'editingLogId', 'editingProjectId', 'editingLogDate']));
+        return view('log-forms/log', compact(['projects', 'isAdmin', 'name', 'user_id', 'workerType', 'prefill', 'editingLogId', 'editingProjectId', 'editingLogDate']));
     }
 
     /**

@@ -1,7 +1,7 @@
 {{-- resources/views/log-forms/forstwirt-form.blade.php --}}
 @props(['projects', 'workTypes' => [], 'prefill' => []])
 
-<form id="forstwirt-log-form" class="container border rounded-2 position-relative" method="POST"
+<form id="forstwirt-log-form" class="container border rounded-2 position-relative mt-3" method="POST"
     action="{{ route('log.forstwirt.store') }}" data-log-type="forstwirt">
     @csrf
 
@@ -58,7 +58,7 @@
         <div class="col-6 col-md-3 mb-2">
             <label for="pause" class="form-label">{{ __('form.pause') }}</label>
             <input type="number" id="pause" class="form-control" name="pause" min="0" step="15"
-                value="{{ old('pause', data_get($prefill, 'pause', 0)) }}">
+                value="{{ old('pause', data_get($prefill, 'pause')) }}">
         </div>
 
         <div class="col-6 col-md-3 mb-2">
@@ -130,6 +130,37 @@
                 input.addEventListener("input", () => calculateForstwirtSum(form));
             }
         });
+    }
+
+    function clearFormErrors(form) {
+        const existing = form.querySelector('.form-errors-alert');
+        if (existing) {
+            existing.remove();
+        }
+    }
+
+    function showFormErrors(form, errors) {
+        clearFormErrors(form);
+
+        const messages = Object.values(errors || {}).flat();
+        if (!messages.length) {
+            return;
+        }
+
+        const alert = document.createElement('div');
+        alert.className = 'alert alert-danger form-errors-alert mt-2';
+        alert.setAttribute('role', 'alert');
+
+        const list = document.createElement('ul');
+        list.className = 'mb-0 ps-3';
+        messages.forEach(message => {
+            const item = document.createElement('li');
+            item.textContent = message;
+            list.appendChild(item);
+        });
+        alert.appendChild(list);
+
+        form.prepend(alert);
     }
 
     window.initForstwirtForm = initForstwirtForm;

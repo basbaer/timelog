@@ -2,6 +2,7 @@
 <html lang="de">
 
 @include('partials.head', ['title' => 'Log'])
+<!-- configure class .harvester and .rueckezug -->
 
 <body>
     @include('partials.log_header', ['name' => $name, 'worker_id' => $user_id])
@@ -40,34 +41,35 @@
                 value="{{ old('log_date', data_get($prefill, 'log_date', $today)) }}" />
         </div>
 
+        @if ($workerType !== 'forstwirt')
+            <!-- Gesamtarbeitszeit -->
+            <div class="row mb-2">
+                <div class="h3">Gesamtarbeitszeit</div>
+                <div class="col-6 col-md-3 mb-2">
+                    <label for="total_start" class="form-label">{{ __('form.from') }}</label>
+                    <input type="time" id="total_start" class="form-control" name="total_start" lang="de-DE"
+                        step="900" value="{{ old('total_start', data_get($prefill, 'total_start')) }}">
+                </div>
 
-        <!-- Gesamtarbeitszeit -->
-        <div class="row mb-2">
-            <div class="h3">Gesamtarbeitszeit</div>
-            <div class="col-6 col-md-3 mb-2">
-                <label for="total_start" class="form-label">{{ __('form.from') }}</label>
-                <input type="time" id="total_start" class="form-control" name="total_start" lang="de-DE"
-                    step="900" value="{{ old('total_start', data_get($prefill, 'total_start')) }}">
-            </div>
+                <div class="col-6 col-md-3 mb-2">
+                    <label for="total_end" class="form-label">{{ __('form.to') }}</label>
+                    <input type="time" id="total_end" class="form-control" name="total_end" lang="de-DE"
+                        step="900" value="{{ old('total_end', data_get($prefill, 'total_end')) }}">
+                </div>
 
-            <div class="col-6 col-md-3 mb-2">
-                <label for="total_end" class="form-label">{{ __('form.to') }}</label>
-                <input type="time" id="total_end" class="form-control" name="total_end" lang="de-DE" step="900"
-                    value="{{ old('total_end', data_get($prefill, 'total_end')) }}">
-            </div>
+                <div class="col-6 col-md-3 mb-2">
+                    <label for="total_pause" class="form-label">{{ __('form.pause') }}</label>
+                    <input type="number" id="total_pause" class="form-control" name="total_pause" min="0"
+                        step="15" value="{{ old('total_pause', data_get($prefill, 'total_pause', 0)) }}">
+                </div>
 
-            <div class="col-6 col-md-3 mb-2">
-                <label for="total_pause" class="form-label">{{ __('form.pause') }}</label>
-                <input type="number" id="total_pause" class="form-control" name="total_pause" min="0"
-                    step="15" value="{{ old('total_pause', data_get($prefill, 'total_pause', 0)) }}">
+                <div class="col-6 col-md-3 mb-2">
+                    <label for="total_sum" class="form-label">{{ __('form.working_time') }}</label>
+                    <input type="text" id="total_sum" class="form-control" name="total_sum" readonly
+                        value="{{ old('total_sum', data_get($prefill, 'total_sum')) }}">
+                </div>
             </div>
-
-            <div class="col-6 col-md-3 mb-2">
-                <label for="total_sum" class="form-label">{{ __('form.working_time') }}</label>
-                <input type="text" id="total_sum" class="form-control" name="total_sum" readonly
-                    value="{{ old('total_sum', data_get($prefill, 'total_sum')) }}">
-            </div>
-        </div>
+        @endif
         <!-- TODO: Check if any other field is set -->
 
         <!-- TODO: Load prev saved logs -->
@@ -78,8 +80,14 @@
 
 
         <div class="container d-flex justify-content-center">
-            <button id="btn-add-rueckezug" class="btn btn-primary my-3 me-3"
-                type="button">{{ __('form.add_rueckezug') }}</button>
+            @if ($workerType === 'rueckezug')
+                <button id="btn-add-rueckezug" class="rueckezug btn btn-primary my-3 me-3"
+                    type="button">{{ __('form.add_rueckezug') }}</button>
+            @elseif ($workerType === 'harvester')
+                <button id="btn-add-harvester" class="harvester btn btn-primary my-3 me-3"
+                    type="button">{{ __('form.add_harvester') }}</button>
+            @endif
+
             <button id="btn-add-forstwirt" class="btn btn-primary my-3"
                 type="button">{{ __('form.add_forstwirt') }}</button>
         </div>
@@ -88,6 +96,10 @@
 
     <template id="template-rueckezug-form">
         <x-rueckezug-form :projects="$projects" />
+    </template>
+
+    <template id="template-harvester-form">
+        <x-harvester-form :projects="$projects" />
     </template>
 
     <template id="template-forstwirt-form">
@@ -117,13 +129,30 @@
             if (type === 'forstwirt' && typeof initForstwirtForm === 'function') {
                 initForstwirtForm(form);
             }
+
             if (type === 'rueckezug' && typeof initRueckezugForm === 'function') {
                 initRueckezugForm(form);
             }
+            if (type === 'harvester' && typeof initHarvesterForm === 'function') {
+                initHarvesterForm(form);
+            }
         }
 
-        document.getElementById('btn-add-rueckezug').addEventListener('click', () => addLogForm('rueckezug'));
-        document.getElementById('btn-add-forstwirt').addEventListener('click', () => addLogForm('forstwirt'));
+        const rueckezugButton = document.getElementById('btn-add-rueckezug');
+        const harvesterButton = document.getElementById('btn-add-harvester');
+        const forstwirtButton = document.getElementById('btn-add-forstwirt');
+
+        if (rueckezugButton) {
+            rueckezugButton.addEventListener('click', () => addLogForm('rueckezug'));
+        }
+
+        if (harvesterButton) {
+            harvesterButton.addEventListener('click', () => addLogForm('harvester'));
+        }
+
+        if (forstwirtButton) {
+            forstwirtButton.addEventListener('click', () => addLogForm('forstwirt'));
+        }
 
         function cancelLogForm(button) {
             const form = button.closest('form');
