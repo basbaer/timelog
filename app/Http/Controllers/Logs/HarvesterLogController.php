@@ -48,15 +48,12 @@ class HarvesterLogController extends BaseLogController
 
     protected function addPreviousData(int $user_id, Collection $projects): Collection
     {
+        
         foreach ($projects as $project) {
-            $lastLog = $this->logModel()::where('user_id', $user_id)
-                ->where('project_id', $project->id)
-                ->latest()
-                ->first();
-
-            $project->last_fm_total = $lastLog ? $lastLog->fm_total : 0;
-            $project->last_bs = $lastLog ? $lastLog->bs_to : 0;
-            $project->last_fm_amount = $lastLog ? $lastLog->fm_amount : 0;
+        
+            $project->last_fm_total = $this->harvesterLogService->getLastFmTotal($user_id, $project->id);
+            $project->last_bs = $this->harvesterLogService->getLastBsTo($user_id, $project->id);
+            $project->last_fm_amount = $this->harvesterLogService->getLastFmAmount($user_id, $project->id);
 
             $projects[$project->id] = $project;
         }

@@ -50,13 +50,10 @@ class RueckezugLogController extends BaseLogController
     protected function addPreviousData(int $user_id, Collection $projects): Collection
     {
         foreach ($projects as $project) {
-            $lastLog = $this->logModel()::where('user_id', $user_id)
-                ->where('project_id', $project->id)
-                ->latest()
-                ->first();
+            
 
-            $project->last_bs = $lastLog ? $lastLog->bs_to : 0;
-            $project->last_average_distance = $lastLog ? $lastLog->average_distance : 0;
+            $project->last_bs = $this->rueckezugLogService->getLastBsTo($user_id, $project->id);
+            $project->last_average_distance = $this->rueckezugLogService->getLastAverageDistance($user_id, $project->id);
 
             $projects[$project->id] = $project;
         }

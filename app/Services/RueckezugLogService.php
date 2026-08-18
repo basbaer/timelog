@@ -98,5 +98,25 @@ class RueckezugLogService extends BaseLogService
         })->values();
     }
 
+    public function getLastBsTo(int $userId, int $projectId): int
+    {
+        $lastLog = RueckezugLog::where('user_id', $userId)
+            ->where('project_id', $projectId)
+            ->whereNotNull('bs_to')
+            ->latest()
+            ->first();
 
+        return $lastLog ? $lastLog->bs_to : 0;
+    }
+
+    public function getLastAverageDistance(int $userId, int $projectId): int
+    {
+        $lastLog = RueckezugLog::where('user_id', $userId)
+            ->where('project_id', $projectId)
+            ->whereNotNull('average_distance')
+            ->latest()
+            ->first();
+
+        return $lastLog ? $lastLog->average_distance : 0;
+    }
 }

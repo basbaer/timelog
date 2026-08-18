@@ -107,4 +107,40 @@ class HarvesterLogService extends BaseLogService
             return sprintf('%s|%s|%s', $log->project_id, $log->start ?? '', $log->created_at ?? '');
         })->values();
     }
+
+    public function getLastFmAmount(int $userId, int $projectId): float
+    {
+        $lastLog = HarvesterLog::where('user_id', $userId)
+            ->where('project_id', $projectId)
+            ->whereNotNull('fm_amount')
+            ->orderByDesc('date')
+            ->orderByDesc('created_at')
+            ->first();
+
+        return $lastLog ? $lastLog->fm_amount : 0;
+    }
+
+    public function getLastFmTotal(int $userId, int $projectId): float
+    {
+        $lastLog = HarvesterLog::where('user_id', $userId)
+            ->where('project_id', $projectId)
+            ->whereNotNull('fm_total')
+            ->orderByDesc('date')
+            ->orderByDesc('created_at')
+            ->first();
+
+        return $lastLog ? $lastLog->fm_total : 0;
+    }
+
+    public function getLastBsTo(int $userId, int $projectId): float
+    {
+        $lastLog = HarvesterLog::where('user_id', $userId)
+            ->where('project_id', $projectId)
+            ->whereNotNull('bs_to')
+            ->orderByDesc('date')
+            ->orderByDesc('created_at')
+            ->first();
+
+        return $lastLog ? $lastLog->bs_to : 0;
+    }
 }
