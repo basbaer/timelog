@@ -94,6 +94,24 @@
         diffInput.value = diff.toFixed(2);
     }
 
+    function updateBsPlacholder(form, projectId) {
+        const bsStartInput = form.querySelector('#bs_start');
+        // Get last_bs form projects data passed from the controller
+        // data is under projects[projectId]['last_bs']
+        const $projects = @json($projects);
+        const lastBs = $projects[projectId]['last_bs'] || 0;
+        bsStartInput.setAttribute('placeholder', `Letzer Stand: ${lastBs}`);
+    }
+
+    function updateLastAverageDistance(form, projectId) {
+        const averageDistanceInput = form.querySelector('#average_distance');
+        // Get last_average_distance form projects data passed from the controller
+        // data is under projects[projectId]['last_average_distance']
+        const $projects = @json($projects);
+        const lastAverageDistance = $projects[projectId]['last_average_distance'] || 0;
+        averageDistanceInput.setAttribute('placeholder', `Letzer Stand: ${lastAverageDistance}`);
+    }
+
     function initRueckezugForm(form) {
         ["bs_start", "bs_end"].forEach(field => {
             const input = form.querySelector(`#${field}`);
@@ -101,6 +119,28 @@
                 input.addEventListener("input", () => calculateRueckezugDiff(form));
             }
         });
+        bsStartInput.setAttribute('placeholder', `Letzer Stand: ${lastBs}`);
+    }
+
+    function initRueckezugForm(form) {
+        ["bs_start", "bs_end"].forEach(field => {
+            const input = form.querySelector(`#${field}`);
+            if (input) {
+                input.addEventListener("input", () => calculateRueckezugDiff(form));
+            }
+        });
+
+        //Add event listener for project selection change to update last fm_amount
+        const projectSelect = form.querySelector('#project_id');
+        if (projectSelect) {
+            projectSelect.addEventListener("change", () => {
+                const selectedOption = projectSelect.options[projectSelect.selectedIndex];
+                // Send project id to function that updates the last fm_amount based on the selected project
+                const projectId = selectedOption.value;
+                updateLastAverageDistance(form, projectId);
+                updateBsPlacholder(form, projectId);
+            });
+        }
     }
 
     function clearFormErrors(form) {

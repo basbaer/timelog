@@ -100,13 +100,8 @@ class RueckezugLogService extends BaseLogService
 
     public function getLastBsTo(int $userId, int $projectId): int
     {
-        $lastLog = RueckezugLog::where('user_id', $userId)
-            ->where('project_id', $projectId)
-            ->whereNotNull('bs_to')
-            ->latest()
-            ->first();
-
-        return $lastLog ? $lastLog->bs_to : 0;
+        return (int) RueckezugLog::where('user_id', $userId)
+            ->max('bs_to');
     }
 
     public function getLastAverageDistance(int $userId, int $projectId): int

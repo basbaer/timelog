@@ -134,13 +134,7 @@ class HarvesterLogService extends BaseLogService
 
     public function getLastBsTo(int $userId, int $projectId): float
     {
-        $lastLog = HarvesterLog::where('user_id', $userId)
-            ->where('project_id', $projectId)
-            ->whereNotNull('bs_to')
-            ->orderByDesc('date')
-            ->orderByDesc('created_at')
-            ->first();
-
-        return $lastLog ? $lastLog->bs_to : 0;
+        return (int) HarvesterLog::where('user_id', $userId)
+            ->max('bs_to');
     }
 }

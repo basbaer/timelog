@@ -34,7 +34,6 @@
                 <label for="bs_start" class="form-label">{{ __('form.from') }}</label>
                 <input type="number" id="bs_start" class="form-control" name="bs_start" step="0.01"
                     inputmode="decimal" value="{{ data_get($prefill, 'bs_start') }}">
-                <!-- TODO: add: placeholder="Letzer Stand dieses Projekt: { $projects[$project->id]['last_bs'] }}" -->
             </div>
 
             <div class="col-5 ps-1">
@@ -54,24 +53,24 @@
     <div class="mb-2">
         <h3 class="mt-2">Festmeter</h3>
         <div class="row">
-            <div class="col-6 col-md-3">
+            <div class="col-6 col-lg-3">
                 <!-- fm_amout is the ongoing Stueckzahl number at the end of the day -->
                 <label for="fm_amount" class="form-label">Stückzahl</label>
                 <input type="number" id="fm_amount" class="form-control" name="fm_amount"
                     value="{{ data_get($prefill, 'fm_amount') }}" data-last-fm-amount="{{ $lastFmAmount ?? 0 }}">
             </div>
-            <div class="col-6 col-md-3">
+            <div class="col-6 col-lg-3">
                 <label for="pieces_day" class="form-label">Stückzahl heute</label>
-                <input readonly  id="pieces_day" class="form-control" name="pieces_day"
+                <input readonly id="pieces_day" class="form-control" name="pieces_day"
                     value="{{ data_get($prefill, 'pieces_day') }}">
             </div>
-            <div class="col-6 col-md-3 mt-2 mt-md-0">
+            <div class="col-6 col-lg-3 mt-2 mt-lg-0">
                 <label for="fm_total" class="form-label">Festmeter</label>
                 <input type="number" id="fm_total" class="form-control" name="fm_total" inputmode="decimal"
                     value="{{ data_get($prefill, 'fm_total') }}">
                 <!-- TODO; add: placeholder="Stand: { $projects[$project->id]['last_fm_total'] }}" -->
             </div>
-            <div class="col-6 col-md-3 mt-2 mt-md-0">
+            <div class="col-6 col-lg-3 mt-2 mt-lg-0">
                 <label for="fm_day" class="form-label">Festmeter heute</label>
                 <input readonly id="fm_day" class="form-control" name="fm_day"
                     value="{{ data_get($prefill, 'fm_day') }}">
@@ -155,6 +154,7 @@
         const $projects = @json($projects);
         const lastAmount = $projects[projectId]['last_fm_amount'] || 0;
         fmAmountInput.setAttribute('data-last-fm-amount', lastAmount);
+        fmAmountInput.setAttribute('placeholder', `Letzer Stand: ${lastAmount}`);
     }
 
     function updateLastFmTotal(form, projectId) {
@@ -164,6 +164,16 @@
         const $projects = @json($projects);
         const lastTotal = $projects[projectId]['last_fm_total'] || 0;
         fmTotalInput.setAttribute('data-last-fm-total', lastTotal);
+        fmTotalInput.setAttribute('placeholder', `Letzer Stand: ${lastTotal}`);
+    }
+
+    function updateBsPlacholder(form, projectId) {
+        const bsStartInput = form.querySelector('#bs_start');
+        // Get last_bs form projects data passed from the controller
+        // data is under projects[projectId]['last_bs']
+        const $projects = @json($projects);
+        const lastBs = $projects[projectId]['last_bs'] || 0;
+        bsStartInput.setAttribute('placeholder', `Letzer Stand: ${lastBs}`);
     }
 
     function initHarvesterForm(form) {
@@ -183,6 +193,7 @@
                 const projectId = selectedOption.value;
                 updateLastFmAmount(form, projectId);
                 updateLastFmTotal(form, projectId);
+                updateBsPlacholder(form, projectId);
             });
         }
 
