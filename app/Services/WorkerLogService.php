@@ -15,14 +15,19 @@ class WorkerLogService
         private readonly RueckezugLogService $rueckezugLogService
     ) {}
 
-    public function getPrintTableHeadersFor(string $role): array
+    private function getServiceForSlug(string $slug): BaseLogService
     {
-        $service = match ($role) {
+        return match ($slug) {
             Role::FORSTWIRT => $this->forstwirtLogService,
             Role::HARVESTER => $this->harvesterLogService,
             Role::RUECKEZUG => $this->rueckezugLogService,
-            default => throw new \InvalidArgumentException("Unbekannte Rolle: {$role}"),
+            default => throw new \InvalidArgumentException("Unbekannte Rolle: {$slug}"),
         };
+    }
+
+    public function getPrintTableHeadersFor(string $role): array
+    {
+        $service = $this->getServiceForSlug($role);
 
         return $service->getPrintTableHeaders();
     }
@@ -37,7 +42,7 @@ class WorkerLogService
             $service->deleteLogsFrom($worker->id, $date);
         });
     }
-
+/*
     public function saveLogs(User|int $worker, array $mappedLogs)
     {
         if (is_int($worker)) {
@@ -59,6 +64,18 @@ class WorkerLogService
         }
 
         return $lastLog;
+    }
+*/
+
+    public function saveLog(array $logData)
+    {
+        $log_type = $logData['log_type'] ?? null;
+
+        $service = $this->getServiceForSlug($log_type);
+
+        return $service->saveLog($logData);
+
+        //return $service->saveLog($logData);
     }
 
     public function loadSuccessLogs(User|int $worker, string $date): Collection
@@ -132,7 +149,7 @@ class WorkerLogService
 
     private function getServiceFor(User|int $worker): Collection
     {
-        if (is_int($worker)) {
+       if (is_int($worker)) {
             $worker = User::findOrFail($worker);
         }
 
@@ -143,16 +160,12 @@ class WorkerLogService
             default => throw new \InvalidArgumentException("Unbekannte Rolle: {$worker->role?->slug}"),
         };
     }
+            
 
     public function deleteLog(int $logId, ?string $slug = null): void
     {
         if ($slug) {
-            $service = match ($slug) {
-                Role::FORSTWIRT => $this->forstwirtLogService,
-                Role::HARVESTER => $this->harvesterLogService,
-                Role::RUECKEZUG => $this->rueckezugLogService,
-                default => throw new \InvalidArgumentException("Unbekannte Rolle: {$slug}"),
-            };
+            $service = $this->getServiceForSlug($slug);
 
             $service->deleteLog($logId);
         }

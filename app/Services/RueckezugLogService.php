@@ -7,13 +7,13 @@ use Illuminate\Support\Collection;
 
 class RueckezugLogService extends BaseLogService
 {
-    public function __construct() {}
-    protected function getModel(): string
+
+    public function getModel(): string
     {
         return RueckezugLog::class;
     }
 
-    protected function getEntryLabel(): ?string
+    public function getLogType(): string
     {
         return 'rueckezug';
     }
@@ -39,6 +39,7 @@ class RueckezugLogService extends BaseLogService
     {
 
         $log = new RueckezugLog();
+        $log->id = $logData['id'] ?? null;
         $log->user_id = $logData['user_id'];
         $log->project_id = $logData['project_id'];
         $log->date = $logData['date'];
@@ -52,6 +53,8 @@ class RueckezugLogService extends BaseLogService
         $log->loadings = $logData['loadings'] ?? null;
         $log->average_distance = $logData['average_distance'] ?? null;
         $log->save();
+
+        $log->log_type = $this->getLogType();
 
         return $log;
     }

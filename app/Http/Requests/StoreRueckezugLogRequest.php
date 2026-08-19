@@ -29,6 +29,7 @@ class StoreRueckezugLogRequest extends FormRequest
 
             'loadings' => ['nullable', 'numeric', 'min:0'],
             'average_distance' => ['nullable', 'numeric', 'min:0'],
+            'log_type' => ['nullable', 'string'],
         ];
     }
 
@@ -64,5 +65,9 @@ class StoreRueckezugLogRequest extends FormRequest
         if (!empty($normalized)) {
             $this->merge($normalized);
         }
+
+        $this->merge([
+            'log_type' => 'rueckezug',
+        ]);
     }
 }

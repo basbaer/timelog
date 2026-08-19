@@ -6,10 +6,11 @@ use App\Http\Requests\StoreHarvesterLogRequest;
 use App\Models\HarvesterLog;
 use App\Models\User;
 use App\Services\HarvesterLogService;
-use App\Services\ProjectService;
 use App\Services\WorkerLogService;
+use App\Services\ProjectService;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 
@@ -21,6 +22,7 @@ class HarvesterLogController extends BaseLogController
         private readonly ProjectService $projectService,
     ) {
         parent::__construct($workerLogService);
+
     }
 
     public function logModel(): string
@@ -126,10 +128,9 @@ class HarvesterLogController extends BaseLogController
         return $prefill;
     }
 
-    public function store(StoreHarvesterLogRequest $request): RedirectResponse
+    public function store(StoreHarvesterLogRequest $request): JsonResponse
     {
-        $validated = $request->validated();
-        return $this->storeLog($validated);
+        return $this->storeLog($request);
     }
 
     public function update(int $user_id, int $log_id): RedirectResponse

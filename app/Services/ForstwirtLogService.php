@@ -7,17 +7,17 @@ use App\Models\ForstwirtWorkingType;
 
 class ForstwirtLogService extends BaseLogService
 {
-    protected function getModel(): string
+    public function getModel(): string
     {
         return ForstwirtLog::class;
     }
 
-    protected function getRelations(): array
+    public function getRelations(): array
     {
         return ['project', 'workingType', 'user.role'];
     }
 
-    protected function getEntryLabel(): ?string
+    public function getLogType(): string
     {
         return 'forstwirt';
     }
@@ -39,11 +39,12 @@ class ForstwirtLogService extends BaseLogService
     /**
      * Persist entries in the same shape used by Forstwirt logs.
      */
-    public function saveLog(array $logData, int $userId): ?ForstwirtLog
+    public function saveLog(array $logData): ?ForstwirtLog
     {
 
         $log = new ForstwirtLog();
-        $log->user_id = $userId;
+        $log->id = $logData['id'] ?? null;
+        $log->user_id = $logData['user_id'];
         $log->project_id = $logData['project_id'];
         $log->working_type_id = ForstwirtWorkingType::where('slug', $logData['work_type'])->value('id');
         $log->date = $logData['date'];
@@ -54,20 +55,7 @@ class ForstwirtLogService extends BaseLogService
         $log->comment = $logData['comment'] ?? null;
         $log->save();
 
-        return $log;
-    }
-
-    public function updateLog(ForstwirtLog $log, array $logData): ForstwirtLog
-    {
-        $log->project_id = $logData['project_id'];
-        $log->working_type_id = ForstwirtWorkingType::where('slug', $logData['work_type'])->value('id');
-        $log->date = $logData['date'];
-        $log->start = $logData['start'];
-        $log->end = $logData['end'];
-        $log->pause = $logData['pause'] ?? 0;
-        $log->sum = $logData['sum'] ?? null;
-        $log->comment = $logData['comment'] ?? null;
-        $log->save();
+        $log->log_type = $this->getLogType();
 
         return $log;
     }

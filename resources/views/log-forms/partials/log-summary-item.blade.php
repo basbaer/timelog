@@ -1,5 +1,5 @@
 @php
-    $entryTitle = match ($savedLog->entry_label) {
+    $entryTitle = match ($savedLog->log_type) {
         'forstwirt' => $savedLog->workingType?->name ?? __('form.other'),
         'rueckezug' => 'Rückezug',
         default => 'Harvester',

@@ -3,13 +3,16 @@
 namespace App\Http\Controllers\Logs;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreForstwirtLogRequest;
+use App\Http\Requests\StoreRueckezugLogRequest;
+use App\Http\Requests\StoreHarvesterLogRequest;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use App\Services\WorkerLogService;
-use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\JsonResponse;
 
 abstract class BaseLogController extends Controller
 {
@@ -91,26 +94,27 @@ abstract class BaseLogController extends Controller
         // Just to check if there are any logs for today, the actual log data is loaded in the success method
         $existingLog = $this->getLogOfToday($user_id);
         // if there is an existing log, show the success page instead of log form - but only for non-admin users (admins can view the log form for any user, even if they already have a log for today)
-        if ($existingLog && !$isAdmin) {
+        /*if ($existingLog && !$isAdmin) {
             // Route like: log.forstwirt.success
             session()->flash('last_log', $existingLog); // Store log in session for retrieval in success method
             return redirect()->route($this->route() . '.success', ['worker_id' => (int) $user_id]);
         }
-
+*/
         $workerType = $user->role->slug; // e.g. 'forstwirt' or 'harvester'
         // Route like: log-forms/log-forstwirt
         return view('log-forms/log', compact(['projects', 'isAdmin', 'name', 'user_id', 'workerType', 'prefill', 'editingLogId', 'editingProjectId', 'editingLogDate']));
     }
 
-    protected function storeLog(array $validated): RedirectResponse
+    public function storeLog(StoreForstwirtLogRequest|StoreRueckezugLogRequest|StoreHarvesterLogRequest $request): JsonResponse
     {
+        $validated = $request->validated();
         /** @var \App\Models\User $user */
         $user = Auth::user();
         $workerId = (int) $validated['user_id'];
 
         // prevent form spoofing: only allow admins to log for other users
         if (! $user->isAdmin() && $user->id !== $workerId) {
-            return redirect()->back()->withErrors(['user_id' => 'Ungültige Benutzer-ID.']);
+            return response()->json(['error' => 'Ungültige Benutzer-ID.'], 422);
         }
 
         $editLogId = $validated['edit_log_id'] ?? null;
@@ -120,14 +124,23 @@ abstract class BaseLogController extends Controller
             $this->workerLogService->deleteLogsFrom($workerId, $originalDate);
         }
 
-        $this->logService()::saveLog($validated);
-
+        $log = $this->workerLogService->saveLog($validated);
+        /*
         if ($user->isAdmin()) {
             return redirect()->route('admin.worker.show', ['worker_id' => $workerId]);
         }
+            */
 
-        return redirect()->route($this->route() . '.success', ['worker_id' => $workerId]);
+        //$json = $this->workerLogService->getJsonResponseSummery($log);
+        $json = response()->json([
+            'success' => true,
+            'html' => view('log-forms.partials.log-summary-item', ['savedLog' => $log])->render(),
+        ]);
+    
+        return $json;
     }
+
+
 
     /**
      * Common logic for showing succes page

@@ -13,7 +13,7 @@
     </div>
 
     <div class="row">
-        <div class="col-10 col-md-5 mb-3">
+        <div class="col-10 col-md-7 mb-3">
             <select id="forstwirt_project_id" name="project_id" class="form-select" required>
                 <option value="" selected disabled>{{ __('form.select_project') }}</option>
                 @foreach ($projects as $project)

@@ -5,20 +5,26 @@ namespace App\Services;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
+use Illuminate\Http\JsonResponse;
 
 abstract class BaseLogService
 {
     abstract public function getPrintTableHeaders(): array;
-    abstract protected function getModel(): string;
+    abstract public function getModel(): string;
+    abstract public function getLogType(): string;
 
     protected function getRelations(): array
     {
         return ['project', 'user.role'];
     }
 
-    protected function getEntryLabel(): ?string
+    public function getJsonResponseLogSummery(Model $log): JsonResponse
     {
-        return null;
+        $json = response()->json([
+            'success' => true,
+            'html' => view('log-forms.partials.log-summary-item', ['savedLog' => $log])->render(),
+        ]);
+        return $json;
     }
 
 
@@ -76,8 +82,8 @@ abstract class BaseLogService
 
                 // Add entry_label if getEntryLabel() returns a non-null value
                 // This allows subclasses to specify a label for the log entries they handle.
-                if ($this->getEntryLabel() !== null) {
-                    $entry->entry_label = $this->getEntryLabel();
+                if ($this->getLogType() !== null) {
+                    $entry->entry_label = $this->getLogType();
                 }
 
                 if ($lastDate !== $entry->date_raw) {

@@ -9,24 +9,22 @@ use App\Models\ForstwirtWorkingType;
 use App\Models\User;
 use App\Services\ForstwirtLogService;
 use App\Services\ProjectService;
-use App\Services\WorkerLogService;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use App\Services\WorkerLogService;
+use Illuminate\Http\JsonResponse;
 
 class ForstwirtLogController extends BaseLogController
 {
-    private ForstwirtLogService $forstwirtLogService;
 
     public function __construct(
         WorkerLogService $workerLogService,
-        ForstwirtLogService $forstwirtLogService,
         private readonly ProjectService $projectService,
     )
     {
         parent::__construct($workerLogService);
-        $this->forstwirtLogService = $forstwirtLogService;
     }
 
     public function logModel(): string
@@ -52,6 +50,11 @@ class ForstwirtLogController extends BaseLogController
     protected function addPreviousData(int $user_id, Collection $projects): Collection
     {
         return $projects;
+    }
+
+    public function store(StoreForstwirtLogRequest $request): JsonResponse
+    {
+        return $this->storeLog($request);
     }
 
     public function edit(int $user_id, int $log_id)
@@ -108,12 +111,6 @@ class ForstwirtLogController extends BaseLogController
         }
 
         return $prefill;
-    }
-
-    public function store(StoreForstwirtLogRequest $request): RedirectResponse
-    {
-        $validated = $request->validated();
-        return $this->storeLog($validated);
     }
 
     public function update(int $user_id, int $log_id): RedirectResponse

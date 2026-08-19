@@ -34,8 +34,9 @@ class StoreForstwirtLogRequest extends FormRequest
             'start' => ['required', 'date_format:H:i'],
             'end' => ['required', 'date_format:H:i'],
             'pause' => ['nullable', 'integer', 'min:0'],
-            'sum' => ['date_format:H:i'],
+            'sum' => [],
             'comment' => ['nullable', 'string', 'max:1000'],
+            'log_type' => ['nullable', 'string'],
         ];
     }
 
@@ -50,6 +51,11 @@ class StoreForstwirtLogRequest extends FormRequest
             'sum' => __('log_validation.fields.sum'),
             'comment' => __('log_validation.fields.comment'),
         ];
+    }
+
+    protected function prepareForValidation(): void
+    {
+        $this->merge(['log_type' => 'forstwirt']);
     }
 
 }

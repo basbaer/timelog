@@ -29,7 +29,9 @@ class StoreHarvesterLogRequest extends FormRequest
 
             'fm_amount' => ['nullable', 'numeric', 'min:0'],
             'fm_total' => ['nullable', 'numeric', 'min:0'],
-            'fm_day' => ['nullable', 'numeric', 'min:0']
+            'fm_day' => ['nullable', 'numeric', 'min:0'],
+
+            'log_type' => ['nullable', 'string']
         ];
     }
 
@@ -47,6 +49,8 @@ class StoreHarvesterLogRequest extends FormRequest
         if (!empty($normalized)) {
             $this->merge($normalized);
         }
+
+        $this->merge(['log_type' => 'harvester']);
     }
 
     public function attributes(): array

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Logs;
 
 use App\Http\Controllers\Logs\BaseLogController;
-use App\Http\Requests\StoreRueckezugLogRequest;
 use App\Models\RueckezugLog;
 use App\Models\User;
 use App\Services\RueckezugLogService;
@@ -13,15 +12,20 @@ use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\StoreRueckezugLogRequest;
+use Illuminate\Http\JsonResponse;
 
 class RueckezugLogController extends BaseLogController
 {
+    private readonly RueckezugLogService $rueckezugLogService;
+
     public function __construct(
         WorkerLogService $workerLogService,
-        private readonly RueckezugLogService $rueckezugLogService,
+        RueckezugLogService $rueckezugLogService,
         private readonly ProjectService $projectService,
     ) {
         parent::__construct($workerLogService);
+        $this->rueckezugLogService = $rueckezugLogService;
     }
 
     protected function logModel(): string
@@ -55,6 +59,11 @@ class RueckezugLogController extends BaseLogController
         }
 
         return $projects;
+    }
+
+    public function store(StoreRueckezugLogRequest $request): JsonResponse
+    {
+        return $this->storeLog($request);
     }
 
     public function edit(int $user_id, int $log_id)
@@ -123,13 +132,6 @@ class RueckezugLogController extends BaseLogController
         }
 
         return $prefill;
-    }
-
-
-    public function store(StoreRueckezugLogRequest $request): RedirectResponse
-    {
-        $validated = $request->validated();
-        return $this->storeLog($validated);
     }
 
     public function update(int $user_id, int $log_id): RedirectResponse
