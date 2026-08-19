@@ -321,7 +321,7 @@
         form.prepend(alert);
     }
 
-    function initLogForSubmit(form) {
+    function initLogFormSubmit(form) {
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
             clearFormErrors(form);
@@ -330,7 +330,7 @@
             submitButton.disabled = true;
 
             const formData = new FormData(form);
-            formData.set('log_date', document.getElementById('date').value);
+            formData.set('date', document.getElementById('date').value);
 
             try {
                 const response = await fetch(form.action, {
@@ -369,6 +369,6 @@
 
     }
 
-    window.initLogForSubmit = initLogForSubmit;
+    window.initLogFormSubmit = initLogFormSubmit;
     window.initHarvesterForm = initHarvesterForm;
 </script>

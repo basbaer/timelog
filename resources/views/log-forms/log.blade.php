@@ -24,21 +24,13 @@
         $today = now()->format('Y-m-d');
     @endphp
 
-    <form id="rueckezug-log-form" class="container" method="POST" action="{{ route('log.rueckezug.store') }}">
-        @csrf
-        <input type="hidden" name="user_id" value="{{ $user_id }}">
-        @if (!empty($editingLogId))
-            <input type="hidden" name="edit_log_id" value="{{ $editingLogId }}">
-        @endif
-        @if (!empty($editingLogDate))
-            <input type="hidden" name="edit_log_date" value="{{ $editingLogDate }}">
-        @endif
+    <div class="container">
 
         <!-- Date -->
         <div class="container my-3 px-0">
             <label for="date" class="form-label h3">Datum</label>
-            <input id="date" name="log_date" class="form-control" type="date"
-                value="{{ old('log_date', data_get($prefill, 'log_date', $today)) }}"
+            <input id="date" name="date" class="form-control" type="date"
+                value="{{ old('date', data_get($prefill, 'date') ?? $today) }}"
                 @if ($workerType === 'forstwirt') readonly @endif />
         </div>
 
@@ -59,7 +51,7 @@
             <button id="btn-add-forstwirt" class="btn btn-primary my-3"
                 type="button">{{ __('form.add_forstwirt') }}</button>
         </div>
-    </form>
+    </div>
 
 
     <template id="template-rueckezug-form">
@@ -135,7 +127,6 @@
                 addButton.disabled = false;
             }
         }
-
     </script>
 
 </body>

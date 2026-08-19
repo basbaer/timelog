@@ -245,7 +245,7 @@
         form.prepend(alert);
     }
 
-    function initLogForSubmit(form) {
+    function initLogFormSubmit(form) {
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
             clearFormErrors(form);
@@ -253,8 +253,10 @@
             const submitButton = form.querySelector('button[type="submit"]');
             submitButton.disabled = true;
 
+            // submitting the date from the date input of the side the form is rendered on
             const formData = new FormData(form);
-            formData.set('log_date', document.getElementById('date').value);
+            const dateInput = document.getElementById('date');
+            formData.set('date', dateInput.value);
 
             try {
                 const response = await fetch(form.action, {
@@ -293,6 +295,6 @@
 
     }
 
-    window.initLogForSubmit = initLogForSubmit;
+    window.initLogFormSubmit = initLogFormSubmit;
     window.initRueckezugForm = initRueckezugForm;
 </script>

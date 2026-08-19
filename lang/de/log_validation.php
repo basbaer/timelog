@@ -16,8 +16,8 @@ return [
         'bs_start' => 'Betriebsstunden - Anfang',
         'bs_end' => 'Betriebsstunden - Ende',
         'bs_diff' => 'Betriebsstunden - Differenz',
-        'stueckzahl' => 'Stückzahl',
-        'fm_gesamt' => 'Gesamt fm',
-        'day_fm' => 'fm/Tag',
+        'fm_amount' => 'Stückzahl',
+        'fm_total' => 'Gesamt fm',
+        'fm_day' => 'fm/Tag',
     ],
 ];

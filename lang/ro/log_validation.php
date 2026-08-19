@@ -16,8 +16,8 @@ return [
         'bs_start' => 'Ore de funcționare - început',
         'bs_end' => 'Ore de funcționare - sfârșit',
         'bs_diff' => 'Diferență ore de funcționare',
-        'stueckzahl' => 'Cantitate',
-        'fm_gesamt' => 'Total fm',
-        'day_fm' => 'fm/zi',
+        'fm_amount' => 'Cantitate',
+        'fm_total' => 'Total fm',
+        'fm_day' => 'fm/zi',
     ],
 ];
