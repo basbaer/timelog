@@ -17,7 +17,6 @@ use App\Http\Controllers\WorkerDetailController;
 use App\Http\Controllers\WorkerSettingsController;
 use App\Http\Controllers\WorkersOverviewController;
 use App\Http\Middleware\Admin;
-use App\Http\Middleware\Forstwirt;
 use App\Http\Middleware\Harvester;
 use App\Http\Middleware\Rueckezug;
 use App\Http\Middleware\IsLoggedIn;
@@ -140,7 +139,7 @@ Route::middleware([IsLoggedIn::class])->group(function () {
 
     Route::get('/workers/{worker_id}/preparePrint/loadClosedProjects', [PrintController::class, 'loadClosedProjects'])
         ->name('workers.preparePrint.loadClosedProjects');
-    
+
     Route::get('/workers/{worker_id}/print/', [PrintController::class, 'print'])
         ->name('print.show');
 
@@ -150,34 +149,26 @@ Route::middleware([IsLoggedIn::class])->group(function () {
     Route::get('/workers/{worker_id}/settings', [WorkerSettingsController::class, 'show'])->name('worker.settings');
 
     Route::post('/workers/{worker_id}/password-change', [WorkerSettingsController::class, 'changePassword'])->name('worker.password.change');
+
+    // ==== Forstwirt Route ====
+    Route::get('/log-forstwirt/{user_id?}', [ForstwirtLogController::class, 'show'])
+        ->name('log.forstwirt');
+
+    Route::get('/log-forstwirt/{user_id}/edit/{log_id}', [ForstwirtLogController::class, 'edit'])
+        ->name('log.forstwirt.edit');
+
+    Route::post('/log-forstwirt', [ForstwirtLogController::class, 'store'])
+        ->name('log.forstwirt.store');
+
+    Route::put('/log-forstwirt/{user_id}/edit/{log_id}', [ForstwirtLogController::class, 'update'])
+        ->name('log.forstwirt.update');
+
+    Route::get('/log-forstwirt/{worker_id}/success', [ForstwirtLogController::class, 'success'])
+        ->name('log.forstwirt.success');
+
+    Route::delete('/log-forstwirt/{worker_id}/delete', [ForstwirtLogController::class, 'deleteLog'])
+        ->name('log.forstwirt.delete');
 });
-
-// =================================================================================
-
-// ==== Forstwirt Route ====
-Route::get('/log-forstwirt/{user_id?}', [ForstwirtLogController::class, 'show'])
-    ->name('log.forstwirt')
-    ->middleware([Forstwirt::class]);
-
-Route::get('/log-forstwirt/{user_id}/edit/{log_id}', [ForstwirtLogController::class, 'edit'])
-    ->name('log.forstwirt.edit')
-    ->middleware([Forstwirt::class]);
-
-Route::post('/log-forstwirt', [ForstwirtLogController::class, 'store'])
-    ->name('log.forstwirt.store')
-    ->middleware([Forstwirt::class]);
-
-Route::put('/log-forstwirt/{user_id}/edit/{log_id}', [ForstwirtLogController::class, 'update'])
-    ->name('log.forstwirt.update')
-    ->middleware([Forstwirt::class]);
-
-Route::get('/log-forstwirt/{worker_id}/success', [ForstwirtLogController::class, 'success'])
-    ->name('log.forstwirt.success')
-    ->middleware([Forstwirt::class]);
-
-Route::delete('/log-forstwirt/{worker_id}/delete', [ForstwirtLogController::class, 'deleteLog'])
-    ->middleware([Forstwirt::class])
-    ->name('log.forstwirt.delete');
 
 //====================================================================================
 
