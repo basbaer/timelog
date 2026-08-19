@@ -3,7 +3,6 @@
 <form id="rueckezug-log-form" class="container border rounded-2 mt-2" method="POST"
     action="{{ route('log.rueckezug.store') }}" data-log-type="rueckezug">
     @csrf
-    <!-- TODO: Date -->
     <input type="hidden" name="user_id" value="{{ $user_id }}">
 
     <!-- Projekt Dropdown -->
@@ -254,6 +253,9 @@
             const submitButton = form.querySelector('button[type="submit"]');
             submitButton.disabled = true;
 
+            const formData = new FormData(form);
+            formData.set('log_date', document.getElementById('date').value);
+
             try {
                 const response = await fetch(form.action, {
                     method: 'POST',
@@ -261,7 +263,7 @@
                         'Accept': 'application/json',
                         'X-Requested-With': 'XMLHttpRequest',
                     },
-                    body: new FormData(form),
+                    body: formData,
                 });
 
                 if (response.status === 422) {

@@ -329,6 +329,9 @@
             const submitButton = form.querySelector('button[type="submit"]');
             submitButton.disabled = true;
 
+            const formData = new FormData(form);
+            formData.set('log_date', document.getElementById('date').value);
+
             try {
                 const response = await fetch(form.action, {
                     method: 'POST',
@@ -336,7 +339,7 @@
                         'Accept': 'application/json',
                         'X-Requested-With': 'XMLHttpRequest',
                     },
-                    body: new FormData(form),
+                    body: formData,
                 });
 
                 if (response.status === 422) {
