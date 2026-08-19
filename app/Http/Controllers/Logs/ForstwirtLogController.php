@@ -110,30 +110,6 @@ class ForstwirtLogController extends BaseLogController
         return $prefill;
     }
 
-    protected function mapValidatedToLogs(array $validated): array
-    {
-        $logDate = $validated['log_date'];
-
-        return collect($validated['work_logs'] ?? [])
-            ->flatMap(function (array $projectWorkLogs, $projectId) use ($logDate) {
-                return collect($projectWorkLogs)
-                    ->filter(fn(array $entry) => trim((string) ($entry['type'] ?? '')) !== '')
-                    ->map(fn(array $entry) => [
-                        'project_id' => (int) $projectId,
-                        'date' => $logDate,
-                        'type' => $entry['type'],
-                        'start' => $entry['start'],
-                        'end' => $entry['end'],
-                        'pause' => isset($entry['pause']) ? (int) $entry['pause'] : 0,
-                        'sum' => $entry['sum'] ?? null,
-                        'comment' => $entry['comment'] ?? null,
-                    ])
-                    ->values();
-            })
-            ->values()
-            ->all();
-    }
-
     public function store(StoreForstwirtLogRequest $request): RedirectResponse
     {
         $validated = $request->validated();

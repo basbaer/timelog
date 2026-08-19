@@ -3,7 +3,6 @@
 namespace App\Http\Requests;
 
 use App\Models\ForstwirtWorkingType;
-use App\Models\Project;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -28,66 +27,29 @@ class StoreForstwirtLogRequest extends FormRequest
         $workTypeKeys = ForstwirtWorkingType::all()->pluck('slug')->toArray();
 
         return [
-            'log_date' => ['required', 'date'],
-            'work_logs' => ['required', 'array', 'min:1'],
-            'work_logs.*' => ['required', 'array', 'min:1'],
-            'work_logs.*.*.type' => ['required', 'string', Rule::in($workTypeKeys)],
-            'work_logs.*.*.start' => ['required', 'date_format:H:i'],
-            'work_logs.*.*.end' => ['required', 'date_format:H:i'],
-            'work_logs.*.*.pause' => ['nullable', 'integer', 'min:0'],
-            'work_logs.*.*.sum' => ['date_format:H:i'],
-            'work_logs.*.*.comment' => ['nullable', 'string', 'max:1000'],
+            'user_id' => ['required', 'integer', 'exists:users,id'],
+            'project_id' => ['required', 'integer', 'exists:projects,id'],
+            'date' => ['required', 'date'],
+            'work_type' => ['required', 'string', Rule::in($workTypeKeys)],
+            'start' => ['required', 'date_format:H:i'],
+            'end' => ['required', 'date_format:H:i'],
+            'pause' => ['nullable', 'integer', 'min:0'],
+            'sum' => ['date_format:H:i'],
+            'comment' => ['nullable', 'string', 'max:1000'],
         ];
     }
 
-    public function messages(): array
+    public function attributes(): array
     {
-        $messages = [];
-        $projects = Project::whereIn('id', array_keys((array) $this->input('work_logs', [])))
-            ->get()
-            ->keyBy('id');
-
-        foreach ((array) $this->input('work_logs', []) as $projectId => $projectWorkLogs) {
-            $project = $projects->get((int) $projectId);
-            $projectLabel = $project
-                ? trim($project->location . ' | ' . $project->client, " |")
-                : (string) $projectId;
-
-            foreach ((array) $projectWorkLogs as $entryIndex => $entry) {
-                if (!is_array($entry)) {
-                    continue;
-                }
-
-                foreach (['type', 'start', 'end'] as $field) {
-                    if (!array_key_exists($field, $entry) || trim((string) ($entry[$field] ?? '')) === '') {
-                        $messages["work_logs.$projectId.$entryIndex.$field.required"] = __('log_validation.messages.required', [
-                            'project' => $projectLabel,
-                            'field' => __('log_validation.fields.' . $field),
-                        ]);
-                    }
-                }
-            }
-        }
-
-        return $messages;
+        return [
+            'date' => __('log_validation.fields.date'),
+            'type' => __('log_validation.fields.type'),
+            'start' => __('log_validation.fields.start'),
+            'end' => __('log_validation.fields.end'),
+            'pause' => __('log_validation.fields.pause'),
+            'sum' => __('log_validation.fields.sum'),
+            'comment' => __('log_validation.fields.comment'),
+        ];
     }
 
-    protected function prepareForValidation(): void
-    {
-        $workLogs = collect((array) $this->input('work_logs', []))
-            ->map(function (array $projectWorkLogs) {
-                return collect($projectWorkLogs)
-                    ->filter(fn($entry) => is_array($entry))
-                    ->filter(fn(array $entry) =>
-                        trim((string) ($entry['start'] ?? '')) !== ''
-                        || trim((string) ($entry['end'] ?? '')) !== ''
-                        || trim((string) ($entry['comment'] ?? '')) !== '')
-                    ->values()
-                    ->all();
-            })
-            ->filter(fn(array $projectWorkLogs) => !empty($projectWorkLogs))
-            ->all();
-
-        $this->merge(['work_logs' => $workLogs]);
-    }
 }

@@ -39,33 +39,28 @@ class ForstwirtLogService extends BaseLogService
     /**
      * Persist entries in the same shape used by Forstwirt logs.
      */
-    public function saveLogs(array $mappedLogs, int $userId): ?ForstwirtLog
+    public function saveLog(array $logData, int $userId): ?ForstwirtLog
     {
-        $lastLog = null;
 
-        foreach ($mappedLogs as $logData) {
-            $log = new ForstwirtLog();
-            $log->user_id = $userId;
-            $log->project_id = $logData['project_id'];
-            $log->working_type_id = ForstwirtWorkingType::where('slug', $logData['type'])->value('id');
-            $log->date = $logData['date'];
-            $log->start = $logData['start'];
-            $log->end = $logData['end'];
-            $log->pause = $logData['pause'] ?? 0;
-            $log->sum = $logData['sum'] ?? null;
-            $log->comment = $logData['comment'] ?? null;
-            $log->save();
+        $log = new ForstwirtLog();
+        $log->user_id = $userId;
+        $log->project_id = $logData['project_id'];
+        $log->working_type_id = ForstwirtWorkingType::where('slug', $logData['work_type'])->value('id');
+        $log->date = $logData['date'];
+        $log->start = $logData['start'];
+        $log->end = $logData['end'];
+        $log->pause = $logData['pause'] ?? 0;
+        $log->sum = $logData['sum'] ?? null;
+        $log->comment = $logData['comment'] ?? null;
+        $log->save();
 
-            $lastLog = $log;
-        }
-
-        return $lastLog;
+        return $log;
     }
 
     public function updateLog(ForstwirtLog $log, array $logData): ForstwirtLog
     {
         $log->project_id = $logData['project_id'];
-        $log->working_type_id = ForstwirtWorkingType::where('slug', $logData['type'])->value('id');
+        $log->working_type_id = ForstwirtWorkingType::where('slug', $logData['work_type'])->value('id');
         $log->date = $logData['date'];
         $log->start = $logData['start'];
         $log->end = $logData['end'];
@@ -86,9 +81,8 @@ class ForstwirtLogService extends BaseLogService
             ->orderBy('start')
             ->get()
             ->map(function ($log) {
-                $log->entry_label ='forstwirt';
+                $log->entry_label = 'forstwirt';
                 return $log;
             });
     }
-
 }

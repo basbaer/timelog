@@ -1,9 +1,10 @@
 {{-- resources/views/log-forms/forstwirt-form.blade.php --}}
-@props(['projects', 'workTypes' => [], 'prefill' => []])
+@props(['projects', 'workTypes' => [], 'prefill' => [], 'user_id'])
 
 <form id="forstwirt-log-form" class="container border rounded-2 position-relative mt-3" method="POST"
     action="{{ route('log.forstwirt.store') }}" data-log-type="forstwirt">
     @csrf
+    <input type="hidden" name="user_id" value="{{ $user_id }}">
 
     <div class="d-flex flex-row justify-content-between mb-1 mt-2">
         <label for="project_id" class="h3 form-label">{{ __('form.project') }}</label>
@@ -32,8 +33,8 @@
         <div class="col-8 col-md-5">
             <select id="work_type" name="work_type" class="form-select" required>
                 <option value="" selected disabled>{{ __('form.select_work_type') }}</option>
-                @foreach ($workTypes as $type => $label)
-                    <option value="{{ $type }}" {{ old('work_type') === $type ? 'selected' : '' }}>
+                @foreach ($workTypes as $slug => $label)
+                    <option value="{{ $slug }}" {{ old('work_type') === $slug ? 'selected' : '' }}>
                         {{ $label }}
                     </option>
                 @endforeach
