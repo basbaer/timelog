@@ -50,6 +50,34 @@
         </div>
     </div>
 
+    <!-- Arbeitszeit -->
+    <div class="row mb-2">
+        <div class="h3">{{ __('form.working_time') }}</div>
+        <div class="col-6 col-md-3 mb-2">
+            <label for="start" class="form-label">{{ __('form.from') }}</label>
+            <input type="time" id="start" class="form-control" name="start" lang="de-DE" step="900"
+                value="{{ data_get($prefill, 'start') }}">
+        </div>
+
+        <div class="col-6 col-md-3 mb-2">
+            <label for="end" class="form-label">{{ __('form.to') }}</label>
+            <input type="time" id="end" class="form-control" name="end" lang="de-DE" step="900"
+                value="{{ data_get($prefill, 'end') }}">
+        </div>
+
+        <div class="col-6 col-md-3 mb-2">
+            <label for="pause" class="form-label">{{ __('form.pause') }}</label>
+            <input type="number" id="pause" class="form-control" name="pause" min="0" step="15"
+                value="{{ data_get($prefill, 'pause') }}">
+        </div>
+
+        <div class="col-6 col-md-3 mb-2">
+            <label for="sum" class="form-label">{{ __('form.working_time') }}</label>
+            <input type="text" id="sum" class="form-control" name="sum" readonly
+                value="{{ data_get($prefill, 'sum') }}">
+        </div>
+    </div>
+
     <div class="mb-2">
         <h3 class="mt-2">Festmeter</h3>
         <div class="row">
@@ -176,6 +204,49 @@
         bsStartInput.setAttribute('placeholder', `Letzer Stand: ${lastBs}`);
     }
 
+    // Konvertiert eine Anzahl Minuten in einen HH:MM-String (z.B. 90 -> "01:30").
+    function formatMinutesToHHMM(minutes) {
+        const safeMinutes = Math.max(0, Math.round(minutes));
+        const hours = Math.floor(safeMinutes / 60);
+        const remainingMinutes = safeMinutes % 60;
+        return `${String(hours).padStart(2, "0")}:${String(remainingMinutes).padStart(2, "0")}`;
+    }
+
+    function calculateWorkingHours() {
+        const startInput = document.getElementById('start');
+        const endInput = document.getElementById('end');
+        const pauseInput = document.getElementById('pause');
+        const sumInput = document.getElementById('sum');
+
+        if (!startInput || !endInput || !pauseInput || !sumInput) {
+            return;
+        }
+
+        const start = startInput.value;
+        const end = endInput.value;
+        const pause = parseInt(pauseInput.value || 0, 10);
+
+        if (!start || !end) {
+            sumInput.value = "";
+            return;
+        }
+
+        const startDate = new Date(`1970-01-01T${start}:00`);
+        const endDate = new Date(`1970-01-01T${end}:00`);
+        let diff = (endDate - startDate) / 60000;
+
+        if (diff < 0) {
+            diff += 24 * 60; // over midnight
+        }
+
+        diff -= pause;
+        if (diff < 0) {
+            diff = 0;
+        }
+
+        sumInput.value = formatMinutesToHHMM(diff);
+    }
+
     function initHarvesterForm(form) {
         ["bs_start", "bs_end"].forEach(field => {
             const input = form.querySelector(`#${field}`);
@@ -183,6 +254,14 @@
                 input.addEventListener("input", () => calculateHarvesterDiff(form));
             }
         });
+
+        ["start", "end", "pause"].forEach(field => {
+            const input = form.querySelector(`#${field}`);
+            if (input) {
+                input.addEventListener("input", () => calculateWorkingHours());
+            }
+        });
+        //calculateWorkingHours(); // in case of old()/prefill values on load
 
         //Add event listener for project selection change to update last fm_amount
         const projectSelect = form.querySelector('#project_id');
@@ -242,7 +321,7 @@
         form.prepend(alert);
     }
 
-     function initLogForSubmit(form) {
+    function initLogForSubmit(form) {
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
             clearFormErrors(form);
@@ -286,7 +365,7 @@
         });
 
     }
-    
+
     window.initLogForSubmit = initLogForSubmit;
     window.initHarvesterForm = initHarvesterForm;
 </script>
