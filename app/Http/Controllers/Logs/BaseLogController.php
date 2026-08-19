@@ -23,7 +23,6 @@ abstract class BaseLogController extends Controller
     abstract protected function workingTypeModel(): string;
     abstract protected function route(): string;    // z.B. 'log.forstwirt' oder 'log.harvester'
     abstract protected function viewPrefix(): string;     // z.B. 'log-forstwirt'
-    abstract protected function mapValidatedToLogs(array $validated): array;
     abstract protected function addPreviousData(int $user_id, Collection $projects): Collection;
     abstract protected function buildEditPrefill(Collection $logs, string $date): array;
 

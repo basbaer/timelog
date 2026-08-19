@@ -50,7 +50,7 @@ class RueckezugLogController extends BaseLogController
     protected function addPreviousData(int $user_id, Collection $projects): Collection
     {
         foreach ($projects as $project) {
-            
+
 
             $project->last_bs = $this->rueckezugLogService->getLastBsTo($user_id, $project->id);
             $project->last_average_distance = $this->rueckezugLogService->getLastAverageDistance($user_id, $project->id);
@@ -129,76 +129,34 @@ class RueckezugLogController extends BaseLogController
         return $prefill;
     }
 
-    protected function mapValidatedToLogs(array $validated): array
-    {
-        $logDate = $validated['log_date'];
-
-        return collect($validated['work_logs'] ?? [])
-            ->map(function (array $workLog, $projectId) use ($logDate) {
-                return [
-                    'project_id' => (int) $projectId,
-                    'date' => $logDate,
-                    'has_rueckezug_payload' => $this->hasRueckezugPayload($workLog),
-                    'start' => $workLog['start'] ?? null,
-                    'end' => $workLog['end'] ?? null,
-                    'sum' => $this->getSumForMainLog($workLog),
-                    'pause' => isset($workLog['pause']) ? (int) $workLog['pause'] : 0,
-                    'bs_start' => isset($workLog['bs_start']) ? (float) $workLog['bs_start'] : null,
-                    'bs_end' => isset($workLog['bs_end']) ? (float) $workLog['bs_end'] : null,
-                    'bs_diff' => $workLog['bs_diff'] ?? null,
-                    'loadings' => isset($workLog['loadings']) ? (float) $workLog['loadings'] : null,
-                    'average_distance' => isset($workLog['average_distance']) ? (float) $workLog['average_distance'] : null,
-                    'forstwirt_work_entries' => collect($workLog['entries'] ?? [])
-                        ->map(fn(array $entry) => [
-                            'project_id' => (int) $projectId,
-                            'date' => $logDate,
-                            'type' => $entry['type'],
-                            'start' => $entry['start'],
-                            'end' => $entry['end'],
-                            'pause' => isset($entry['pause']) ? (int) $entry['pause'] : 0,
-                            'sum' => $entry['sum'] ?? null,
-                            'comment' => $entry['comment'] ?? null,
-                        ])
-                        ->values()
-                        ->all(),
-                ];
-            })
-            ->values()
-            ->all();
-    }
 
     public function store(StoreRueckezugLogRequest $request): RedirectResponse
     {
         $validated = $request->validated();
-        $mappedLogs = $this->mapValidatedToLogs($validated);
-        $user = User::findOrFail((int) $request->input('user_id'));
+
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        $workerId = (int) $validated['user_id'];
+
+        // prevent form spoofing: only allow admins to log for other users
+        if (! $user->isAdmin() && $user->id !== $workerId) {
+            return redirect()->back()->withErrors(['user_id' => 'Ungültige Benutzer-ID.']);
+        }
+
         $editLogId = $request->integer('edit_log_id');
 
         if ($editLogId) {
             $originalDate = $request->input('edit_log_date', $validated['log_date']);
-            $this->workerLogService->deleteLogsFrom($user, $originalDate);
+            $this->workerLogService->deleteLogsFrom($workerId, $originalDate);
         }
 
-        $lastLog = null;
+        $this->rueckezugLogService->saveLog($validated);
 
-        foreach ($mappedLogs as $logData) {
-            if ($logData['has_rueckezug_payload']) {
-                $lastLog = $this->rueckezugLogService->saveLogs([$logData], $user->id) ?? $lastLog;
-            }
-
-            if (!empty($logData['forstwirt_work_entries'])) {
-                $forstwirtLastLog = $this->forstwirtLogService->saveLogs($logData['forstwirt_work_entries'], $user->id);
-                $lastLog = $forstwirtLastLog ?? $lastLog;
-            }
-        }
-
-        /** @var \App\Models\User $user */
-        $user = Auth::user();
         if ($user->isAdmin()) {
-            return redirect()->route('admin.worker.show', ['worker_id' => (int) $lastLog->user_id]);
+            return redirect()->route('admin.worker.show', ['worker_id' => $workerId]);
         }
 
-        return redirect()->route($this->route() . '.success', ['worker_id' => (int) $lastLog->user_id]);
+        return redirect()->route($this->route() . '.success', ['worker_id' => $workerId]);
     }
 
     public function update(int $user_id, int $log_id): RedirectResponse
@@ -234,16 +192,5 @@ class RueckezugLogController extends BaseLogController
         $log->save();
 
         return redirect()->route('worker.show', ['worker_id' => $user->id])->with('success', 'Eintrag erfolgreich aktualisiert.');
-    }
-
-    private function hasRueckezugPayload(array $workLog): bool
-    {
-        foreach (['start', 'end', 'sum', 'pause', 'bs_start', 'bs_end', 'bs_diff', 'loadings', 'average_distance'] as $field) {
-            if (array_key_exists($field, $workLog) && trim((string) ($workLog[$field] ?? '')) !== '') {
-                return true;
-            }
-        }
-
-        return false;
     }
 }

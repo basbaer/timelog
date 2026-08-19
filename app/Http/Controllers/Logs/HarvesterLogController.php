@@ -130,49 +130,9 @@ class HarvesterLogController extends BaseLogController
         return $prefill;
     }
 
-    protected function mapValidatedToLogs(array $validated): array
-    {
-        $logDate = $validated['log_date'];
-
-        return collect($validated['work_logs'] ?? [])
-            ->map(function (array $workLog, $projectId) use ($logDate) {
-                return [
-                    'project_id' => (int) $projectId,
-                    'date' => $logDate,
-                    'has_harvester_payload' => $this->hasHarvesterPayload($workLog),
-                    'start' => $workLog['start'] ?? null,
-                    'end' => $workLog['end'] ?? null,
-                    'sum' => $this->getSumForMainLog($workLog),
-                    'pause' => isset($workLog['pause']) ? (int) $workLog['pause'] : 0,
-                    'bs_start' => isset($workLog['bs_start']) ? (float) $workLog['bs_start'] : null,
-                    'bs_end' => isset($workLog['bs_end']) ? (float) $workLog['bs_end'] : null,
-                    'bs_diff' => $workLog['bs_diff'] ?? null,
-                    'stueckzahl' => isset($workLog['stueckzahl']) ? (float) $workLog['stueckzahl'] : null,
-                    'fm_gesamt' => isset($workLog['fm_gesamt']) ? (float) $workLog['fm_gesamt'] : null,
-                    'fm_day' => $workLog['fm_day'] ?? null,
-                    'forstwirt_work_entries' => collect($workLog['entries'] ?? [])
-                        ->map(fn(array $entry) => [
-                            'project_id' => (int) $projectId,
-                            'date' => $logDate,
-                            'type' => $entry['type'],
-                            'start' => $entry['start'],
-                            'end' => $entry['end'],
-                            'pause' => isset($entry['pause']) ? (int) $entry['pause'] : 0,
-                            'sum' => $entry['sum'] ?? null,
-                            'comment' => $entry['comment'] ?? null,
-                        ])
-                        ->values()
-                        ->all(),
-                ];
-            })
-            ->values()
-            ->all();
-    }
-
     public function store(StoreHarvesterLogRequest $request): RedirectResponse
     {
         $validated = $request->validated();
-        $mappedLogs = $this->mapValidatedToLogs($validated);
         $user = User::findOrFail((int) $request->input('user_id'));
         $editLogId = $request->integer('edit_log_id');
 

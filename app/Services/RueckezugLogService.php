@@ -7,9 +7,7 @@ use Illuminate\Support\Collection;
 
 class RueckezugLogService extends BaseLogService
 {
-    public function __construct()
-    {
-    }
+    public function __construct() {}
     protected function getModel(): string
     {
         return RueckezugLog::class;
@@ -37,31 +35,25 @@ class RueckezugLogService extends BaseLogService
         ];
     }
 
-    public function saveLogs(array $mappedLogs, int $userId)
+    public function saveLog(array $logData)
     {
-        $lastLog = null;
 
-        foreach ($mappedLogs as $logData) {
-            $log = new RueckezugLog();
-            $log->user_id = $userId;
-            $log->project_id = $logData['project_id'];
-            $log->date = $logData['date'];
-            $log->start = $logData['start'] ?? null;
-            $log->end = $logData['end'] ?? null;
-            $log->sum = $logData['sum'] ?? null;
-            $log->pause = $logData['pause'] ?? 0;
-            $log->bs_from = $logData['bs_start'] ?? null;
-            $log->bs_to = $logData['bs_end'] ?? null;
-            $log->bs_diff = $logData['bs_diff'] ?? null;
-            $log->loadings = $logData['loadings'] ?? null;
-            $log->average_distance = $logData['average_distance'] ?? null;
-            $log->save();
-            $lastLog = $log;
+        $log = new RueckezugLog();
+        $log->user_id = $logData['user_id'];
+        $log->project_id = $logData['project_id'];
+        $log->date = $logData['date'];
+        $log->start = $logData['start'] ?? null;
+        $log->end = $logData['end'] ?? null;
+        $log->sum = $logData['sum'] ?? null;
+        $log->pause = $logData['pause'] ?? 0;
+        $log->bs_from = $logData['bs_start'] ?? null;
+        $log->bs_to = $logData['bs_end'] ?? null;
+        $log->bs_diff = $logData['bs_diff'] ?? null;
+        $log->loadings = $logData['loadings'] ?? null;
+        $log->average_distance = $logData['average_distance'] ?? null;
+        $log->save();
 
-            // forstwirt nested entries are handled by the orchestrator
-        }
-
-        return $lastLog;
+        return $log;
     }
 
     public function updateLog(RueckezugLog $log, array $logData): RueckezugLog
