@@ -22,9 +22,9 @@ class RueckezugLogController extends BaseLogController
     public function __construct(
         WorkerLogService $workerLogService,
         RueckezugLogService $rueckezugLogService,
-        private readonly ProjectService $projectService,
+        ProjectService $projectService,
     ) {
-        parent::__construct($workerLogService);
+        parent::__construct($workerLogService, $projectService);
         $this->rueckezugLogService = $rueckezugLogService;
     }
 

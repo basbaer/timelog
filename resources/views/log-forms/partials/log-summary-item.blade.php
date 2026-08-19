@@ -8,7 +8,9 @@
 
 <div class="border rounded p-3 mb-3">
     <div class="mb-2">
-        <h3 class="h5 mb-0">{{ $entryTitle }}</h3>
+        <div class="h4 mb-2">{{ $project->title }}</div>
+        <h3 class="h5 mb-2">{{ $entryTitle }}</h3>
+
             <div class="row g-3">
                 <div class="col">
                     {{ \Carbon\Carbon::parse($savedLog->start)->format('H:i') }} -
@@ -19,7 +21,7 @@
             </div>
     </div>
 
-    @if ($savedLog->entry_label === 'harvester')
+    @if ($savedLog->log_type === 'harvester')
         <div class="row g-3">
             <div class="col-md-3 col-6">
                 <div class="small text-muted">Betriebsstunden</div>
@@ -40,7 +42,7 @@
                 <div>{{ $savedLog->fm_day ?? '-' }}</div>
             </div>
         </div>
-    @elseif ($savedLog->entry_label === 'rueckezug')
+    @elseif ($savedLog->log_type === 'rueckezug')
         <div class="row g-3">
             <div class="col-md-3 col-6">
                 <div class="small text-muted">Betriebsstunden</div>

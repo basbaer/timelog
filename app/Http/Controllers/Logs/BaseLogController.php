@@ -12,15 +12,18 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use App\Services\WorkerLogService;
+use App\Services\ProjectService;
 use Illuminate\Http\JsonResponse;
 
 abstract class BaseLogController extends Controller
 {
     protected WorkerLogService $workerLogService;
+    protected ProjectService $projectService;
 
-    public function __construct(WorkerLogService $workerLogService)
+    public function __construct(WorkerLogService $workerLogService, ProjectService $projectService)
     {
         $this->workerLogService = $workerLogService;
+        $this->projectService = $projectService;
     }
     // Subklassen müssen diese liefern:
     abstract protected function logModel(): string;       // z.B. ForstwirtLog::class
@@ -131,10 +134,10 @@ abstract class BaseLogController extends Controller
         }
             */
 
-        //$json = $this->workerLogService->getJsonResponseSummery($log);
+        $project = $this->projectService->getProjectById($log->project_id);
         $json = response()->json([
             'success' => true,
-            'html' => view('log-forms.partials.log-summary-item', ['savedLog' => $log])->render(),
+            'html' => view('log-forms.partials.log-summary-item', ['savedLog' => $log, 'project' => $project])->render(),
         ]);
     
         return $json;
