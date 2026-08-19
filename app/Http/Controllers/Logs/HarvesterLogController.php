@@ -3,10 +3,8 @@
 namespace App\Http\Controllers\Logs;
 
 use App\Http\Requests\StoreHarvesterLogRequest;
-use App\Models\ForstwirtWorkingType;
 use App\Models\HarvesterLog;
 use App\Models\User;
-use App\Services\ForstwirtLogService;
 use App\Services\HarvesterLogService;
 use App\Services\ProjectService;
 use App\Services\WorkerLogService;
@@ -19,7 +17,6 @@ class HarvesterLogController extends BaseLogController
 {
     public function __construct(
         WorkerLogService $workerLogService,
-        private readonly ForstwirtLogService $forstwirtLogService,
         private readonly HarvesterLogService $harvesterLogService,
         private readonly ProjectService $projectService,
     ) {
@@ -31,9 +28,9 @@ class HarvesterLogController extends BaseLogController
         return HarvesterLog::class;
     }
 
-    public function workingTypeModel(): string
+    public function logService(): string
     {
-        return ForstwirtWorkingType::class;
+        return HarvesterLogService::class;
     }
 
     public function route(): string
@@ -48,7 +45,6 @@ class HarvesterLogController extends BaseLogController
 
     protected function addPreviousData(int $user_id, Collection $projects): Collection
     {
-        
         foreach ($projects as $project) {
         
             $project->last_fm_total = $this->harvesterLogService->getLastFmTotal($user_id, $project->id);
@@ -133,34 +129,7 @@ class HarvesterLogController extends BaseLogController
     public function store(StoreHarvesterLogRequest $request): RedirectResponse
     {
         $validated = $request->validated();
-        $user = User::findOrFail((int) $request->input('user_id'));
-        $editLogId = $request->integer('edit_log_id');
-
-        if ($editLogId) {
-            $originalDate = $request->input('edit_log_date', $validated['log_date']);
-            $this->workerLogService->deleteLogsFrom($user, $originalDate);
-        }
-
-        $lastLog = null;
-
-        foreach ($mappedLogs as $logData) {
-            if ($logData['has_harvester_payload']) {
-                $lastLog = $this->harvesterLogService->saveLogs([$logData], $user->id) ?? $lastLog;
-            }
-
-            if (!empty($logData['forstwirt_work_entries'])) {
-                $forstwirtLastLog = $this->forstwirtLogService->saveLogs($logData['forstwirt_work_entries'], $user->id);
-                $lastLog = $forstwirtLastLog ?? $lastLog;
-            }
-        }
-
-        /** @var \App\Models\User $user */
-        $user = Auth::user();
-        if ($user->isAdmin()) {
-            return redirect()->route('admin.worker.show', ['worker_id' => (int) $lastLog->user_id]);
-        }
-
-        return redirect()->route($this->route() . '.success', ['worker_id' => (int) $lastLog->user_id]);
+        return $this->storeLog($validated);
     }
 
     public function update(int $user_id, int $log_id): RedirectResponse

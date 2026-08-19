@@ -34,9 +34,9 @@ class ForstwirtLogController extends BaseLogController
         return ForstwirtLog::class;
     }
 
-    public function workingTypeModel(): string
+    public function logService(): string
     {
-        return ForstwirtWorkingType::class;
+        return ForstwirtLogService::class;
     }
 
     public function route(): string
@@ -137,24 +137,7 @@ class ForstwirtLogController extends BaseLogController
     public function store(StoreForstwirtLogRequest $request): RedirectResponse
     {
         $validated = $request->validated();
-        $mappedLogs = $this->mapValidatedToLogs($validated);
-        $editLogId = $request->integer('edit_log_id');
-
-        if ($editLogId) {
-            $user = User::findOrFail((int) $request->input('user_id'));
-            $originalDate = $request->input('edit_log_date', $validated['log_date']);
-            $this->workerLogService->deleteLogsFrom($user, $originalDate);
-        }
-
-        $lastLog = $this->forstwirtLogService->saveLogs($mappedLogs, $request->input('user_id'));
-
-        /** @var \App\Models\User $user */
-        $user = Auth::user();
-        if($user->isAdmin()){
-            return redirect()->route('admin.worker.show', ['worker_id' => (int) $lastLog->user_id]);
-        }
-        
-        return redirect()->route($this->route() . '.success', ['worker_id' => (int) $lastLog->user_id]);
+        return $this->storeLog($validated);
     }
 
     public function update(int $user_id, int $log_id): RedirectResponse

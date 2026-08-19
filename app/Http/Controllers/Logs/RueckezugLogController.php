@@ -4,10 +4,8 @@ namespace App\Http\Controllers\Logs;
 
 use App\Http\Controllers\Logs\BaseLogController;
 use App\Http\Requests\StoreRueckezugLogRequest;
-use App\Models\ForstwirtWorkingType;
 use App\Models\RueckezugLog;
 use App\Models\User;
-use App\Services\ForstwirtLogService;
 use App\Services\RueckezugLogService;
 use App\Services\ProjectService;
 use App\Services\WorkerLogService;
@@ -20,7 +18,6 @@ class RueckezugLogController extends BaseLogController
 {
     public function __construct(
         WorkerLogService $workerLogService,
-        private readonly ForstwirtLogService $forstwirtLogService,
         private readonly RueckezugLogService $rueckezugLogService,
         private readonly ProjectService $projectService,
     ) {
@@ -32,9 +29,9 @@ class RueckezugLogController extends BaseLogController
         return RueckezugLog::class;
     }
 
-    protected function workingTypeModel(): string
+    protected function logService(): string
     {
-        return ForstwirtWorkingType::class;
+        return RueckezugLogService::class;
     }
 
     protected function route(): string
@@ -50,7 +47,6 @@ class RueckezugLogController extends BaseLogController
     protected function addPreviousData(int $user_id, Collection $projects): Collection
     {
         foreach ($projects as $project) {
-
 
             $project->last_bs = $this->rueckezugLogService->getLastBsTo($user_id, $project->id);
             $project->last_average_distance = $this->rueckezugLogService->getLastAverageDistance($user_id, $project->id);
@@ -133,30 +129,7 @@ class RueckezugLogController extends BaseLogController
     public function store(StoreRueckezugLogRequest $request): RedirectResponse
     {
         $validated = $request->validated();
-
-        /** @var \App\Models\User $user */
-        $user = Auth::user();
-        $workerId = (int) $validated['user_id'];
-
-        // prevent form spoofing: only allow admins to log for other users
-        if (! $user->isAdmin() && $user->id !== $workerId) {
-            return redirect()->back()->withErrors(['user_id' => 'Ungültige Benutzer-ID.']);
-        }
-
-        $editLogId = $request->integer('edit_log_id');
-
-        if ($editLogId) {
-            $originalDate = $request->input('edit_log_date', $validated['log_date']);
-            $this->workerLogService->deleteLogsFrom($workerId, $originalDate);
-        }
-
-        $this->rueckezugLogService->saveLog($validated);
-
-        if ($user->isAdmin()) {
-            return redirect()->route('admin.worker.show', ['worker_id' => $workerId]);
-        }
-
-        return redirect()->route($this->route() . '.success', ['worker_id' => $workerId]);
+        return $this->storeLog($validated);
     }
 
     public function update(int $user_id, int $log_id): RedirectResponse

@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use App\Services\WorkerLogService;
+use Illuminate\Http\RedirectResponse;
 
 abstract class BaseLogController extends Controller
 {
@@ -20,7 +21,7 @@ abstract class BaseLogController extends Controller
     }
     // Subklassen müssen diese liefern:
     abstract protected function logModel(): string;       // z.B. ForstwirtLog::class
-    abstract protected function workingTypeModel(): string;
+    abstract protected function logService(): string;     // z.B. ForstwirtLogService::class
     abstract protected function route(): string;    // z.B. 'log.forstwirt' oder 'log.harvester'
     abstract protected function viewPrefix(): string;     // z.B. 'log-forstwirt'
     abstract protected function addPreviousData(int $user_id, Collection $projects): Collection;
@@ -99,6 +100,33 @@ abstract class BaseLogController extends Controller
         $workerType = $user->role->slug; // e.g. 'forstwirt' or 'harvester'
         // Route like: log-forms/log-forstwirt
         return view('log-forms/log', compact(['projects', 'isAdmin', 'name', 'user_id', 'workerType', 'prefill', 'editingLogId', 'editingProjectId', 'editingLogDate']));
+    }
+
+    protected function storeLog(array $validated): RedirectResponse
+    {
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        $workerId = (int) $validated['user_id'];
+
+        // prevent form spoofing: only allow admins to log for other users
+        if (! $user->isAdmin() && $user->id !== $workerId) {
+            return redirect()->back()->withErrors(['user_id' => 'Ungültige Benutzer-ID.']);
+        }
+
+        $editLogId = $validated['edit_log_id'] ?? null;
+
+        if ($editLogId) {
+            $originalDate = $validated['edit_log_date'] ?? $validated['log_date'];
+            $this->workerLogService->deleteLogsFrom($workerId, $originalDate);
+        }
+
+        $this->logService()::saveLog($validated);
+
+        if ($user->isAdmin()) {
+            return redirect()->route('admin.worker.show', ['worker_id' => $workerId]);
+        }
+
+        return redirect()->route($this->route() . '.success', ['worker_id' => $workerId]);
     }
 
     /**
