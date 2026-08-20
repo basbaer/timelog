@@ -149,9 +149,9 @@ abstract class BaseLogService
         return $this->getModel()::where('user_id', $user_id)->whereDate('date', today())->first();
     }
 
-    public function loadLogs(int $userId, string $date): Collection
+    public function loadLogs(int $userId, string $date, array $lazyLoad = ['project']): Collection
     {
-        return  $this->getModel()::with(['project'])
+        return  $this->getModel()::with($lazyLoad)
             ->where('user_id', $userId)
             ->whereDate('date', $date)
             ->orderBy('start')

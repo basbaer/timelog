@@ -36,7 +36,7 @@
 
         <div id="log-entries">
             @foreach ($existingLogs as $existingLog)
-                @include('log-forms.partials.log-summary-item', ['savedLog' => $existingLog])
+                @include('log-forms.partials.log-summary-item', ['savedLog' => $existingLog, 'workTypes' => $workTypes])
             @endforeach
         </div>
 

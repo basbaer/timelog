@@ -4,6 +4,8 @@ namespace App\Services;
 
 use App\Models\ForstwirtLog;
 use App\Models\ForstwirtWorkingType;
+use Illuminate\Support\Collection;
+use Override;
 
 class ForstwirtLogService extends BaseLogService
 {
@@ -39,7 +41,7 @@ class ForstwirtLogService extends BaseLogService
     /**
      * Persist entries in the same shape used by Forstwirt logs.
      */
-    public function saveLog(array $logData): ?ForstwirtLog
+    public function saveLog(array $logData): ForstwirtLog
     {
 
         $log = new ForstwirtLog();
@@ -58,6 +60,12 @@ class ForstwirtLogService extends BaseLogService
         $log->type = $this->getLogType();
 
         return $log;
+    }
+
+    #[Override]
+    public function loadLogs(int $userId, string $date, array $lazyLoad = ['project']): Collection
+    {
+        return parent::loadLogs($userId, $date, ['project', 'workingType']);
     }
 
 }
