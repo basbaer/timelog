@@ -52,16 +52,18 @@ class WorkerLogService
         return $service->saveLog($logData);
     }
 
-    public function loadSuccessLogs(User|int $worker, string $date): Collection
+    public function loadLogs(User|int $worker, string $date): Collection
     {
         if (is_int($worker)) {
             $worker = User::findOrFail($worker);
         }
 
-        return $this->getServiceFor($worker)
-            ->flatMap(fn($service) => $service->loadSuccessLogs($worker->id, $date))
+        $logs = $this->getServiceFor($worker)
+            ->flatMap(fn($service) => $service->loadLogs($worker->id, $date))
             ->sortBy(fn($log) => sprintf('%s|%s', $log->start ?? '', $log->created_at ?? ''))
             ->values();
+
+        return $logs;
     }
 
     public function getLogOfToday(User|int $worker)

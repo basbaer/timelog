@@ -117,7 +117,7 @@ class ProjectService
         return $time->hour + ($time->minute / 60);
     }
 
-    private function getTitle(Project $project): string
+    public function getTitle(Project $project): string
     {
         if ( $project->end_date){
             return $project->location . ' | ' . $project->date->format('m/Y') . ' - ' . $project->end_date->format('m/Y') . ' | ' . $project->client;

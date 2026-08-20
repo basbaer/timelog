@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class Project extends Model
 {
@@ -48,6 +49,18 @@ class Project extends Model
     public function rueckezugLogs(): HasMany
     {
         return $this->hasMany(RueckezugLog::class);
+    }
+
+    public function title(): Attribute
+    {
+        if ( $this->end_date){
+            return Attribute::make(
+                get: fn() => "{$this->location} | {$this->date->format('m/Y')} - {$this->end_date->format('m/Y')} | {$this->client}",
+            );
+        }
+        return Attribute::make(
+                get: fn() => "{$this->location} | {$this->date->format('m/Y')} | {$this->client}",
+            );
     }
 
     public function scopeOpenProjects($query)

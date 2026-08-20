@@ -21,10 +21,10 @@ class ForstwirtLogController extends BaseLogController
 
     public function __construct(
         WorkerLogService $workerLogService,
-        private readonly ProjectService $projectService,
+        ProjectService $projectService,
     )
     {
-        parent::__construct($workerLogService);
+        parent::__construct($workerLogService, $projectService);
     }
 
     public function logModel(): string

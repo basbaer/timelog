@@ -5,7 +5,7 @@
 <!-- configure class .harvester and .rueckezug -->
 
 <body>
-    @include('partials.log_header', ['name' => $name, 'worker_id' => $user_id])
+    @include('partials.log_header', ['name' => $worker->full_name, 'worker_id' => $worker->id])
 
     @include('partials.log_form_errors', ['errors' => $errors])
 
@@ -21,7 +21,6 @@
             'other' => __('form.other'),
         ];
         $workTypeCount = count($workTypes);
-        $today = now()->format('Y-m-d');
     @endphp
 
     <div class="container">
@@ -30,20 +29,23 @@
         <div class="container my-3 px-0">
             <label for="date" class="form-label h3">Datum</label>
             <input id="date" name="date" class="form-control" type="date"
-                value="{{ old('date', data_get($prefill, 'date') ?? $today) }}"
-                @if ($workerType === 'forstwirt') readonly @endif />
+                value="{{ $date }}"
+                @if ($worker->type === 'forstwirt') readonly @endif
+                onchange="window.location.href = '{{ route('log.' . $worker->type, ['worker_id' => $worker->id]) }}?date=' + this.value" />
         </div>
 
         <div id="log-entries">
-            <!-- summary cards + at most one open form live here -->
+            @foreach ($existingLogs as $existingLog)
+                @include('log-forms.partials.log-summary-item', ['savedLog' => $existingLog])
+            @endforeach
         </div>
 
 
         <div class="container d-flex justify-content-center">
-            @if ($workerType === 'rueckezug')
+            @if ($worker->type === 'rueckezug')
                 <button id="btn-add-rueckezug" class="rueckezug btn btn-primary my-3 me-3"
                     type="button">{{ __('form.add_rueckezug') }}</button>
-            @elseif ($workerType === 'harvester')
+            @elseif ($worker->type === 'harvester')
                 <button id="btn-add-harvester" class="harvester btn btn-primary my-3 me-3"
                     type="button">{{ __('form.add_harvester') }}</button>
             @endif
@@ -55,15 +57,15 @@
 
 
     <template id="template-rueckezug-form">
-        <x-rueckezug-form :projects="$projects" :user_id="$user_id" />
+        <x-rueckezug-form :projects="$projects" :user_id="$worker->id" />
     </template>
 
     <template id="template-harvester-form">
-        <x-harvester-form :projects="$projects" :user_id="$user_id" />
+        <x-harvester-form :projects="$projects" :user_id="$worker->id" />
     </template>
 
     <template id="template-forstwirt-form">
-        <x-forstwirt-form :projects="$projects" :workTypes="$workTypes" :user_id="$user_id" />
+        <x-forstwirt-form :projects="$projects" :workTypes="$workTypes" :user_id="$worker->id" />
     </template>
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>

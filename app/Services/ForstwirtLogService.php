@@ -55,21 +55,9 @@ class ForstwirtLogService extends BaseLogService
         $log->comment = $logData['comment'] ?? null;
         $log->save();
 
-        $log->log_type = $this->getLogType();
+        $log->type = $this->getLogType();
 
         return $log;
     }
 
-    public function loadSuccessLogs(int $userId, string $date)
-    {
-        return $this->getModel()::with(['project', 'workingType'])
-            ->where('user_id', $userId)
-            ->whereDate('date', $date)
-            ->orderBy('start')
-            ->get()
-            ->map(function ($log) {
-                $log->log_label = 'forstwirt';
-                return $log;
-            });
-    }
 }

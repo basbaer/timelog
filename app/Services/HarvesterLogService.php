@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\Models\HarvesterLog;
-use Illuminate\Support\Collection;
 
 class HarvesterLogService extends BaseLogService
 {
@@ -55,26 +54,11 @@ class HarvesterLogService extends BaseLogService
         $log->fm_day = $logData['fm_day'] ?? null;
         $log->save();
 
-        $log->log_type = $this->getLogType();
+        $log->type = $this->getLogType();
 
         return $log;
     }
 
-
-    public function loadSuccessLogs(int $userId, string $date): Collection
-    {
-        $harvesterLogs = HarvesterLog::with(['project'])
-            ->where('user_id', $userId)
-            ->whereDate('date', $date)
-            ->get()
-            ->map(function (HarvesterLog $log) {
-                $log->entry_label = 'harvester';
-                return $log;
-            });
-        return $harvesterLogs->sortBy(function ($log) {
-            return sprintf('%s|%s|%s', $log->project_id, $log->start ?? '', $log->created_at ?? '');
-        })->values();
-    }
 
     public function getLastFmAmount(int $userId, int $projectId): float
     {

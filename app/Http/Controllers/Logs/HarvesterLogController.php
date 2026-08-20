@@ -21,7 +21,7 @@ class HarvesterLogController extends BaseLogController
         private readonly HarvesterLogService $harvesterLogService,
         private readonly ProjectService $projectService,
     ) {
-        parent::__construct($workerLogService);
+        parent::__construct($workerLogService, $projectService);
     }
 
     public function logModel(): string

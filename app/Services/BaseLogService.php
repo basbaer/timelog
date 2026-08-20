@@ -149,4 +149,19 @@ abstract class BaseLogService
         return $this->getModel()::where('user_id', $user_id)->whereDate('date', today())->first();
     }
 
+    public function loadLogs(int $userId, string $date): Collection
+    {
+        return  $this->getModel()::with(['project'])
+            ->where('user_id', $userId)
+            ->whereDate('date', $date)
+            ->orderBy('start')
+            ->get()
+            ->map(function($log){
+                $log->type = $this->getLogType();
+                $log->projectTitle = $log->project->title;
+                return $log;
+            });
+
+    }
+
 }

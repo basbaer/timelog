@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\Models\RueckezugLog;
-use Illuminate\Support\Collection;
 
 class RueckezugLogService extends BaseLogService
 {
@@ -35,7 +34,7 @@ class RueckezugLogService extends BaseLogService
         ];
     }
 
-    public function saveLog(array $logData)
+    public function saveLog(array $logData): RueckezugLog
     {
 
         $log = new RueckezugLog();
@@ -54,7 +53,7 @@ class RueckezugLogService extends BaseLogService
         $log->average_distance = $logData['average_distance'] ?? null;
         $log->save();
 
-        $log->log_type = $this->getLogType();
+        $log->type = $this->getLogType();
 
         return $log;
     }
@@ -75,22 +74,6 @@ class RueckezugLogService extends BaseLogService
         $log->save();
 
         return $log;
-    }
-
-    public function loadSuccessLogs(int $userId, string $date): Collection
-    {
-        $rueckezugLogs = RueckezugLog::with(['project'])
-            ->where('user_id', $userId)
-            ->whereDate('date', $date)
-            ->get()
-            ->map(function (RueckezugLog $log) {
-                $log->entry_label = 'rueckezug';
-                return $log;
-            });
-
-        return $rueckezugLogs->sortBy(function ($log) {
-            return sprintf('%s|%s|%s', $log->project_id, $log->start ?? '', $log->created_at ?? '');
-        })->values();
     }
 
     public function getLastBsTo(int $userId, int $projectId): int
