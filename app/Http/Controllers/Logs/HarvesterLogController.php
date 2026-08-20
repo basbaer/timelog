@@ -22,7 +22,6 @@ class HarvesterLogController extends BaseLogController
         private readonly ProjectService $projectService,
     ) {
         parent::__construct($workerLogService);
-
     }
 
     public function logModel(): string
@@ -168,16 +167,5 @@ class HarvesterLogController extends BaseLogController
         $log->save();
 
         return redirect()->route('worker.show', ['worker_id' => $user->id])->with('success', 'Eintrag erfolgreich aktualisiert.');
-    }
-
-    private function hasHarvesterPayload(array $workLog): bool
-    {
-        foreach (['start', 'end', 'sum', 'pause', 'bs_start', 'bs_end', 'bs_diff', 'stueckzahl', 'fm_gesamt', 'fm_day'] as $field) {
-            if (array_key_exists($field, $workLog) && trim((string) ($workLog[$field] ?? '')) !== '') {
-                return true;
-            }
-        }
-
-        return false;
     }
 }

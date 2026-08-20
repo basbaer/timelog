@@ -65,11 +65,10 @@ class ForstwirtLogService extends BaseLogService
         return $this->getModel()::with(['project', 'workingType'])
             ->where('user_id', $userId)
             ->whereDate('date', $date)
-            ->orderBy('project_id')
             ->orderBy('start')
             ->get()
             ->map(function ($log) {
-                $log->entry_label = 'forstwirt';
+                $log->log_label = 'forstwirt';
                 return $log;
             });
     }

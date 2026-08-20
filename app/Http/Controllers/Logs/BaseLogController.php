@@ -187,7 +187,7 @@ abstract class BaseLogController extends Controller
 
     protected function buildSuccessOverview(int $userId, string $date): Collection
     {
-        return $this->loadSuccessLogs($userId, $date)
+        return $this->workerLogService->loadSuccessLogs($userId, $date)
             ->groupBy(fn($log) => $log->project_id)
             ->map(function (Collection $logs) {
                 $firstLog = $logs->first();
@@ -233,11 +233,6 @@ abstract class BaseLogController extends Controller
         }
 
         return redirect()->route($this->route())->with('success', 'Eintrag erfolgreich gelöscht.');
-    }
-
-    protected function loadSuccessLogs(int $userId, string $date): Collection
-    {
-        return $this->workerLogService->loadSuccessLogs($userId, $date);
     }
 
     public function getLogOfToday(int $user_id)

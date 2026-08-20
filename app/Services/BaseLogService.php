@@ -6,12 +6,16 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Http\JsonResponse;
+use App\Models\ForstwirtLog;
+use App\Models\HarvesterLog;
+use App\Models\RueckezugLog;
 
 abstract class BaseLogService
 {
     abstract public function getPrintTableHeaders(): array;
     abstract public function getModel(): string;
     abstract public function getLogType(): string;
+    abstract public function saveLog(array $logData): ForstwirtLog|HarvesterLog|RueckezugLog|null;
 
     protected function getRelations(): array
     {

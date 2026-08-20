@@ -42,30 +42,6 @@ class WorkerLogService
             $service->deleteLogsFrom($worker->id, $date);
         });
     }
-/*
-    public function saveLogs(User|int $worker, array $mappedLogs)
-    {
-        if (is_int($worker)) {
-            $worker = User::findOrFail($worker);
-        }
-
-        $services = $this->getServiceFor($worker);
-        $primary = $services->first();
-        $forstwirt = $services->first(fn($s) => $s instanceof ForstwirtLogService) ?? null;
-
-        $lastLog = null;
-
-        foreach ($mappedLogs as $logData) {
-            $lastLog = $primary->saveLogs([$logData], $worker->id);
-
-            if (!empty($logData['forstwirt_work_entries']) && $forstwirt) {
-                $forstwirt->saveLogs($logData['forstwirt_work_entries'], (int) $worker->id);
-            }
-        }
-
-        return $lastLog;
-    }
-*/
 
     public function saveLog(array $logData)
     {
@@ -74,8 +50,6 @@ class WorkerLogService
         $service = $this->getServiceForSlug($log_type);
 
         return $service->saveLog($logData);
-
-        //return $service->saveLog($logData);
     }
 
     public function loadSuccessLogs(User|int $worker, string $date): Collection
@@ -86,7 +60,7 @@ class WorkerLogService
 
         return $this->getServiceFor($worker)
             ->flatMap(fn($service) => $service->loadSuccessLogs($worker->id, $date))
-            ->sortBy(fn($log) => sprintf('%s|%s|%s', $log->project_id, $log->start ?? '', $log->created_at ?? ''))
+            ->sortBy(fn($log) => sprintf('%s|%s', $log->start ?? '', $log->created_at ?? ''))
             ->values();
     }
 
