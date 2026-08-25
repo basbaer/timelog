@@ -58,6 +58,11 @@ class HarvesterLogController extends BaseLogController
         return $projects;
     }
 
+    public function store(StoreHarvesterLogRequest $request): JsonResponse
+    {
+        return parent::storeLog($request);
+    }
+
     public function edit(int $worker_id, int $log_id)
     {
         $worker = User::findOrFail($worker_id);

@@ -13,6 +13,8 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use App\Services\WorkerLogService;
+use App\Http\Requests\StoreForstwirtLogRequest;
+use Illuminate\Http\JsonResponse;
 
 class ForstwirtLogController extends BaseLogController
 {
@@ -45,16 +47,16 @@ class ForstwirtLogController extends BaseLogController
         return 'log-forstwirt';
     }
 
-    protected function addPreviousData(int $user_id, Collection $projects): Collection
+    protected function addPreviousData(int $worker_id, Collection $projects): Collection
     {
         return $projects;
     }
-/*
+
     public function store(StoreForstwirtLogRequest $request): JsonResponse
     {
-        return parent::store($request);
+        return parent::storeLog($request);
     }
-        */
+      
 
     public function edit(int $worker_id, int $log_id)
     {

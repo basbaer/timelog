@@ -75,7 +75,7 @@
 
     @if ($isAdmin)
         <div class="container d-flex justify-content-center">
-            <a href="{{ route('worker.show', ['worker_id' => $worker->id]) }}" class="btn btn-secondary my-3">
+            <a href="{{ route('worker.show', ['worker_id' => $worker->id]) }}" class="btn btn-success my-3">
                 {{ __('form.back_to_worker_details') }}
             </a>
         </div>

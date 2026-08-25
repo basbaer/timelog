@@ -119,7 +119,7 @@ abstract class BaseLogController extends Controller
         //return view('log-forms/log', compact(['projects', 'worker', 'existingLogs', 'prefill', 'editingLogId', 'editingProjectId', 'editingLogDate']));
     }
 
-    public function store(StoreForstwirtLogRequest|StoreRueckezugLogRequest|StoreHarvesterLogRequest $request): JsonResponse
+    public function storeLog(StoreForstwirtLogRequest|StoreRueckezugLogRequest|StoreHarvesterLogRequest $request): JsonResponse
     {
         $validated = $request->validated();
         /** @var \App\Models\User $user */
