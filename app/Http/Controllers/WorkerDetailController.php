@@ -140,12 +140,15 @@ class WorkerDetailController extends Controller
         }
     }
 
+    /*
     public function editLog(Request $request, int $worker_id, int $log_id)
     {
         try {
             $worker = User::findOrFail($worker_id);
 
             $logType = $request->input('log_type');
+
+
 
             $clickedLog = match ($logType) {
                 'harvester' => HarvesterLog::find($log_id),
@@ -176,4 +179,5 @@ class WorkerDetailController extends Controller
             return redirect()->route('admin.workers.overview')->with('error', 'Worker not found.');
         }
     }
+        */
 }

@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\RueckezugLog;
+use Carbon\Carbon;
 
 class RueckezugLogService extends BaseLogService
 {
@@ -37,8 +38,14 @@ class RueckezugLogService extends BaseLogService
     public function saveLog(array $logData): RueckezugLog
     {
 
-        $log = new RueckezugLog();
-        $log->id = $logData['id'] ?? null;
+        if (isset($logData['id'])) {
+            $log = RueckezugLog::find($logData['id']);
+            if (!$log) {
+                throw new \Exception("Log with ID {$logData['id']} not found.");
+            }
+        } else {
+            $log = new RueckezugLog();
+        }
         $log->user_id = $logData['worker_id'];
         $log->project_id = $logData['project_id'];
         $log->date = $logData['date'];
@@ -56,6 +63,23 @@ class RueckezugLogService extends BaseLogService
         $log->type = $this->getLogType();
 
         return $log;
+    }
+
+    public function getPrefill(RueckezugLog $log): array
+    {
+        return [
+            'project_id' => $log->project_id,
+            'date' => $log->date,
+            'start' => $log->start ? Carbon::parse($log->start)->format('H:i') : null,
+            'end' => $log->end ? Carbon::parse($log->end)->format('H:i') : null,
+            'pause' => $log->pause ?? 0,
+            'sum' => $log->sum ? Carbon::parse($log->sum)->format('H:i') : null,
+            'bs_start' => $log->bs_from,
+            'bs_end' => $log->bs_to,
+            'bs_diff' => $log->bs_diff,
+            'loadings' => $log->loadings,
+            'average_distance' => $log->average_distance,
+        ];
     }
 
     public function updateLog(RueckezugLog $log, array $logData): RueckezugLog

@@ -1,8 +1,12 @@
 {{-- resources/views/log-forms/forstwirt-form.blade.php --}}
-@props(['projects', 'workTypes' => [], 'prefill' => [], 'worker_id'])
+@props(['projects', 'workTypes' => [], 'prefill' => [], 'worker_id', 'editingLogId' => null])
 
 <form id="forstwirt-log-form" class="container border rounded-2 position-relative mt-3" method="POST"
-    action="{{ route('log.forstwirt.store') }}" data-log-type="forstwirt">
+    action="{{ $editingLogId
+        ? route('log.forstwirt.update', ['worker_id' => $worker_id, 'log_id' => $editingLogId])
+        : route('log.forstwirt.store') }}" 
+        data-log-type="forstwirt"
+        data-method="{{ $editingLogId ? 'PUT' : 'POST' }}">
     @csrf
     <input type="hidden" name="worker_id" value="{{ $worker_id }}">
 

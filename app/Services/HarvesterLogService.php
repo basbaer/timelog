@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\HarvesterLog;
+use Carbon\Carbon;
 
 class HarvesterLogService extends BaseLogService
 {
@@ -37,8 +38,14 @@ class HarvesterLogService extends BaseLogService
 
     public function saveLog(array $logData): HarvesterLog
     {
-        $log = new HarvesterLog();
-        $log->id = $logData['id'] ?? null;
+        if (isset($logData['id'])) {
+            $log = HarvesterLog::find($logData['id']);
+            if (!$log) {
+                throw new \Exception("Log with ID {$logData['id']} not found.");
+            }
+        } else {
+            $log = new HarvesterLog();
+        }
         $log->user_id = $logData['worker_id'];
         $log->project_id = $logData['project_id'];
         $log->date = $logData['date'];
@@ -59,6 +66,25 @@ class HarvesterLogService extends BaseLogService
         return $log;
     }
 
+
+    public function getPrefill(HarvesterLog $log): array
+    {
+        $prefill = [
+            'project_id' => $log->project_id,
+            'start' => $log->start ? Carbon::parse($log->start)->format('H:i') : null,
+            'end' => $log->end ? Carbon::parse($log->end)->format('H:i') : null,
+            'pause' => $log->pause ?? 0,
+            'sum' => $log->sum ? Carbon::parse($log->sum)->format('H:i') : null,
+            'bs_start' => $log->bs_from,
+            'bs_end' => $log->bs_to,
+            'bs_diff' => $log->bs_diff,
+            'stueckzahl' => $log->fm_amount,
+            'fm_gesamt' => $log->fm_total,
+            'fm_day' => $log->fm_day,
+        ];
+
+        return $prefill;
+    }
 
     public function getLastFmAmount(int $userId, int $projectId): float
     {

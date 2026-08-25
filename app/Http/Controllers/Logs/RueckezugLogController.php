@@ -11,7 +11,6 @@ use App\Services\WorkerLogService;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\StoreRueckezugLogRequest;
 use Illuminate\Http\JsonResponse;
 
@@ -66,72 +65,9 @@ class RueckezugLogController extends BaseLogController
         return $this->storeLog($request);
     }
 
-    public function edit(int $worker_id, int $log_id)
+    public function edit(int $worker_id, int $log_id): JsonResponse
     {
-        $worker = User::findOrFail($worker_id);
-        $log = RueckezugLog::with('project')->where('user_id', $worker->id)->findOrFail($log_id);
-        $editDate = Carbon::parse($log->date)->toDateString();
-        $projects = $this->projectService->getOpenProjects($worker->id, $editDate, $editDate);
-
-        if (! $projects->contains('id', $log->project_id)) {
-            $projects->push($this->projectService->getProjectById($log->project_id));
-        }
-
-        $projects = $projects->sortBy('title')->values();
-
-        return view('log-forms/log-rueckezug-edit', [
-            'name' => $worker->first_name . ' ' . $worker->last_name,
-            'worker_id' => $worker->id,
-            'log' => $log,
-            'projects' => $projects,
-            'isAdmin' => (function () {
-                /** @var \App\Models\User $currentUser */
-                $currentUser = Auth::user();
-
-                return $currentUser->isAdmin();
-            })(),
-        ]);
-    }
-
-    protected function buildEditPrefill(Collection $logs, string $date): array
-    {
-        $prefill = [
-            'log_date' => $date,
-            'work_logs' => [],
-        ];
-
-        foreach ($logs as $log) {
-            $projectId = (int) $log->project_id;
-            $entryLabel = $log->entry_label ?? null;
-
-            if ($entryLabel === 'rueckezug') {
-                $prefill['work_logs'][$projectId] = [
-                    'start' => $log->start ? Carbon::parse($log->start)->format('H:i') : null,
-                    'end' => $log->end ? Carbon::parse($log->end)->format('H:i') : null,
-                    'pause' => $log->pause ?? 0,
-                    'sum' => $log->sum ? Carbon::parse($log->sum)->format('H:i') : null,
-                    'bs_start' => $log->bs_from,
-                    'bs_end' => $log->bs_to,
-                    'bs_diff' => $log->bs_diff,
-                    'loadings' => $log->loadings,
-                    'average_distance' => $log->average_distance,
-                ];
-            }
-
-            if ($entryLabel === 'forstwirt') {
-                $prefill['work_logs'][$projectId]['entries'] ??= [];
-                $prefill['work_logs'][$projectId]['entries'][] = [
-                    'type' => $log->workingType?->slug ?? '',
-                    'start' => $log->start ? Carbon::parse($log->start)->format('H:i') : null,
-                    'end' => $log->end ? Carbon::parse($log->end)->format('H:i') : null,
-                    'pause' => $log->pause ?? 0,
-                    'sum' => $log->sum ? Carbon::parse($log->sum)->format('H:i') : null,
-                    'comment' => $log->comment,
-                ];
-            }
-        }
-
-        return $prefill;
+        return parent::editLog($worker_id, $log_id);
     }
 
     public function update(int $worker_id, int $log_id): RedirectResponse

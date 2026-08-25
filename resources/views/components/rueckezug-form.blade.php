@@ -1,7 +1,11 @@
-@props(['prefill' => ['bs_start' => ''], 'projects', 'worker_id'])
+@props(['prefill' => [], 'projects', 'worker_id', 'editingLogId' => null])
 
 <form id="rueckezug-log-form" class="container border rounded-2 mt-2" method="POST"
-    action="{{ route('log.rueckezug.store') }}" data-log-type="rueckezug">
+    action="{{ $editingLogId
+        ? route('log.rueckezug.update', ['worker_id' => $worker_id, 'log_id' => $editingLogId])
+        : route('log.rueckezug.store') }}" 
+        data-log-type="rueckezug"
+        data-method="{{ $editingLogId ? 'PUT' : 'POST' }}">>
     @csrf
     <input type="hidden" name="worker_id" value="{{ $worker_id }}">
 
@@ -15,7 +19,7 @@
     <div class="row">
         <div class="col-10 col-md-5 mb-3">
             <select id="project_id" name="project_id" class="form-select" required>
-                <option value="" selected disabled>{{ __('form.select_project') }}</option>
+                <option value="{{ $editingLogId ? $editingLogId : '' }}" selected disabled>{{ __('form.select_project') }}</option>
                 @foreach ($projects as $project)
                     <option value="{{ $project->id }}"
                         {{ (string) old('project_id') === (string) $project->id ? 'selected' : '' }}>

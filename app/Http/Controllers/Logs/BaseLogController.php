@@ -31,7 +31,6 @@ abstract class BaseLogController extends Controller
     abstract protected function route(): string;    // z.B. 'log.forstwirt' oder 'log.harvester'
     abstract protected function viewPrefix(): string;     // z.B. 'log-forstwirt'
     abstract protected function addPreviousData(int $user_id, Collection $projects): Collection;
-    abstract protected function buildEditPrefill(Collection $logs, string $date): array;
 
 
     private function getWorker(?int $worker_id): array
@@ -80,43 +79,14 @@ abstract class BaseLogController extends Controller
 
         $projects = $this->getProjects($worker);
 
-        /*
-        $editLogId = request()->integer('edit_log_id');
-        $editingLogId = null;
-        $editingProjectId = null;
-        $editingLogDate = null;
-        $prefill = [];
-
-        if ($editLogId) {
-            $logClass = $this->logModel();
-            $editLog = $logClass::with(['project', 'user.role'])
-                ->where('user_id', $user_id)
-                ->findOrFail($editLogId);
-
-            $editingLogDate = Carbon::parse($editLog->date)->toDateString();
-            $editLogs = $this->workerLogService->loadSuccessLogs($user_id, $editingLogDate);
-
-            $prefill = $this->buildEditPrefill($editLogs, $editingLogDate);
-            $editingLogId = $editLog->id;
-            $editingProjectId = $editLog->project_id;
-        }
-*/
         // Check if today is alreay logged
         $today = now()->toDateString();
         //query date param
         $date = request()->query('date', $today);
 
         $existingLogs = $this->workerLogService->loadLogs($worker, $date);
-        
-        // if there is an existing log, show the success page instead of log form - but only for non-admin users (admins can view the log form for any user, even if they already have a log for today)
-        /*if ($existingLog && !$isAdmin) {
-            // Route like: log.forstwirt.success
-            session()->flash('last_log', $existingLog); // Store log in session for retrieval in success method
-            return redirect()->route($this->route() . '.success', ['worker_id' => (int) $user_id]);
-        }
-*/
+
         return view('log-forms/log', compact(['date', 'projects', 'worker', 'existingLogs', 'isAdmin']));      
-        //return view('log-forms/log', compact(['projects', 'worker', 'existingLogs', 'prefill', 'editingLogId', 'editingProjectId', 'editingLogDate']));
     }
 
     public function storeLog(StoreForstwirtLogRequest|StoreRueckezugLogRequest|StoreHarvesterLogRequest $request): JsonResponse
@@ -131,13 +101,6 @@ abstract class BaseLogController extends Controller
             return response()->json(['error' => 'Ungültige Benutzer-ID.'], 422);
         }
 
-        $editLogId = $validated['edit_log_id'] ?? null;
-
-        if ($editLogId) {
-            $originalDate = $validated['edit_log_date'] ?? $validated['log_date'];
-            $this->workerLogService->deleteLogsFrom($workerId, $originalDate);
-        }
-
         $log = $this->workerLogService->saveLog($validated);
 
         $log->projectTitle = $log->project->title;
@@ -149,37 +112,30 @@ abstract class BaseLogController extends Controller
         return $json;
     }
 
-    /*
-    protected function buildSuccessOverview(int $userId, string $date): Collection
+    public function editLog(int $worker_id, int $log_id): JsonResponse
     {
-        return $this->workerLogService->loadLogs($userId, $date)
-            ->groupBy(fn($log) => $log->project_id)
-            ->map(function (Collection $logs) {
-                $firstLog = $logs->first();
+        $worker = User::findOrFail($worker_id);
+        $log = $this->logModel()::with('project')->where('user_id', $worker->id)->findOrFail($log_id);
+        $editDate = Carbon::parse($log->date)->toDateString();
+        $projects = $this->projectService->getOpenProjects($worker->id, $editDate, $editDate);
 
-                $totalStart = $logs->min(fn($log) => strtotime($log->start));
-                $totalStart = date("H:i", $totalStart);
+        if (! $projects->contains('id', $log->project_id)) {
+            $projects->push($this->projectService->getProjectById($log->project_id));
+        }
 
-                $totalEnd = $logs->max(fn($log) => strtotime($log->end));
-                $totalEnd = date("H:i", $totalEnd);
+        $projects = $projects->sortBy('title')->values();
 
-                $totalSum = $logs->sum(fn($log) => $log->sum ? strtotime($log->sum) : 0);
-                $totalSum = date("H:i", $totalSum);
+        $prefill = app($this->logService())->getPrefill($log);
 
-                return [
-                    'project' => $firstLog->project,
-                    'logs' => $logs->values(),
+        $html = view('components.' . $this->viewPrefix() . '-form', [
+            'projects' => $projects,
+            'prefill' => $prefill,
+            'worker_id' => $worker_id,
+            'editingLogId' => $log->id,
+        ])->render();
 
-                    //Add total start, end and sum for each project
-                    'totalStart' => $totalStart,
-                    'totalEnd' => $totalEnd,
-                    'totalSum' => $totalSum,
-                ];
-            })
-            ->values();
-
+        return response()->json(['html' => $html]);
     }
-            */
 
     public function deleteLog(Request $request, int $worker_id)
     {

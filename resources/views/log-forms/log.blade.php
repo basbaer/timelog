@@ -33,15 +33,17 @@
         <!-- Date -->
         <div class="container my-3 px-0">
             <label for="date" class="form-label h3">Datum</label>
-            <input id="date" name="date" class="form-control" type="date"
-                value="{{ $date }}"
+            <input id="date" name="date" class="form-control" type="date" value="{{ $date }}"
                 @if ($worker->type === 'forstwirt') readonly @endif
                 onchange="window.location.href = '{{ route('log.' . $worker->type, ['worker_id' => $worker->id]) }}?date=' + this.value" />
         </div>
 
         <div id="log-entries">
             @foreach ($existingLogs as $existingLog)
-                @include('log-forms.partials.log-summary-item', ['savedLog' => $existingLog, 'workTypes' => $workTypes])
+                @include('log-forms.partials.log-summary-item', [
+                    'savedLog' => $existingLog,
+                    'workTypes' => $workTypes,
+                ])
             @endforeach
         </div>
 
@@ -131,12 +133,59 @@
             forstwirtButton.addEventListener('click', () => addLogForm('forstwirt'));
         }
 
+        document.getElementById('log-entries').addEventListener('click', async (e) => {
+            const editButton = e.target.closest('.edit-log-button');
+            if (!editButton) return;
+
+            const summaryEl = editButton.closest('[id^="log-"]');
+            const type = editButton.dataset.logType;
+
+            try {
+                const response = await fetch(editButton.dataset.editUrl, {
+                    headers: {
+                        'Accept': 'application/json'
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Unexpected response: ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                summaryEl.insertAdjacentHTML('afterend', data.html);
+                summaryEl.classList.add('d-none');
+
+                const form = summaryEl.nextElementSibling;
+                form.dataset.editingSummaryId = summaryEl.id;
+
+                if (type === 'forstwirt' && typeof initForstwirtForm === 'function') {
+                    initForstwirtForm(form);
+                }
+                if (type === 'rueckezug' && typeof initRueckezugForm === 'function') {
+                    initRueckezugForm(form);
+                }
+                initLogFormSubmit(form);
+            } catch (err) {
+                console.error(err);
+            }
+        });
+
         function cancelLogForm(button) {
             const form = button.closest('form');
-            const type = form.dataset.logType;
+            const editingSummaryId = form.dataset.editingSummaryId;
 
             form.remove();
 
+            if (editingSummaryId) {
+                const summary = document.getElementById(editingSummaryId);
+                if (summary) {
+                    summary.classList.remove('d-none');
+                }
+                return;
+            }
+
+            const type = form.dataset.logType;
             const addButton = document.getElementById(`btn-add-${type}`);
             if (addButton) {
                 addButton.disabled = false;

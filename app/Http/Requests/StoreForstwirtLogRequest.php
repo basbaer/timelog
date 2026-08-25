@@ -37,6 +37,7 @@ class StoreForstwirtLogRequest extends FormRequest
             'sum' => [],
             'comment' => ['nullable', 'string', 'max:1000'],
             'log_type' => ['nullable', 'string'],
+            'id' => ['nullable', 'integer'],
         ];
     }
 

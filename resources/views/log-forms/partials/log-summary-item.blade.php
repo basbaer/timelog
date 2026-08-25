@@ -8,6 +8,7 @@
     $projectTitle = $savedLog->projectTitle;
     $worker_id = $savedLog->user_id;
     $log_id = $savedLog->id;
+    $log_type = $savedLog->type;
 @endphp
 
 <div class="border rounded p-3 mb-3">
@@ -17,16 +18,18 @@
             <div class="h4 mb-2">{{ $projectTitle }}</div>
 
             <div class="d-flex justify-content-center align-items-center gap-2">
-                <a href="{{ route('worker.log.edit', ['worker_id' => $worker_id, 'log_id' => $log_id, 'log_type' => 'harvester']) }}"
-                    class="btn btn-outline-primary btn-sm p-1" title="Bearbeiten" aria-label="Bearbeiten">
+                <a type="button"
+                    class="btn btn-outline-primary btn-sm p-1 edit-log-button" title="Bearbeiten" aria-label="Bearbeiten"
+                    data-log-type="{{ $savedLog->type }}"
+                    data-edit-url="{{ route('log.' . $savedLog->type . '.edit', ['worker_id' => $worker_id, 'log_id' => $log_id]) }}">
+                    
                     <i class="bi bi-pencil-square"></i>
                 </a>
-                <form
-                    action="{{ route('admin.worker.log.delete', ['worker_id' => $worker_id, 'log_id' => $log_id]) }}"
+                <form action="{{ route('admin.worker.log.delete', ['worker_id' => $worker_id, 'log_id' => $log_id]) }}"
                     method="POST" class="my-auto">
                     @csrf
                     @method('DELETE')
-                    <input type="hidden" name="delete_type" value="harvester">
+                    <input type="hidden" name="delete_type" value="{{ $savedLog->type }}">
                     <button type="submit" class="btn btn-outline-danger btn-sm p-1" title="Löschen"
                         aria-label="Löschen">
                         <i class="bi bi-trash"></i>
@@ -93,3 +96,14 @@
         </div>
     @endif
 </div>
+
+<script>
+    const editButton = document.getElementById('editButton');
+    editButton.addEventListener('click', function(event) {
+        event.preventDefault();
+        const url = this.href;
+
+
+    });
+
+</script>

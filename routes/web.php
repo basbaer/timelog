@@ -143,9 +143,6 @@ Route::middleware([IsLoggedIn::class])->group(function () {
     // Show working hours overview for a specific worker
     Route::get('/workers/{worker_id}', [WorkerDetailController::class, 'show'])->name('worker.show');
 
-    // Open the corresponding log form in edit mode
-    Route::get('/workers/{worker_id}/log/{log_id}/edit', [WorkerDetailController::class, 'editLog'])->name('worker.log.edit');
-
     Route::get('/workers/{worker_id}/settings', [WorkerSettingsController::class, 'show'])->name('worker.settings');
 
     Route::post('/workers/{worker_id}/password-change', [WorkerSettingsController::class, 'changePassword'])->name('worker.password.change');

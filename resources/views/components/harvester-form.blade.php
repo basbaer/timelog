@@ -1,7 +1,10 @@
-@props(['prefill' => [], 'projects', 'worker_id'])
+@props(['prefill' => [], 'projects', 'worker_id', 'editingLogId' => null])
 
 <form id="harvester-log-form" class="container border rounded-2 mt-2" method="POST"
-    action="{{ route('log.harvester.store') }}" data-log-type="harvester">
+    action="{{ $editingLogId
+        ? route('log.harvester.update', ['worker_id' => $worker_id, 'log_id' => $editingLogId])
+        : route('log.harvester.store') }}"
+    data-log-type="harvester" data-method="{{ $editingLogId ? 'PUT' : 'POST' }}">
     @csrf
     <input type="hidden" name="worker_id" value="{{ $worker_id }}">
     <!-- Projekt Dropdown -->
@@ -14,7 +17,8 @@
     <div class="row">
         <div class="col-10 col-md-5 mb-3">
             <select id="project_id" name="project_id" class="form-select" required>
-                <option value="" selected disabled>{{ __('form.select_project') }}</option>
+                <option value="" selected disabled>
+                    {{ __('form.select_project') }}</option>
                 @foreach ($projects as $project)
                     <option value="{{ $project->id }}"
                         {{ (string) old('project_id') === (string) $project->id ? 'selected' : '' }}>
@@ -96,13 +100,11 @@
                 <label for="fm_total" class="form-label">Festmeter</label>
                 <input type="number" id="fm_total" class="form-control" name="fm_total" inputmode="decimal"
                     value="{{ data_get($prefill, 'fm_total') }}">
-                <!-- TODO; add: placeholder="Stand: { $projects[$project->id]['last_fm_total'] }}" -->
             </div>
             <div class="col-6 col-lg-3 mt-2 mt-lg-0">
                 <label for="fm_day" class="form-label">Festmeter heute</label>
                 <input readonly id="fm_day" class="form-control" name="fm_day"
                     value="{{ data_get($prefill, 'fm_day') }}">
-                <!-- TODO; add: placeholder="Stand: { $projects[$project->id]['last_fm_total'] }}" -->
             </div>
         </div>
     </div>
@@ -334,7 +336,7 @@
 
             try {
                 const response = await fetch(form.action, {
-                    method: 'POST',
+                    method: form.dataset.method || 'POST',
                     headers: {
                         'Accept': 'application/json',
                         'X-Requested-With': 'XMLHttpRequest',
@@ -355,9 +357,17 @@
 
                 const data = await response.json();
                 const type = form.dataset.logType;
+                const editingSummaryId = form.dataset.editingSummaryId;
 
                 form.outerHTML = data.html;
-                document.getElementById(`btn-add-${type}`).disabled = false;
+                if (editingSummaryId) {
+                    const staleSummary = document.getElementById(editingSummaryId);
+                    if (staleSummary) {
+                        staleSummary.remove();
+                    }
+                } else {
+                    document.getElementById(`btn-add-${type}`).disabled = false;
+                }
             } catch (err) {
                 submitButton.disabled = false;
                 showFormErrors(form, {

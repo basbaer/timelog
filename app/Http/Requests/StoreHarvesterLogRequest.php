@@ -31,7 +31,9 @@ class StoreHarvesterLogRequest extends FormRequest
             'fm_total' => ['nullable', 'numeric', 'min:0'],
             'fm_day' => ['nullable', 'numeric', 'min:0'],
 
-            'log_type' => ['nullable', 'string']
+            'log_type' => ['nullable', 'string'],
+            'id' => ['nullable', 'integer'],
+            
         ];
     }
 

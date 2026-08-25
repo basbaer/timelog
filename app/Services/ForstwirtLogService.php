@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\ForstwirtLog;
 use App\Models\ForstwirtWorkingType;
 use Illuminate\Support\Collection;
+use Carbon\Carbon;
 use Override;
 
 class ForstwirtLogService extends BaseLogService
@@ -44,8 +45,14 @@ class ForstwirtLogService extends BaseLogService
     public function saveLog(array $logData): ForstwirtLog
     {
 
-        $log = new ForstwirtLog();
-        $log->id = $logData['id'] ?? null;
+        if (isset($logData['id'])) {
+            $log = ForstwirtLog::find($logData['id']);
+            if (!$log) {
+                throw new \Exception("Log with ID {$logData['id']} not found.");
+            }
+        } else {
+            $log = new ForstwirtLog();
+        }
         $log->user_id = $logData['worker_id'];
         $log->project_id = $logData['project_id'];
         $log->working_type_id = ForstwirtWorkingType::where('slug', $logData['work_type'])->value('id');
@@ -62,10 +69,24 @@ class ForstwirtLogService extends BaseLogService
         return $log;
     }
 
+    public function getPrefill(ForstwirtLog $log): array
+    {
+
+        $prefill = [
+            'type' => $log->workingType?->slug ?? '',
+            'start' => $log->start ? Carbon::parse($log->start)->format('H:i') : null,
+            'end' => $log->end ? Carbon::parse($log->end)->format('H:i') : null,
+            'pause' => $log->pause ?? 0,
+            'sum' => $log->sum ? Carbon::parse($log->sum)->format('H:i') : null,
+            'comment' => $log->comment,
+        ];
+
+        return $prefill;
+    }
+
     #[Override]
     public function loadLogs(int $userId, string $date, array $lazyLoad = ['project']): Collection
     {
         return parent::loadLogs($userId, $date, ['project', 'workingType']);
     }
-
 }
