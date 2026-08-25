@@ -19,7 +19,7 @@ class HarvesterLogController extends BaseLogController
     public function __construct(
         WorkerLogService $workerLogService,
         private readonly HarvesterLogService $harvesterLogService,
-        private readonly ProjectService $projectService,
+        ProjectService $projectService,
     ) {
         parent::__construct($workerLogService, $projectService);
     }
