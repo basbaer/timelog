@@ -1,9 +1,9 @@
-@props(['prefill' => [], 'projects'])
+@props(['prefill' => [], 'projects', 'worker_id'])
 
 <form id="harvester-log-form" class="container border rounded-2 mt-2" method="POST"
     action="{{ route('log.harvester.store') }}" data-log-type="harvester">
     @csrf
-
+    <input type="hidden" name="worker_id" value="{{ $worker_id }}">
     <!-- Projekt Dropdown -->
     <div class="d-flex flex-row justify-content-between mb-1 mt-2">
         <label for="project_id" class="h3 form-label">{{ __('form.project') }}</label>

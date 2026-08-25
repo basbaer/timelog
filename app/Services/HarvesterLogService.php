@@ -39,7 +39,7 @@ class HarvesterLogService extends BaseLogService
     {
         $log = new HarvesterLog();
         $log->id = $logData['id'] ?? null;
-        $log->user_id = $logData['user_id'];
+        $log->user_id = $logData['worker_id'];
         $log->project_id = $logData['project_id'];
         $log->date = $logData['date'];
         $log->start = $logData['start'] ?? null;

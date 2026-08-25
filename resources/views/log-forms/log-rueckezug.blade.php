@@ -4,13 +4,13 @@
 @include('partials.head', ['title' => 'Log'])
 
 <body>
-    @include('partials.log_header', ['name' => $name, 'worker_id' => $user_id])
+    @include('partials.log_header', ['name' => $name, 'worker_id' => $worker_id])
 
     @include('partials.log_form_errors', ['errors' => $errors])
 
     <form id="rueckezug-log-form" class="container" method="POST" action="{{ route('log.rueckezug.store') }}">
         @csrf
-        <input type="hidden" name="user_id" value="{{ $user_id }}">
+        <input type="hidden" name="worker_id" value="{{ $worker_id }}">
         @if (!empty($editingLogId))
             <input type="hidden" name="edit_log_id" value="{{ $editingLogId }}">
         @endif

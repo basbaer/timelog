@@ -14,7 +14,7 @@ class StoreRueckezugLogRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_id' => ['required', 'integer', 'exists:users,id'],
+            'worker_id' => ['required', 'integer', 'exists:users,id'],
             'project_id' => ['required', 'integer', 'exists:projects,id'],
             'date' => ['required', 'date'],
 
@@ -36,7 +36,6 @@ class StoreRueckezugLogRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'user_id' => __('log_validation.fields.user_id'),
             'project_id' => __('log_validation.fields.project_id'),
             'date' => __('log_validation.fields.date'),
             'start' => __('log_validation.fields.start'),

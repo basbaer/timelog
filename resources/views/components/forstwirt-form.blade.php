@@ -1,10 +1,10 @@
 {{-- resources/views/log-forms/forstwirt-form.blade.php --}}
-@props(['projects', 'workTypes' => [], 'prefill' => [], 'user_id'])
+@props(['projects', 'workTypes' => [], 'prefill' => [], 'worker_id'])
 
 <form id="forstwirt-log-form" class="container border rounded-2 position-relative mt-3" method="POST"
     action="{{ route('log.forstwirt.store') }}" data-log-type="forstwirt">
     @csrf
-    <input type="hidden" name="user_id" value="{{ $user_id }}">
+    <input type="hidden" name="worker_id" value="{{ $worker_id }}">
 
     <div class="d-flex flex-row justify-content-between mb-1 mt-2">
         <label for="project_id" class="h3 form-label">{{ __('form.project') }}</label>

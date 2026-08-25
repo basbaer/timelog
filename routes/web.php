@@ -154,13 +154,13 @@ Route::middleware([IsLoggedIn::class])->group(function () {
     Route::get('/log-forstwirt/{worker_id?}', [ForstwirtLogController::class, 'show'])
         ->name('log.forstwirt');
 
-    Route::get('/log-forstwirt/{user_id}/edit/{log_id}', [ForstwirtLogController::class, 'edit'])
+    Route::get('/log-forstwirt/{worker_id}/edit/{log_id}', [ForstwirtLogController::class, 'edit'])
         ->name('log.forstwirt.edit');
 
     Route::post('/log-forstwirt', [ForstwirtLogController::class, 'store'])
         ->name('log.forstwirt.store');
 
-    Route::put('/log-forstwirt/{user_id}/edit/{log_id}', [ForstwirtLogController::class, 'update'])
+    Route::put('/log-forstwirt/{worker_id}/edit/{log_id}', [ForstwirtLogController::class, 'update'])
         ->name('log.forstwirt.update');
 
     Route::delete('/log-forstwirt/{worker_id}/delete', [ForstwirtLogController::class, 'deleteLog'])
@@ -173,11 +173,11 @@ Route::middleware([IsLoggedIn::class])->group(function () {
 Route::middleware(Harvester::class)->group(function () {
     Route::get('/log-harvester/{worker_id?}', [HarvesterLogController::class, 'show'])->name('log.harvester');
 
-    Route::get('/log-harvester/{user_id}/edit/{log_id}', [HarvesterLogController::class, 'edit'])->name('log.harvester.edit');
+    Route::get('/log-harvester/{worker_id}/edit/{log_id}', [HarvesterLogController::class, 'edit'])->name('log.harvester.edit');
 
     Route::post('/log-harvester', [HarvesterLogController::class, 'store'])->name('log.harvester.store');
 
-    Route::put('/log-harvester/{user_id}/edit/{log_id}', [HarvesterLogController::class, 'update'])->name('log.harvester.update');
+    Route::put('/log-harvester/{worker_id}/edit/{log_id}', [HarvesterLogController::class, 'update'])->name('log.harvester.update');
 
     Route::delete('/log-harvester/{worker_id}/delete', [HarvesterLogController::class, 'deleteLog'])->name('log.harvester.delete');
 });
@@ -188,11 +188,11 @@ Route::middleware(Harvester::class)->group(function () {
 Route::middleware(Rueckezug::class)->group(function () {
     Route::get('/log-rueckezug/{worker_id?}', [RueckezugLogController::class, 'show'])->name('log.rueckezug');
 
-    Route::get('/log-rueckezug/{user_id}/edit/{log_id}', [RueckezugLogController::class, 'edit'])->name('log.rueckezug.edit');
+    Route::get('/log-rueckezug/{worker_id}/edit/{log_id}', [RueckezugLogController::class, 'edit'])->name('log.rueckezug.edit');
 
     Route::post('/log-rueckezug', [RueckezugLogController::class, 'store'])->name('log.rueckezug.store');
 
-    Route::put('/log-rueckezug/{user_id}/edit/{log_id}', [RueckezugLogController::class, 'update'])->name('log.rueckezug.update');
+    Route::put('/log-rueckezug/{worker_id}/edit/{log_id}', [RueckezugLogController::class, 'update'])->name('log.rueckezug.update');
 
     Route::delete('/log-rueckezug/{worker_id}/delete', [RueckezugLogController::class, 'deleteLog'])->name('log.rueckezug.delete');
 });

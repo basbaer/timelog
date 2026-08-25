@@ -1,9 +1,9 @@
-@props(['prefill' => ['bs_start' => ''], 'projects', 'user_id'])
+@props(['prefill' => ['bs_start' => ''], 'projects', 'worker_id'])
 
 <form id="rueckezug-log-form" class="container border rounded-2 mt-2" method="POST"
     action="{{ route('log.rueckezug.store') }}" data-log-type="rueckezug">
     @csrf
-    <input type="hidden" name="user_id" value="{{ $user_id }}">
+    <input type="hidden" name="worker_id" value="{{ $worker_id }}">
 
     <!-- Projekt Dropdown -->
     <div class="d-flex flex-row justify-content-between mb-1 mt-2">

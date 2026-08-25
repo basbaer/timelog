@@ -46,7 +46,7 @@ class ForstwirtLogService extends BaseLogService
 
         $log = new ForstwirtLog();
         $log->id = $logData['id'] ?? null;
-        $log->user_id = $logData['user_id'];
+        $log->user_id = $logData['worker_id'];
         $log->project_id = $logData['project_id'];
         $log->working_type_id = ForstwirtWorkingType::where('slug', $logData['work_type'])->value('id');
         $log->date = $logData['date'];

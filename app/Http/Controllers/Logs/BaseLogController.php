@@ -34,7 +34,7 @@ abstract class BaseLogController extends Controller
     abstract protected function buildEditPrefill(Collection $logs, string $date): array;
 
 
-    private function getWorker(?int $worker_id): User
+    private function getWorker(?int $worker_id): array
     {
         /** @var \App\Models\User $user */
         $user = Auth::user();
@@ -49,10 +49,10 @@ abstract class BaseLogController extends Controller
             $worker = $user;
         }
 
-        $worker->full_name = $worker->first_name . ' ' . $user->last_name;
+        $worker->full_name = $worker->first_name . ' ' . $worker->last_name;
         $worker->type = $worker->role->slug; // e.g. 'forstwirt' or 'harvester'
 
-        return $worker;
+        return [$worker, $isAdmin];
     }
 
     private function getProjects(User $worker): Collection
@@ -76,7 +76,7 @@ abstract class BaseLogController extends Controller
      */
     public function show(?int $worker_id = null)
     {
-        $worker = $this->getWorker($worker_id);
+        [$worker, $isAdmin] = $this->getWorker($worker_id);
 
         $projects = $this->getProjects($worker);
 
@@ -115,16 +115,16 @@ abstract class BaseLogController extends Controller
             return redirect()->route($this->route() . '.success', ['worker_id' => (int) $user_id]);
         }
 */
-        return view('log-forms/log', compact(['date', 'projects', 'worker', 'existingLogs']));      
+        return view('log-forms/log', compact(['date', 'projects', 'worker', 'existingLogs', 'isAdmin']));      
         //return view('log-forms/log', compact(['projects', 'worker', 'existingLogs', 'prefill', 'editingLogId', 'editingProjectId', 'editingLogDate']));
     }
 
-    public function storeLog(StoreForstwirtLogRequest|StoreRueckezugLogRequest|StoreHarvesterLogRequest $request): JsonResponse
+    public function store(StoreForstwirtLogRequest|StoreRueckezugLogRequest|StoreHarvesterLogRequest $request): JsonResponse
     {
         $validated = $request->validated();
         /** @var \App\Models\User $user */
         $user = Auth::user();
-        $workerId = (int) $validated['user_id'];
+        $workerId = (int) $validated['worker_id'];
 
         // prevent form spoofing: only allow admins to log for other users
         if (! $user->isAdmin() && $user->id !== $workerId) {

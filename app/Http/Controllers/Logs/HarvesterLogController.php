@@ -44,13 +44,13 @@ class HarvesterLogController extends BaseLogController
         return 'log-harvester';
     }
 
-    protected function addPreviousData(int $user_id, Collection $projects): Collection
+    protected function addPreviousData(int $worker_id, Collection $projects): Collection
     {
         foreach ($projects as $project) {
         
-            $project->last_fm_total = $this->harvesterLogService->getLastFmTotal($user_id, $project->id);
-            $project->last_bs = $this->harvesterLogService->getLastBsTo($user_id, $project->id);
-            $project->last_fm_amount = $this->harvesterLogService->getLastFmAmount($user_id, $project->id);
+            $project->last_fm_total = $this->harvesterLogService->getLastFmTotal($worker_id, $project->id);
+            $project->last_bs = $this->harvesterLogService->getLastBsTo($worker_id, $project->id);
+            $project->last_fm_amount = $this->harvesterLogService->getLastFmAmount($worker_id, $project->id);
 
             $projects[$project->id] = $project;
         }
@@ -58,12 +58,12 @@ class HarvesterLogController extends BaseLogController
         return $projects;
     }
 
-    public function edit(int $user_id, int $log_id)
+    public function edit(int $worker_id, int $log_id)
     {
-        $user = User::findOrFail($user_id);
-        $log = HarvesterLog::with('project')->where('user_id', $user->id)->findOrFail($log_id);
+        $worker = User::findOrFail($worker_id);
+        $log = HarvesterLog::with('project')->where('user_id', $worker->id)->findOrFail($log_id);
         $editDate = Carbon::parse($log->date)->toDateString();
-        $projects = $this->projectService->getOpenProjects($user->id, $editDate, $editDate);
+        $projects = $this->projectService->getOpenProjects($worker->id, $editDate, $editDate);
 
         if (! $projects->contains('id', $log->project_id)) {
             $projects->push($this->projectService->getProjectById($log->project_id));
@@ -72,8 +72,8 @@ class HarvesterLogController extends BaseLogController
         $projects = $projects->sortBy('title')->values();
 
         return view('log-forms/log-harvester-edit', [
-            'name' => $user->first_name . ' ' . $user->last_name,
-            'user_id' => $user->id,
+            'name' => $worker->first_name . ' ' . $worker->last_name,
+            'worker_id' => $worker->id,
             'log' => $log,
             'projects' => $projects,
             'isAdmin' => (function () {
@@ -125,11 +125,6 @@ class HarvesterLogController extends BaseLogController
         }
 
         return $prefill;
-    }
-
-    public function store(StoreHarvesterLogRequest $request): JsonResponse
-    {
-        return $this->storeLog($request);
     }
 
     public function update(int $user_id, int $log_id): RedirectResponse

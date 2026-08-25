@@ -14,11 +14,11 @@ class StoreHarvesterLogRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_id' => ['required', 'integer', 'exists:users,id'],
+            'worker_id' => ['required', 'integer', 'exists:users,id'],
             'project_id' => ['required', 'integer', 'exists:projects,id'],
             'date' => ['required', 'date'],
 
-            'start' => ['required', 'nullable', 'date_format:H:i', 'required_with:end'],
+            'start' => ['nullable', 'date_format:H:i', 'required_with:end'],
             'end' => ['nullable', 'date_format:H:i', 'required_with:start'],
             'sum' => ['nullable', 'date_format:H:i'],
             'pause' => ['nullable', 'integer', 'min:0'],

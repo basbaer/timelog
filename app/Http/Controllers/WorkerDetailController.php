@@ -92,11 +92,11 @@ class WorkerDetailController extends Controller
             $role = $worker->role?->slug;
 
             if ($role === 'forstwirt') {
-                return redirect()->route('log.forstwirt', ['user_id' => $worker_id]);
+                return redirect()->route('log.forstwirt', ['worker_id' => $worker_id]);
             } elseif ($role === 'harvester') {
-                return redirect()->route('log.harvester', ['user_id' => $worker_id]);
+                return redirect()->route('log.harvester', ['worker_id' => $worker_id]);
             } elseif ($role === 'rueckezug') {
-                return redirect()->route('log.rueckezug', ['user_id' => $worker_id]);
+                return redirect()->route('log.rueckezug', ['worker_id' => $worker_id]);
             } else {
                 return redirect()->route('admin.workers.overview')->with('error', 'Invalid worker role.');
             }
@@ -168,7 +168,7 @@ class WorkerDetailController extends Controller
             };
 
             return redirect()->route($routeName, [
-                'user_id' => $worker_id,
+                'worker_id' => $worker_id,
                 'edit_log_id' => $clickedLog->id,
                 'log_id' => $clickedLog->id,
             ]);

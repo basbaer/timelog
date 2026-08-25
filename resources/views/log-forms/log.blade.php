@@ -5,7 +5,12 @@
 <!-- configure class .harvester and .rueckezug -->
 
 <body>
-    @include('partials.log_header', ['name' => $worker->full_name, 'worker_id' => $worker->id])
+    @if ($isAdmin)
+        @include('partials.admin_navbar', ['active' => 'workers'])
+        <div class="container h2 my-3">{{ $worker->full_name }}</div>
+    @else
+        @include('partials.log_header', ['name' => $worker->full_name, 'worker_id' => $worker->id])
+    @endif
 
     @include('partials.log_form_errors', ['errors' => $errors])
 
@@ -57,16 +62,24 @@
 
 
     <template id="template-rueckezug-form">
-        <x-rueckezug-form :projects="$projects" :user_id="$worker->id" />
+        <x-rueckezug-form :projects="$projects" :worker_id="$worker->id" />
     </template>
 
     <template id="template-harvester-form">
-        <x-harvester-form :projects="$projects" :user_id="$worker->id" />
+        <x-harvester-form :projects="$projects" :worker_id="$worker->id" />
     </template>
 
     <template id="template-forstwirt-form">
-        <x-forstwirt-form :projects="$projects" :workTypes="$workTypes" :user_id="$worker->id" />
+        <x-forstwirt-form :projects="$projects" :workTypes="$workTypes" :worker_id="$worker->id" />
     </template>
+
+    @if ($isAdmin)
+        <div class="container d-flex justify-content-center">
+            <a href="{{ route('worker.show', ['worker_id' => $worker->id]) }}" class="btn btn-secondary my-3">
+                {{ __('form.back_to_worker_details') }}
+            </a>
+        </div>
+    @endif
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"

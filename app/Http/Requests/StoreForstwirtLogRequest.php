@@ -27,12 +27,12 @@ class StoreForstwirtLogRequest extends FormRequest
         $workTypeKeys = ForstwirtWorkingType::all()->pluck('slug')->toArray();
 
         return [
-            'user_id' => ['required', 'integer', 'exists:users,id'],
+            'worker_id' => ['required', 'integer', 'exists:users,id'],
             'project_id' => ['required', 'integer', 'exists:projects,id'],
             'date' => ['required', 'date'],
             'work_type' => ['required', 'string', Rule::in($workTypeKeys)],
-            'start' => ['required', 'date_format:H:i'],
-            'end' => ['required', 'date_format:H:i'],
+            'start' => ['date_format:H:i'],
+            'end' => ['date_format:H:i'],
             'pause' => ['nullable', 'integer', 'min:0'],
             'sum' => [],
             'comment' => ['nullable', 'string', 'max:1000'],

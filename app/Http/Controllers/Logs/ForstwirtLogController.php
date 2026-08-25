@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Logs;
 
 use App\Http\Controllers\Logs\BaseLogController;
-use App\Http\Requests\StoreForstwirtLogRequest;
 use App\Models\ForstwirtLog;
 use App\Models\ForstwirtWorkingType;
 use App\Models\User;
@@ -14,7 +13,6 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use App\Services\WorkerLogService;
-use Illuminate\Http\JsonResponse;
 
 class ForstwirtLogController extends BaseLogController
 {
@@ -51,18 +49,19 @@ class ForstwirtLogController extends BaseLogController
     {
         return $projects;
     }
-
+/*
     public function store(StoreForstwirtLogRequest $request): JsonResponse
     {
-        return $this->storeLog($request);
+        return parent::store($request);
     }
+        */
 
-    public function edit(int $user_id, int $log_id)
+    public function edit(int $worker_id, int $log_id)
     {
-        $user = User::findOrFail($user_id);
-        $log = ForstwirtLog::with(['project', 'workingType'])->where('user_id', $user->id)->findOrFail($log_id);
+        $worker = User::findOrFail($worker_id);
+        $log = ForstwirtLog::with(['project', 'workingType'])->where('user_id', $worker->id)->findOrFail($log_id);
         $editDate = Carbon::parse($log->date)->toDateString();
-        $projects = $this->projectService->getOpenProjects($user->id, $editDate, $editDate);
+        $projects = $this->projectService->getOpenProjects($worker->id, $editDate, $editDate);
 
         if (! $projects->contains('id', $log->project_id)) {
             $projects->push($this->projectService->getProjectById($log->project_id));
@@ -72,8 +71,8 @@ class ForstwirtLogController extends BaseLogController
         $workTypes = ForstwirtWorkingType::query()->orderBy('slug')->get(['id', 'slug', 'name']);
 
         return view('log-forms/log-forstwirt-edit', [
-            'name' => $user->first_name . ' ' . $user->last_name,
-            'user_id' => $user->id,
+            'name' => $worker->first_name . ' ' . $worker->last_name,
+            'worker_id' => $worker->id,
             'log' => $log,
             'projects' => $projects,
             'workTypes' => $workTypes,

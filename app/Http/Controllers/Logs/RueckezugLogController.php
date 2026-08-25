@@ -48,12 +48,12 @@ class RueckezugLogController extends BaseLogController
         return 'log-rueckezug';
     }
 
-    protected function addPreviousData(int $user_id, Collection $projects): Collection
+    protected function addPreviousData(int $worker_id, Collection $projects): Collection
     {
         foreach ($projects as $project) {
 
-            $project->last_bs = $this->rueckezugLogService->getLastBsTo($user_id, $project->id);
-            $project->last_average_distance = $this->rueckezugLogService->getLastAverageDistance($user_id, $project->id);
+            $project->last_bs = $this->rueckezugLogService->getLastBsTo($worker_id, $project->id);
+            $project->last_average_distance = $this->rueckezugLogService->getLastAverageDistance($worker_id, $project->id);
 
             $projects[$project->id] = $project;
         }
@@ -66,12 +66,12 @@ class RueckezugLogController extends BaseLogController
         return $this->storeLog($request);
     }
 
-    public function edit(int $user_id, int $log_id)
+    public function edit(int $worker_id, int $log_id)
     {
-        $user = User::findOrFail($user_id);
-        $log = RueckezugLog::with('project')->where('user_id', $user->id)->findOrFail($log_id);
+        $worker = User::findOrFail($worker_id);
+        $log = RueckezugLog::with('project')->where('user_id', $worker->id)->findOrFail($log_id);
         $editDate = Carbon::parse($log->date)->toDateString();
-        $projects = $this->projectService->getOpenProjects($user->id, $editDate, $editDate);
+        $projects = $this->projectService->getOpenProjects($worker->id, $editDate, $editDate);
 
         if (! $projects->contains('id', $log->project_id)) {
             $projects->push($this->projectService->getProjectById($log->project_id));
@@ -80,8 +80,8 @@ class RueckezugLogController extends BaseLogController
         $projects = $projects->sortBy('title')->values();
 
         return view('log-forms/log-rueckezug-edit', [
-            'name' => $user->first_name . ' ' . $user->last_name,
-            'user_id' => $user->id,
+            'name' => $worker->first_name . ' ' . $worker->last_name,
+            'worker_id' => $worker->id,
             'log' => $log,
             'projects' => $projects,
             'isAdmin' => (function () {
@@ -134,7 +134,7 @@ class RueckezugLogController extends BaseLogController
         return $prefill;
     }
 
-    public function update(int $user_id, int $log_id): RedirectResponse
+    public function update(int $worker_id, int $log_id): RedirectResponse
     {
         $validated = request()->validate([
             'project_id' => ['required', 'integer', 'exists:projects,id'],
@@ -150,8 +150,8 @@ class RueckezugLogController extends BaseLogController
             'average_distance' => ['nullable', 'numeric', 'min:0'],
         ]);
 
-        $user = User::findOrFail($user_id);
-        $log = RueckezugLog::where('user_id', $user->id)->findOrFail($log_id);
+        $worker = User::findOrFail($worker_id);
+        $log = RueckezugLog::where('user_id', $worker->id)->findOrFail($log_id);
 
         $log->project_id = (int) $validated['project_id'];
         $log->date = $validated['date'];
@@ -166,6 +166,6 @@ class RueckezugLogController extends BaseLogController
         $log->average_distance = isset($validated['average_distance']) ? (float) $validated['average_distance'] : null;
         $log->save();
 
-        return redirect()->route('worker.show', ['worker_id' => $user->id])->with('success', 'Eintrag erfolgreich aktualisiert.');
+        return redirect()->route('worker.show', ['worker_id' => $worker->id])->with('success', 'Eintrag erfolgreich aktualisiert.');
     }
 }

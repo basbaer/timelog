@@ -60,5 +60,6 @@ return [
     'back' => 'Zurück',
     'overview_hours' => 'Stundenübersicht',
     'settings' => 'Einstellungen',
-    'save_entry' => 'Eintrag speichern'
+    'save_entry' => 'Eintrag speichern',
+    'back_to_worker_details' => 'Zurück zur Stundenübersicht',
 ];
