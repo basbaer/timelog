@@ -4,23 +4,46 @@
         'rueckezug' => 'Rückezug',
         default => 'Harvester',
     };
-    
+
     $projectTitle = $savedLog->projectTitle;
+    $worker_id = $savedLog->user_id;
+    $log_id = $savedLog->id;
 @endphp
 
 <div class="border rounded p-3 mb-3">
     <div class="mb-2">
-        <div class="h4 mb-2">{{ $projectTitle }}</div>
+        <div class="d-flex flex-row justify-content-between align-items-center mb-2 ">
+
+            <div class="h4 mb-2">{{ $projectTitle }}</div>
+
+            <div class="d-flex justify-content-center align-items-center gap-2">
+                <a href="{{ route('worker.log.edit', ['worker_id' => $worker_id, 'log_id' => $log_id, 'log_type' => 'harvester']) }}"
+                    class="btn btn-outline-primary btn-sm p-1" title="Bearbeiten" aria-label="Bearbeiten">
+                    <i class="bi bi-pencil-square"></i>
+                </a>
+                <form
+                    action="{{ route('admin.worker.log.delete', ['worker_id' => $worker_id, 'log_id' => $log_id]) }}"
+                    method="POST" class="my-auto">
+                    @csrf
+                    @method('DELETE')
+                    <input type="hidden" name="delete_type" value="harvester">
+                    <button type="submit" class="btn btn-outline-danger btn-sm p-1" title="Löschen"
+                        aria-label="Löschen">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
         <h3 class="h5 mb-2">{{ $entryTitle }}</h3>
 
-            <div class="row g-3">
-                <div class="col">
-                    {{ \Carbon\Carbon::parse($savedLog->start)->format('H:i') }} -
-                    {{ \Carbon\Carbon::parse($savedLog->end)->format('H:i') }}
-                    ({{ __('form.working_time') }}:
-                    {{ !empty($savedLog->sum) ? \Carbon\Carbon::parse($savedLog->sum)->format('H:i') : '-' }})
-                </div>
+        <div class="row g-3">
+            <div class="col">
+                {{ \Carbon\Carbon::parse($savedLog->start)->format('H:i') }} -
+                {{ \Carbon\Carbon::parse($savedLog->end)->format('H:i') }}
+                ({{ __('form.working_time') }}:
+                {{ !empty($savedLog->sum) ? \Carbon\Carbon::parse($savedLog->sum)->format('H:i') : '-' }})
             </div>
+        </div>
     </div>
 
     @if ($savedLog->type === 'harvester')

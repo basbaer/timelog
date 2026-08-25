@@ -112,9 +112,6 @@ Route::middleware(Admin::class)->prefix('admin')->group(function () {
     // Delete log entry for worker
     Route::delete('/workers/{worker_id}/log/{log_id}/delete', [WorkerDetailController::class, 'deleteLog'])->name('admin.worker.log.delete');
 
-    // Open the corresponding log form in edit mode
-    Route::get('/workers/{worker_id}/log/{log_id}/edit', [WorkerDetailController::class, 'editLog'])->name('admin.worker.log.edit');
-
     // Show worker details for printing
     Route::get('/workers/{worker_id}/print/{project}', [WorkerDetailController::class, 'print'])->name('workers.print');
 
@@ -145,6 +142,9 @@ Route::middleware([IsLoggedIn::class])->group(function () {
 
     // Show working hours overview for a specific worker
     Route::get('/workers/{worker_id}', [WorkerDetailController::class, 'show'])->name('worker.show');
+
+    // Open the corresponding log form in edit mode
+    Route::get('/workers/{worker_id}/log/{log_id}/edit', [WorkerDetailController::class, 'editLog'])->name('worker.log.edit');
 
     Route::get('/workers/{worker_id}/settings', [WorkerSettingsController::class, 'show'])->name('worker.settings');
 
