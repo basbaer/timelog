@@ -4,7 +4,7 @@
     action="{{ $editingLogId
         ? route('log.rueckezug.update', ['worker_id' => $worker_id, 'log_id' => $editingLogId])
         : route('log.rueckezug.store') }}"
-    data-log-type="rueckezug" data-method="{{ $editingLogId ? 'PUT' : 'POST' }}">>
+    data-log-type="rueckezug" data-method="{{ $editingLogId ? 'PUT' : 'POST' }}">
     @csrf
     @if ($editingLogId)
         <input type="hidden" name="id" value="{{ $editingLogId }}">
