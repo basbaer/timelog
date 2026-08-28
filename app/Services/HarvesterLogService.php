@@ -149,6 +149,6 @@ class HarvesterLogService extends BaseLogService
     {
         $log =  parent::getLogById($userId, $logId);
         $log->pieces_day = $log->fm_amount - $this->getSecondLastFmAmount($log->user_id, $log->project_id);
-        return $log;
+        return $log;    
     }
 }

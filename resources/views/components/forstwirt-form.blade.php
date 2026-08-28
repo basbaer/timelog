@@ -4,9 +4,8 @@
 <form id="forstwirt-log-form" class="container border rounded-2 position-relative mt-3" method="POST"
     action="{{ $editingLogId
         ? route('log.forstwirt.update', ['worker_id' => $worker_id, 'log_id' => $editingLogId])
-        : route('log.forstwirt.store') }}" 
-        data-log-type="forstwirt"
-        data-method="{{ $editingLogId ? 'PUT' : 'POST' }}">
+        : route('log.forstwirt.store') }}"
+    data-log-type="forstwirt" data-method="{{ $editingLogId ? 'PUT' : 'POST' }}">
     @csrf
     <input type="hidden" name="worker_id" value="{{ $worker_id }}">
 
@@ -16,19 +15,10 @@
             onclick="cancelLogForm(this)"></button>
     </div>
 
-    <div class="row">
-        <div class="col-10 col-md-7 mb-3">
-            <select id="forstwirt_project_id" name="project_id" class="form-select" required>
-                <option value="" selected disabled>{{ __('form.select_project') }}</option>
-                @foreach ($projects as $project)
-                    <option value="{{ $project->id }}"
-                        {{ (string) old('project_id') === (string) $project->id ? 'selected' : '' }}>
-                        {{ $project->location }} | {{ $project->date->format('m/Y') }} | {{ $project->client }}
-                    </option>
-                @endforeach
-            </select>
-        </div>
-    </div>
+    @include('log-forms.partials.project-dropdown', [
+        'projects' => $projects,
+        'prefill' => $prefill,
+    ])
 
     <!-- Work type -->
 

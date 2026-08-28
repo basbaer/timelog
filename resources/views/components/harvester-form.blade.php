@@ -14,20 +14,10 @@
             onclick="cancelLogForm(this)"></button>
     </div>
 
-    <div class="row">
-        <div class="col-10 col-md-5 mb-3">
-            <select id="project_id" name="project_id" class="form-select" required>
-                <option value="" selected disabled>
-                    {{ __('form.select_project') }}</option>
-                @foreach ($projects as $project)
-                    <option value="{{ $project->id }}"
-                        {{ (string) old('project_id') === (string) $project->id ? 'selected' : '' }}>
-                        {{ $project->location }} | {{ $project->date->format('m/Y') }} | {{ $project->client }}
-                    </option>
-                @endforeach
-            </select>
-        </div>
-    </div>
+    @include('log-forms.partials.project-dropdown', [
+        'projects' => $projects,
+        'prefill' => $prefill,
+    ])
 
     <!-- Betriebsstunden -->
     <div class="my-2">
