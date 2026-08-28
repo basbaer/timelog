@@ -101,13 +101,3 @@
     @endif
 </div>
 
-<script>
-    const editButton = document.getElementById('editButton');
-    editButton.addEventListener('click', function(event) {
-        event.preventDefault();
-        const url = this.href;
-
-
-    });
-
-</script>

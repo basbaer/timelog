@@ -88,6 +88,14 @@
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous">
     </script>
     <script>
+        function executeInlineScripts(scripts) {
+            scripts.forEach((script) => {
+                const executableScript = document.createElement('script');
+                executableScript.textContent = script.textContent;
+                script.replaceWith(executableScript);
+            });
+        }
+
         function addLogForm(type) {
             const template = document.getElementById(`template-${type}-form`);
             const addButton = document.getElementById(`btn-add-${type}`);
@@ -97,10 +105,12 @@
             }
 
             const node = template.content.cloneNode(true);
+            const scripts = [...node.querySelectorAll('script')];
             document.getElementById('log-entries').appendChild(node);
             addButton.disabled = true;
 
             const form = document.getElementById(`${type}-log-form`);
+            executeInlineScripts(scripts);
 
             // per-type post-insert setup
             if (type === 'forstwirt' && typeof initForstwirtForm === 'function') {
@@ -157,6 +167,8 @@
                 summaryEl.classList.add('d-none');
 
                 const form = summaryEl.nextElementSibling;
+                executeInlineScripts([...form.parentElement.querySelectorAll('script')].filter((script) =>
+                    script.previousElementSibling === form));
                 form.dataset.editingSummaryId = summaryEl.id;
 
                 if (type === 'forstwirt' && typeof initForstwirtForm === 'function') {
@@ -164,6 +176,9 @@
                 }
                 if (type === 'rueckezug' && typeof initRueckezugForm === 'function') {
                     initRueckezugForm(form);
+                }
+                if (type === 'harvester' && typeof initHarvesterForm === 'function') {
+                    initHarvesterForm(form);
                 }
                 initLogFormSubmit(form);
             } catch (err) {
