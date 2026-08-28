@@ -80,6 +80,7 @@ class RueckezugLogService extends BaseLogService
             'bs_diff' => $log->bs_diff,
             'loadings' => $log->loadings,
             'average_distance' => $log->average_distance,
+            'type' => $this->getLogType(),
         ];
     }
 

@@ -40,16 +40,16 @@ abstract class BaseLogService
     {
         if ($startDate === null || $endDate === null) {
             return $this->getModel()::with($this->getRelations())
-            ->where('user_id', $workerId)
-            ->when($projectId !== null, function ($query) use ($projectId) {
-                $query->where('project_id', $projectId);
-            })
-            ->orderBy('date', 'asc')
-            ->orderBy('start', 'asc')
-            ->get();
+                ->where('user_id', $workerId)
+                ->when($projectId !== null, function ($query) use ($projectId) {
+                    $query->where('project_id', $projectId);
+                })
+                ->orderBy('date', 'asc')
+                ->orderBy('start', 'asc')
+                ->get();
         }
 
-       return $this->getModel()::with($this->getRelations())
+        return $this->getModel()::with($this->getRelations())
             ->where('user_id', $workerId)
             ->whereBetween('date', [$startDate, $endDate])
             ->when($projectId !== null, function ($query) use ($projectId) {
@@ -157,7 +157,15 @@ abstract class BaseLogService
             ->whereDate('date', $date)
             ->orderBy('start')
             ->get();
-
     }
 
+    public function getLogById(int $userId, int $logId): Model
+    {
+        $log = $this->getModel()::with($this->getRelations())
+            ->where('user_id', $userId)
+            ->findOrFail($logId);
+        $log->type = $this->getLogType();
+        $log->projectTitle = $log->project->title;
+        return $log;
+    }
 }

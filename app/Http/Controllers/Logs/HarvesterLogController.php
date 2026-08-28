@@ -35,12 +35,7 @@ class HarvesterLogController extends BaseLogController
     {
         return 'log.harvester';
     }
-
-    public function viewPrefix(): string
-    {
-        return 'log-harvester';
-    }
-
+    
     protected function addPreviousData(int $worker_id, Collection $projects): Collection
     {
         foreach ($projects as $project) {

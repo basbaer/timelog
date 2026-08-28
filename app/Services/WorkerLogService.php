@@ -52,7 +52,7 @@ class WorkerLogService
         return $service->saveLog($logData);
     }
 
-    public function load(User|int $worker, string $date): Collection
+    public function loadLogs(User|int $worker, string $date): Collection
     {
         if (is_int($worker)) {
             $worker = User::findOrFail($worker);

@@ -2,9 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ForstwirtLog;
-use App\Models\HarvesterLog;
-use App\Models\RueckezugLog;
 use App\Models\User;
 use App\Services\WorkerLogService;
 use App\Services\ProjectService;

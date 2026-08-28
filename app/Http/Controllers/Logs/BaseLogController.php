@@ -29,7 +29,6 @@ abstract class BaseLogController extends Controller
     abstract protected function logModel(): string;       // z.B. ForstwirtLog::class
     abstract protected function logService(): string;     // z.B. ForstwirtLogService::class
     abstract protected function route(): string;    // z.B. 'log.forstwirt' oder 'log.harvester'
-    abstract protected function viewPrefix(): string;     // z.B. 'log-forstwirt'
     abstract protected function addPreviousData(int $user_id, Collection $projects): Collection;
 
 
@@ -84,7 +83,7 @@ abstract class BaseLogController extends Controller
         //query date param
         $date = request()->query('date', $today);
 
-        $existingLogs = $this->workerLogService->load($worker, $date);
+        $existingLogs = $this->workerLogService->loadLogs($worker, $date);
 
         return view('log-forms/log', compact(['date', 'projects', 'worker', 'existingLogs', 'isAdmin']));      
     }
@@ -115,7 +114,7 @@ abstract class BaseLogController extends Controller
     public function editLog(int $worker_id, int $log_id): JsonResponse
     {
         $worker = User::findOrFail($worker_id);
-        $log = $this->logModel()::with('project')->where('user_id', $worker->id)->findOrFail($log_id);
+        $log = app($this->logService())->getLogById($worker->id, $log_id);
         $editDate = Carbon::parse($log->date)->toDateString();
         $projects = $this->projectService->getOpenProjects($worker->id, $editDate, $editDate);
 
@@ -127,7 +126,7 @@ abstract class BaseLogController extends Controller
 
         $prefill = app($this->logService())->getPrefill($log);
 
-        $html = view('components.' . $this->viewPrefix() . '-form', [
+        $html = view('components.' . $prefill['type'] . '-form', [
             'projects' => $projects,
             'prefill' => $prefill,
             'worker_id' => $worker_id,

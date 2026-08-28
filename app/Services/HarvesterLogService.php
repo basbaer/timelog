@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\HarvesterLog;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
 class HarvesterLogService extends BaseLogService
@@ -83,6 +84,8 @@ class HarvesterLogService extends BaseLogService
             'fm_amount' => $log->fm_amount,
             'fm_total' => $log->fm_total,
             'fm_day' => $log->fm_day,
+            'type' => $this->getLogType(),
+            'pieces_day' => $log->pieces_day,
         ];
 
         return $prefill;
@@ -134,11 +137,18 @@ class HarvesterLogService extends BaseLogService
     public function load(int $userId, string $date): Collection
     {
         return parent::loadLogs($userId, $date, ['project'])
-            ->map(function($log){
+            ->map(function ($log) {
                 $log->type = $this->getLogType();
                 $log->projectTitle = $log->project->title;
                 $log->pieces_day = $log->fm_amount - $this->getSecondLastFmAmount($log->user_id, $log->project_id);
                 return $log;
             });
+    }
+
+    public function getLogById(int $userId, int $logId): Model
+    {
+        $log =  parent::getLogById($userId, $logId);
+        $log->pieces_day = $log->fm_amount - $this->getSecondLastFmAmount($log->user_id, $log->project_id);
+        return $log;
     }
 }

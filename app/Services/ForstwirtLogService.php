@@ -72,12 +72,13 @@ class ForstwirtLogService extends BaseLogService
     {
 
         $prefill = [
-            'type' => $log->workingType?->slug ?? '',
+            'working_type' => $log->workingType?->slug ?? '',
             'start' => $log->start ? Carbon::parse($log->start)->format('H:i') : null,
             'end' => $log->end ? Carbon::parse($log->end)->format('H:i') : null,
             'pause' => $log->pause ?? 0,
             'sum' => $log->sum ? Carbon::parse($log->sum)->format('H:i') : null,
             'comment' => $log->comment,
+            'type' => $this->getLogType(),
         ];
 
         return $prefill;
