@@ -1,5 +1,18 @@
 {{-- resources/views/log-forms/forstwirt-form.blade.php --}}
-@props(['projects', 'workTypes' => [], 'prefill' => [], 'worker_id', 'editingLogId' => null])
+@props(['projects', 'prefill' => [], 'worker_id', 'editingLogId' => null])
+
+@php
+    $workTypes = [
+        'motorsage' => __('form.motorsage'),
+        'freischneider' => __('form.freischneider'),
+        'seilmaschine' => __('form.seilmaschine'),
+        'messkluppe' => __('form.messkluppe'),
+        'reparatur' => __('form.reparatur'),
+        'other' => __('form.other'),
+    ];
+    $workTypeCount = count($workTypes);
+
+@endphp
 
 <form id="forstwirt-log-form" class="container border rounded-2 position-relative mt-3" method="POST"
     action="{{ $editingLogId
@@ -7,6 +20,9 @@
         : route('log.forstwirt.store') }}"
     data-log-type="forstwirt" data-method="{{ $editingLogId ? 'PUT' : 'POST' }}">
     @csrf
+    @if ($editingLogId)
+        <input type="hidden" name="id" value="{{ $editingLogId }}">
+    @endif
     <input type="hidden" name="worker_id" value="{{ $worker_id }}">
 
     <div class="d-flex flex-row justify-content-between mb-1 mt-2">
@@ -23,10 +39,12 @@
     <!-- Work type -->
 
     <label for="work_type" class="form-label mb-3 h3">{{ __('form.working_type') }}</label>
-    <div class="row mb-3">
-        <div class="col-8 col-md-5">
+    <div class="row">
+        <div class="col-10 col-md-5 mb-3">
+            @php($selectedWorkingType = old('work_type', data_get($prefill, 'working_type')))
             <select id="work_type" name="work_type" class="form-select" required>
-                <option value="" selected disabled>{{ __('form.select_work_type') }}</option>
+                <option value="" {{ $selectedWorkingType ? '' : 'selected' }} disabled>
+                    {{ __('form.select_work_type') }}</option>
                 @foreach ($workTypes as $slug => $label)
                     <option value="{{ $slug }}" {{ old('work_type') === $slug ? 'selected' : '' }}>
                         {{ $label }}
@@ -35,6 +53,7 @@
             </select>
         </div>
     </div>
+
 
     <!-- Time / duration -->
     <div class="row mb-2">
@@ -167,7 +186,18 @@
             submitButton.disabled = true;
 
             const formData = new FormData(form);
-            formData.set('date', document.getElementById('date').value);
+            const dateInput = document.getElementById('date');
+            const workerInput = form.querySelector('[name="worker_id"]');
+            const projectInput = form.querySelector('[name="project_id"]');
+            formData.set('worker_id', workerInput.value);
+            formData.set('project_id', projectInput.value);
+            formData.set('date', dateInput.value);
+
+            const method = form.dataset.method || 'POST';
+
+            if (method !== 'POST') {
+                formData.set('_method', method);
+            }
 
             try {
                 const response = await fetch(form.action, {

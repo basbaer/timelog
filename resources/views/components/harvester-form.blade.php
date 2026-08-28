@@ -6,6 +6,9 @@
         : route('log.harvester.store') }}"
     data-log-type="harvester" data-method="{{ $editingLogId ? 'PUT' : 'POST' }}">
     @csrf
+    @if ($editingLogId)
+        <input type="hidden" name="id" value="{{ $editingLogId }}">
+    @endif
     <input type="hidden" name="worker_id" value="{{ $worker_id }}">
     <!-- Projekt Dropdown -->
     <div class="d-flex flex-row justify-content-between mb-1 mt-2">
@@ -322,11 +325,22 @@
             submitButton.disabled = true;
 
             const formData = new FormData(form);
-            formData.set('date', document.getElementById('date').value);
+            const dateInput = document.getElementById('date');
+            const workerInput = form.querySelector('[name="worker_id"]');
+            const projectInput = form.querySelector('[name="project_id"]');
+            formData.set('worker_id', workerInput.value);
+            formData.set('project_id', projectInput.value);
+            formData.set('date', dateInput.value);
+
+            const method = form.dataset.method || 'POST';
+
+            if (method !== 'POST') {
+                formData.set('_method', method);
+            }
 
             try {
                 const response = await fetch(form.action, {
-                    method: form.dataset.method || 'POST',
+                    method: 'POST',
                     headers: {
                         'Accept': 'application/json',
                         'X-Requested-With': 'XMLHttpRequest',

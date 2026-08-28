@@ -17,6 +17,7 @@
     @php
         $prefill = $prefill ?? [];
         $editingProjectId = $editingProjectId ?? null;
+
         $workTypes = [
             'motorsage' => __('form.motorsage'),
             'freischneider' => __('form.freischneider'),
@@ -26,6 +27,7 @@
             'other' => __('form.other'),
         ];
         $workTypeCount = count($workTypes);
+        
     @endphp
 
     <div class="container">
@@ -72,7 +74,7 @@
     </template>
 
     <template id="template-forstwirt-form">
-        <x-forstwirt-form :projects="$projects" :workTypes="$workTypes" :worker_id="$worker->id" />
+        <x-forstwirt-form :projects="$projects" :worker_id="$worker->id" />
     </template>
 
     @if ($isAdmin)
@@ -92,7 +94,8 @@
             scripts.forEach((script) => {
                 const executableScript = document.createElement('script');
                 executableScript.textContent = script.textContent;
-                script.replaceWith(executableScript);
+                document.body.appendChild(executableScript);
+                script.remove();
             });
         }
 

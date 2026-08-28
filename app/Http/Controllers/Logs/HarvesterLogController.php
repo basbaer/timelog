@@ -60,7 +60,7 @@ class HarvesterLogController extends BaseLogController
         return parent::editLog($worker_id, $log_id);
     }
 
-    public function update(StoreHarvesterLogRequest $request, ): JsonResponse
+    public function update(StoreHarvesterLogRequest $request): JsonResponse
     {
         return parent::storeLog($request);
     }

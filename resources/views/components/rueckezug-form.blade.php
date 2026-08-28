@@ -6,6 +6,9 @@
         : route('log.rueckezug.store') }}"
     data-log-type="rueckezug" data-method="{{ $editingLogId ? 'PUT' : 'POST' }}">>
     @csrf
+    @if ($editingLogId)
+        <input type="hidden" name="id" value="{{ $editingLogId }}">
+    @endif
     <input type="hidden" name="worker_id" value="{{ $worker_id }}">
 
     <!-- Projekt Dropdown -->
@@ -250,7 +253,17 @@
             // submitting the date from the date input of the side the form is rendered on
             const formData = new FormData(form);
             const dateInput = document.getElementById('date');
+            const workerInput = form.querySelector('[name="worker_id"]');
+            const projectInput = form.querySelector('[name="project_id"]');
+            formData.set('worker_id', workerInput.value);
+            formData.set('project_id', projectInput.value);
             formData.set('date', dateInput.value);
+
+            const method = form.dataset.method || 'POST';
+
+            if (method !== 'POST') {
+                formData.set('_method', method);
+            }
 
             try {
                 const response = await fetch(form.action, {

@@ -11,7 +11,7 @@
     $log_type = $savedLog->type;
 @endphp
 
-<div class="border rounded p-3 mb-3">
+<div id="log-{{ $log_type }}-{{ $log_id }}" class="border rounded p-3 mb-3">
     <div class="mb-2">
         <div class="d-flex flex-row justify-content-between align-items-center mb-2 ">
 

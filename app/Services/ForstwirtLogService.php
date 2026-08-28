@@ -72,6 +72,7 @@ class ForstwirtLogService extends BaseLogService
     {
 
         $prefill = [
+            'project_id' => $log->project_id,
             'working_type' => $log->workingType?->slug ?? '',
             'start' => $log->start ? Carbon::parse($log->start)->format('H:i') : null,
             'end' => $log->end ? Carbon::parse($log->end)->format('H:i') : null,
