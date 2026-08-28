@@ -62,6 +62,10 @@
                 <div>{{ $savedLog->fm_amount ?? '-' }}</div>
             </div>
             <div class="col-md-3 col-4">
+                <div class="small text-muted">Stückzahl/Tag</div>
+                <div>{{ $savedLog->pieces_day ?? '-' }}</div>
+            </div>
+            <div class="col-md-3 col-4">
                 <div class="small text-muted">Gesamt fm</div>
                 <div>{{ $savedLog->fm_total ?? '-' }}</div>
             </div>

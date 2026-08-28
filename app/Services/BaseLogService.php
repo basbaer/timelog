@@ -16,6 +16,7 @@ abstract class BaseLogService
     abstract public function getModel(): string;
     abstract public function getLogType(): string;
     abstract public function saveLog(array $logData): ForstwirtLog|HarvesterLog|RueckezugLog|null;
+    abstract public function load(int $userId, string $date): Collection;
 
     protected function getRelations(): array
     {
@@ -149,18 +150,13 @@ abstract class BaseLogService
         return $this->getModel()::where('user_id', $user_id)->whereDate('date', today())->first();
     }
 
-    public function loadLogs(int $userId, string $date, array $lazyLoad = ['project']): Collection
+    protected function loadLogs(int $userId, string $date, array $lazyLoad = ['project']): Collection
     {
         return  $this->getModel()::with($lazyLoad)
             ->where('user_id', $userId)
             ->whereDate('date', $date)
             ->orderBy('start')
-            ->get()
-            ->map(function($log){
-                $log->type = $this->getLogType();
-                $log->projectTitle = $log->project->title;
-                return $log;
-            });
+            ->get();
 
     }
 

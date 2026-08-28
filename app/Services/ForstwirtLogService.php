@@ -6,7 +6,6 @@ use App\Models\ForstwirtLog;
 use App\Models\ForstwirtWorkingType;
 use Illuminate\Support\Collection;
 use Carbon\Carbon;
-use Override;
 
 class ForstwirtLogService extends BaseLogService
 {
@@ -84,9 +83,13 @@ class ForstwirtLogService extends BaseLogService
         return $prefill;
     }
 
-    #[Override]
-    public function loadLogs(int $userId, string $date, array $lazyLoad = ['project']): Collection
+    public function load(int $userId, string $date): Collection
     {
-        return parent::loadLogs($userId, $date, ['project', 'workingType']);
+        return parent::loadLogs($userId, $date, ['project', 'workingType'])
+            ->map(function($log){
+                $log->type = $this->getLogType();
+                $log->projectTitle = $log->project->title;
+                return $log;
+            });
     }
 }

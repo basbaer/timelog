@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\RueckezugLog;
 use Carbon\Carbon;
+use Illuminate\Support\Collection;
 
 class RueckezugLogService extends BaseLogService
 {
@@ -115,5 +116,15 @@ class RueckezugLogService extends BaseLogService
             ->first();
 
         return $lastLog ? $lastLog->average_distance : 0;
+    }
+
+    public function load(int $userId, string $date): Collection
+    {
+        return parent::loadLogs($userId, $date, ['project'])
+            ->map(function($log){
+                $log->type = $this->getLogType();
+                $log->projectTitle = $log->project->title;
+                return $log;
+            });
     }
 }

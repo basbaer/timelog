@@ -84,7 +84,7 @@ abstract class BaseLogController extends Controller
         //query date param
         $date = request()->query('date', $today);
 
-        $existingLogs = $this->workerLogService->loadLogs($worker, $date);
+        $existingLogs = $this->workerLogService->load($worker, $date);
 
         return view('log-forms/log', compact(['date', 'projects', 'worker', 'existingLogs', 'isAdmin']));      
     }

@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\HarvesterLog;
 use Carbon\Carbon;
+use Illuminate\Support\Collection;
 
 class HarvesterLogService extends BaseLogService
 {
@@ -56,12 +57,13 @@ class HarvesterLogService extends BaseLogService
         $log->bs_from = $logData['bs_start'] ?? null;
         $log->bs_to = $logData['bs_end'] ?? null;
         $log->bs_diff = $logData['bs_diff'] ?? null;
-        $log->fm_amount = $logData['stueckzahl'] ?? null;
-        $log->fm_total = $logData['fm_gesamt'] ?? null;
+        $log->fm_amount = $logData['fm_amount'] ?? null;
+        $log->fm_total = $logData['fm_total'] ?? null;
         $log->fm_day = $logData['fm_day'] ?? null;
         $log->save();
 
         $log->type = $this->getLogType();
+        $log->pieces_day = $logData['pieces_day'] ?? null;
 
         return $log;
     }
@@ -78,8 +80,8 @@ class HarvesterLogService extends BaseLogService
             'bs_start' => $log->bs_from,
             'bs_end' => $log->bs_to,
             'bs_diff' => $log->bs_diff,
-            'stueckzahl' => $log->fm_amount,
-            'fm_gesamt' => $log->fm_total,
+            'fm_amount' => $log->fm_amount,
+            'fm_total' => $log->fm_total,
             'fm_day' => $log->fm_day,
         ];
 
@@ -110,9 +112,33 @@ class HarvesterLogService extends BaseLogService
         return $lastLog ? $lastLog->fm_total : 0;
     }
 
+    public function getSecondLastFmAmount(int $userId, int $projectId)
+    {
+        $lastLog = HarvesterLog::where('user_id', $userId)
+            ->where('project_id', $projectId)
+            ->whereNotNull('fm_amount')
+            ->orderByDesc('date')
+            ->orderByDesc('created_at')
+            ->skip(1)
+            ->first();
+
+        return $lastLog ? $lastLog->fm_amount : 0;
+    }
+
     public function getLastBsTo(int $userId, int $projectId): float
     {
         return (int) HarvesterLog::where('user_id', $userId)
             ->max('bs_to');
+    }
+
+    public function load(int $userId, string $date): Collection
+    {
+        return parent::loadLogs($userId, $date, ['project'])
+            ->map(function($log){
+                $log->type = $this->getLogType();
+                $log->projectTitle = $log->project->title;
+                $log->pieces_day = $log->fm_amount - $this->getSecondLastFmAmount($log->user_id, $log->project_id);
+                return $log;
+            });
     }
 }

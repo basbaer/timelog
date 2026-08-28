@@ -28,6 +28,7 @@ class StoreHarvesterLogRequest extends FormRequest
             'bs_diff' => ['nullable', 'numeric', 'min:0'],
 
             'fm_amount' => ['nullable', 'numeric', 'min:0'],
+            'pieces_day' => ['nullable', 'numeric', 'min:0'],
             'fm_total' => ['nullable', 'numeric', 'min:0'],
             'fm_day' => ['nullable', 'numeric', 'min:0'],
 
