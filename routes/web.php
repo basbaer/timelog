@@ -160,7 +160,7 @@ Route::middleware([IsLoggedIn::class])->group(function () {
     Route::put('/log-forstwirt/{worker_id}/edit/{log_id}', [ForstwirtLogController::class, 'update'])
         ->name('log.forstwirt.update');
 
-    Route::delete('/log-forstwirt/{worker_id}/delete', [ForstwirtLogController::class, 'deleteLog'])
+    Route::delete('/log-forstwirt/{worker_id}/delete/{log_id}', [ForstwirtLogController::class, 'deleteLog'])
         ->name('log.forstwirt.delete');
 });
 
@@ -176,7 +176,7 @@ Route::middleware(Harvester::class)->group(function () {
 
     Route::put('/log-harvester/{worker_id}/edit/{log_id}', [HarvesterLogController::class, 'update'])->name('log.harvester.update');
 
-    Route::delete('/log-harvester/{worker_id}/delete', [HarvesterLogController::class, 'deleteLog'])->name('log.harvester.delete');
+    Route::delete('/log-harvester/{worker_id}/delete/{log_id}', [HarvesterLogController::class, 'deleteLog'])->name('log.harvester.delete');
 });
 
 //====================================================================================
@@ -191,5 +191,5 @@ Route::middleware(Rueckezug::class)->group(function () {
 
     Route::put('/log-rueckezug/{worker_id}/edit/{log_id}', [RueckezugLogController::class, 'update'])->name('log.rueckezug.update');
 
-    Route::delete('/log-rueckezug/{worker_id}/delete', [RueckezugLogController::class, 'deleteLog'])->name('log.rueckezug.delete');
+    Route::delete('/log-rueckezug/{worker_id}/delete{log_id}', [RueckezugLogController::class, 'deleteLog'])->name('log.rueckezug.delete');
 });

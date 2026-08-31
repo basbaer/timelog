@@ -8,12 +8,12 @@ use App\Http\Requests\StoreRueckezugLogRequest;
 use App\Http\Requests\StoreHarvesterLogRequest;
 use App\Models\User;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use App\Services\WorkerLogService;
 use App\Services\ProjectService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 
 abstract class BaseLogController extends Controller
 {
@@ -136,58 +136,11 @@ abstract class BaseLogController extends Controller
         return response()->json(['html' => $html]);
     }
 
-    public function deleteLog(Request $request, int $worker_id)
+    public function deleteLog(int $worker_id, int $log_id): RedirectResponse
     {
-        if ($request->filled('delete_log_date')) {
-            session()->put('delete_log_date', $request->input('delete_log_date'));
-        }
+        app($this->logService())->deleteLogById($worker_id, $log_id);
 
-        $date = session()->get('delete_log_date', Carbon::today()->toDateString());
+        return redirect()->back()->with('success', 'Log erfolgreich gelöscht.');
 
-        $this->deleteLogsOfDate($worker_id, $date);
-
-        /** @var \App\Models\User $user */
-        $user = Auth::user();
-        if ($user->isAdmin()) {
-            return redirect()->route('admin.worker.show', ['worker_id' => $worker_id])
-                ->with('success', 'Eintrag erfolgreich gelöscht.');
-        }
-
-        return redirect()->route($this->route())->with('success', 'Eintrag erfolgreich gelöscht.');
-    }
-
-    public function getLogOfToday(int $user_id)
-    {
-        return $this->workerLogService->getLogOfToday($user_id);
-    }
-
-    public function deleteLogsOfDate(int $user_id, string $date)
-    {
-        $this->workerLogService->deleteLogsFrom($user_id, $date);
-    }
-
-    protected function getSumForMainLog(array $workLog): ?string
-    {
-        if (isset($workLog['sum'])) {
-            $total = $workLog['sum'];
-        } else {
-            return null;
-        }
-
-        $forstwirtSum = date("H:i", strtotime("00:00"));
-
-        if (isset($workLog['entries']) && is_array($workLog['entries'])) {
-            foreach ($workLog['entries'] as $entry) {
-                if (isset($entry['sum'])) {
-                    $forstwirtSum = strtotime($forstwirtSum) + strtotime($entry['sum']);
-                    $forstwirtSum = date("H:i", $forstwirtSum);
-                }
-            }
-        }
-
-        $total = strtotime($total) - strtotime($forstwirtSum);
-        $total = date("H:i", $total);
-
-        return $total;
     }
 }

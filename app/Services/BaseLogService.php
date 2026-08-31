@@ -168,4 +168,10 @@ abstract class BaseLogService
         $log->projectTitle = $log->project->title;
         return $log;
     }
+
+    public function deleteLogById(int $userId, int $logId): void
+    {
+        $log = $this->getModel()::where('user_id', $userId)->findOrFail($logId);
+        $log->delete();
+    }
 }

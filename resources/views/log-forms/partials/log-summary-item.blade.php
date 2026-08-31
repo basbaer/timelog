@@ -25,11 +25,10 @@
                     
                     <i class="bi bi-pencil-square"></i>
                 </a>
-                <form action="{{ route('admin.worker.log.delete', ['worker_id' => $worker_id, 'log_id' => $log_id]) }}"
+                <form action="{{ route('log.' . $log_type . '.delete', ['worker_id' => $worker_id, 'log_id' => $log_id]) }}"
                     method="POST" class="my-auto">
                     @csrf
                     @method('DELETE')
-                    <input type="hidden" name="delete_type" value="{{ $savedLog->type }}">
                     <button type="submit" class="btn btn-outline-danger btn-sm p-1" title="Löschen"
                         aria-label="Löschen">
                         <i class="bi bi-trash"></i>
@@ -41,8 +40,8 @@
 
         <div class="row g-3">
             <div class="col">
-                {{ \Carbon\Carbon::parse($savedLog->start)->format('H:i') }} -
-                {{ \Carbon\Carbon::parse($savedLog->end)->format('H:i') }}
+                {{ !empty($savedLog->start) ? \Carbon\Carbon::parse($savedLog->start)->format('H:i') : '-' }} -
+                {{ !empty($savedLog->end) ? \Carbon\Carbon::parse($savedLog->end)->format('H:i') : '-' }}
                 ({{ __('form.working_time') }}:
                 {{ !empty($savedLog->sum) ? \Carbon\Carbon::parse($savedLog->sum)->format('H:i') : '-' }})
             </div>

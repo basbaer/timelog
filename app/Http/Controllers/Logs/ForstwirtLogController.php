@@ -37,11 +37,6 @@ class ForstwirtLogController extends BaseLogController
         return 'log.forstwirt';
     }
 
-    public function viewPrefix(): string
-    {
-        return 'log-forstwirt';
-    }
-
     protected function addPreviousData(int $worker_id, Collection $projects): Collection
     {
         return $projects;
@@ -61,7 +56,5 @@ class ForstwirtLogController extends BaseLogController
     {
         return parent::storeLog($request);
     }
-
-
     
 }

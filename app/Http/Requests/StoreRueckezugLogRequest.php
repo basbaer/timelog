@@ -18,13 +18,13 @@ class StoreRueckezugLogRequest extends FormRequest
             'project_id' => ['required', 'integer', 'exists:projects,id'],
             'date' => ['required', 'date'],
 
-            'start' => ['nullable', 'date_format:H:i', 'required_with:end'],
-            'end' => ['nullable', 'date_format:H:i', 'required_with:start'],
+            'start' => ['nullable', 'date_format:H:i'],
+            'end' => ['nullable', 'date_format:H:i'],
             'sum' => ['nullable', 'date_format:H:i'],
             'pause' => ['nullable', 'integer', 'min:0'],
 
-            'bs_start' => ['nullable', 'numeric', 'required_with:bs_end', "min:0"],
-            'bs_end' => ['nullable', 'numeric', 'required_with:bs_start', "min:0"],
+            'bs_start' => ['nullable', 'numeric', "min:0"],
+            'bs_end' => ['nullable', 'numeric', "min:0"],
             'bs_diff' => ['nullable', 'numeric', 'min:0'],
 
             'loadings' => ['nullable', 'numeric', 'min:0'],

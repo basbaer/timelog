@@ -39,11 +39,6 @@ class RueckezugLogController extends BaseLogController
         return 'log.rueckezug';
     }
 
-    protected function viewPrefix(): string
-    {
-        return 'log-rueckezug';
-    }
-
     protected function addPreviousData(int $worker_id, Collection $projects): Collection
     {
         foreach ($projects as $project) {
@@ -71,4 +66,5 @@ class RueckezugLogController extends BaseLogController
     {
         return parent::storeLog($request);
     }
+
 }
