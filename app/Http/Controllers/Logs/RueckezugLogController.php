@@ -66,5 +66,4 @@ class RueckezugLogController extends BaseLogController
     {
         return parent::storeLog($request);
     }
-
 }

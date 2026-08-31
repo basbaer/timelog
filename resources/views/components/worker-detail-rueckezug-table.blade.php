@@ -77,7 +77,7 @@
 
                     @if ($isAdmin)
                         <div class="col-1 d-flex justify-content-center align-items-center gap-1">
-                            <a href="{{ route('admin.worker.log.edit', ['worker_id' => $worker_id, 'log_id' => $entry->id, 'log_type' => 'rueckezug']) }}"
+                            <a href="{{ route('log.rueckezug.edit', ['worker_id' => $worker_id, 'log_id' => $entry->id, 'log_type' => 'rueckezug']) }}"
                                 class="btn btn-outline-primary btn-sm p-1" title="Bearbeiten" aria-label="Bearbeiten">
                                 <i class="bi bi-pencil-square"></i>
                             </a>

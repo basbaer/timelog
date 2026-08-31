@@ -64,7 +64,7 @@
 
         @if ($isAdmin)
             <div class="col-1 d-flex justify-content-center align-items-center gap-1">
-                <a href="{{ route('admin.worker.log.edit', ['worker_id' => $worker_id, 'log_id' => $row->id, 'log_type' => 'forstwirt']) }}"
+                <a href="{{ route('log.forstwirt.edit', ['worker_id' => $worker_id, 'log_id' => $row->id]) }}"
                     class="btn btn-outline-primary btn-sm p-1" title="Bearbeiten" aria-label="Bearbeiten">
                     <i class="bi bi-pencil-square"></i>
                 </a>
