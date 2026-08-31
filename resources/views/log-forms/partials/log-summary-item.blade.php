@@ -17,7 +17,7 @@
 
             <div class="h4 mb-2">{{ $projectTitle }}</div>
 
-            <div class="d-flex justify-content-center align-items-center gap-2">
+            <div class="d-flex justify-content-center align-items-center gap-4">
                 <a type="button"
                     class="btn btn-outline-primary btn-sm p-1 edit-log-button" title="Bearbeiten" aria-label="Bearbeiten"
                     data-log-type="{{ $savedLog->type }}"
