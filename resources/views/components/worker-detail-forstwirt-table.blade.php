@@ -68,7 +68,7 @@
                     class="btn btn-outline-primary btn-sm p-1" title="Bearbeiten" aria-label="Bearbeiten">
                     <i class="bi bi-pencil-square"></i>
                 </a>
-                <form action="{{ route('admin.worker.log.delete', ['worker_id' => $worker_id, 'log_id' => $row->id]) }}"
+                <form action="{{ route('log.forstwirt.delete', ['worker_id' => $worker_id, 'log_id' => $row->id]) }}"
                     method="POST" class="my-auto">
                     @csrf
                     @method('DELETE')

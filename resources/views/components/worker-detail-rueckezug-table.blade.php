@@ -77,11 +77,11 @@
 
                     @if ($isAdmin)
                         <div class="col-1 d-flex justify-content-center align-items-center gap-1">
-                            <a href="{{ route('log.rueckezug.edit', ['worker_id' => $worker_id, 'log_id' => $entry->id, 'log_type' => 'rueckezug']) }}"
+                            <a href="{{ route('log.rueckezug.edit', ['worker_id' => $worker_id, 'log_id' => $entry->id]) }}"
                                 class="btn btn-outline-primary btn-sm p-1" title="Bearbeiten" aria-label="Bearbeiten">
                                 <i class="bi bi-pencil-square"></i>
                             </a>
-                            <form action="{{ route('admin.worker.log.delete', ['worker_id' => $worker_id, 'log_id' => $entry->id]) }}"
+                            <form action="{{ route('log.rueckezug.delete', ['worker_id' => $worker_id, 'log_id' => $entry->id]) }}"
                                 method="POST" class="my-auto">
                                 @csrf
                                 @method('DELETE')

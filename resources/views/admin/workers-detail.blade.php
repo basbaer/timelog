@@ -38,7 +38,7 @@
                 Zurück zur Übersicht</a>
             <a href="{{ route('workers.preparePrint', ['worker_id' => $worker_id, 'project' => $selectedProject]) }}" role="button" class="btn btn-success col-auto me-auto">
                 Drucken</a>
-            <a href="{{ route('admin.worker.log.create', ['worker_id' => $worker_id]) }}" role="button"
+            <a href="{{ route('log.' . $role, ['worker_id' => $worker_id]) }}" role="button"
                 class="btn btn-primary col-auto">Eintrag hinzufügen</a>
             
         </div>

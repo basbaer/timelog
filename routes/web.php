@@ -109,9 +109,6 @@ Route::middleware(Admin::class)->prefix('admin')->group(function () {
         return view('admin/auth/workers-add-success');
     });
 
-    // Delete log entry for worker
-    Route::delete('/workers/{worker_id}/log/{log_id}/delete', [WorkerDetailController::class, 'deleteLog'])->name('admin.worker.log.delete');
-
     // Show worker details for printing
     Route::get('/workers/{worker_id}/print/{project}', [WorkerDetailController::class, 'print'])->name('workers.print');
 
@@ -121,7 +118,6 @@ Route::middleware(Admin::class)->prefix('admin')->group(function () {
     // Deletet Worker
     Route::post('/workers/{worker_id}/delete', [DeleteWorkerController::class, 'deleteWorker'])->name('admin.worker.delete');
 
-    Route::get('/workers/{worker_id}/log/create', [WorkerDetailController::class, 'addWorkLog'])->name('admin.worker.log.create');
 });
 
 //====================================================================================
