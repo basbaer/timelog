@@ -85,7 +85,7 @@
                     value="{{ data_get($prefill, 'loadings') }}">
             </div>
             <div class="col-7 col-lg-4">
-                <label for="average_distance" class="form-label">durchschnittliche Distanz (m)</label>
+                <label for="average_distance" class="form-label">Ø Distanz (m)</label>
                 <input type="number" id="average_distance" class="form-control" name="average_distance"
                     inputmode="decimal" value="{{ data_get($prefill, 'average_distance') }}">
             </div>
