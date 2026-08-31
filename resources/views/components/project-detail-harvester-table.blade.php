@@ -11,7 +11,7 @@
         <div class="col"><strong>Arbeiter</strong></div>
         <div class="col"><strong>BS von</strong></div>
         <div class="col"><strong>BS bis</strong></div>
-        <div class="col"><strong>Anzahl</strong></div>
+        <div class="col"><strong>Stückzahl</strong></div>
         <div class="col"><strong>FM (gesamt)</strong></div>
         <div class="col"><strong>FM (Tag)</strong></div>
         <hr class="my-0" />

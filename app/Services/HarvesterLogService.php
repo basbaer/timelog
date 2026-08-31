@@ -32,7 +32,7 @@ class HarvesterLogService extends BaseLogService
             'bs_from' => "BS von",
             'bs_to' => "BS bis",
             'bs_diff' => "BS Differenz",
-            'fm_amount' => "FM Menge",
+            'fm_amount' => "Stückzahl",
             'fm_total' => "FM Gesamt",
             'fm_day' => "FM Tag",
         ];
