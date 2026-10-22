@@ -2,7 +2,6 @@
 node_modules/
 dbdata/
 .vscode/
-docker/php/
 docker-compose.yaml
 cgi-bin/
 *.log
