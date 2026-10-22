@@ -15,7 +15,7 @@ class LoginController extends Controller
      */
     public function show()
     {
-        // check if there is a user in the db
+        /* // check if there is a user in the db
         if (Auth::check()) {
             return redirect()->intended($this->getRedirectUrl());
             
@@ -24,12 +24,13 @@ class LoginController extends Controller
             return view('admin/auth/admin-register')->with('adminId', Role::admin()->id);
         } else {
             return view('logIn');
-        }
+        } */
     }
 
     public function login(Request $request)
     {
-        // Validate the input
+        
+        /* // Validate the input
         $credentials = $request->validate([
             'username' => 'required|string',
             'password' => 'required',
@@ -39,20 +40,24 @@ class LoginController extends Controller
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
             // Regenerate session for security
             $request->session()->regenerate();
+            */
  
             /** @var User $user */
-            $user = Auth::user();
+            //$user = Auth::user();
  
+            /*
             // Redirect dependig on the role of the user
 //            if ($user->isAdmin()) {
                 return redirect()->intended($this->getRedirectUrl());
  //           }
+ 
         }
  
         // If login fails, redirect back with error
         return back()
             ->withErrors(['invalid_credentials' => __('error.invalid_credentials')])
             ->onlyInput('username');
+             */
     }
 
     public function getRedirectUrl()
